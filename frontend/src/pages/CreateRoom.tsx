@@ -1,6 +1,6 @@
 import { Keyboard, Video, UserPlus, User } from "lucide-react";
-import { PrimaryBtn } from "../components/ui/PrimaryBtn";
-import { PrimaryInput } from "../components/ui/PrimaryInput";
+import { PrimaryBtn } from "../components/buttons/PrimaryBtn";
+import { PrimaryInput } from "../components/buttons/PrimaryInput";
 
 export function CreateRoom() {
   return (

@@ -16,7 +16,7 @@ export function PrimaryInput({
   return (
     <div
       className={cn(
-        "flex space-x-4 items-center border rounded-xl px-4 focus-within:outline focus-within:outline-2 focus-within:outline-indigo-500",
+        "flex space-x-4 items-center border border-black rounded-md px-4 focus-within:outline focus-within:outline-2 focus-within:outline-indigo-500",
         wrapperClassName
       )}
     >
