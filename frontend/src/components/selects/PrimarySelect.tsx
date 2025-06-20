@@ -33,9 +33,10 @@ export function PrimarySelect({
 }: PrimarySelectProps) {
   return (
     <Select value={value} onValueChange={onChange}>
-      <SelectTrigger className="bg-transparent ring-0 outline-none border border-black w-[12rem]">
-        <div className="flex items-center space-x-2">
+      <SelectTrigger className="bg-transparent ring-0 outline-none border border-black w-[14rem]">
+        <div className="flex items-center space-x-2 truncate">
           {icon}
+
           <SelectValue placeholder={placeholder} />
         </div>
       </SelectTrigger>
