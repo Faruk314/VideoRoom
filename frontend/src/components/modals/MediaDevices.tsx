@@ -8,7 +8,8 @@ import {
 } from "../ui/dialog";
 import { PrimarySelect } from "../selects/PrimarySelect";
 import { useMediaStore } from "../../store/media";
-import { Mic, Volume2, Video } from "lucide-react";
+import { Mic, Volume2, Video, Settings } from "lucide-react";
+import { IconBtn } from "../buttons/IconBtn";
 
 export function MediaDevices() {
   const { microphones, selectedMic, setSelectedMic } = useMediaStore();
@@ -34,7 +35,7 @@ export function MediaDevices() {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <button>Open</button>
+        <IconBtn icon={<Settings />} />
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>

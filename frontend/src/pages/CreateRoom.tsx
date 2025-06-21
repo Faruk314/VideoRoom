@@ -8,7 +8,7 @@ export function CreateRoom() {
 
   return (
     <section className="flex items-center justify-center w-full h-[100vh]">
-      <div className="flex flex-col space-y-10">
+      <div className="flex flex-col items-center space-y-10">
         <div className="flex flex-col text-center px-4 md:px-0 items-center space-y-2">
           <h1 className="text-4xl font-semibold">
             Video Calls and Meetings for anyone!
