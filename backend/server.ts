@@ -1,4 +1,5 @@
 import * as http from "http";
+import { initMediasoupWorker } from "mediasoup/methods/worker";
 import { Server as ServerIO, Socket } from "socket.io";
 
 const httpServer = http.createServer();
@@ -12,6 +13,8 @@ const io = new ServerIO(httpServer, {
 });
 
 async function main() {
+  await initMediasoupWorker();
+
   io.on("connection", (socket: Socket) => {
     console.log(`user connected with id ${socket.id}`);
   });
