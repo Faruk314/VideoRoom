@@ -1,8 +1,11 @@
 import { Keyboard, Video, UserPlus, User } from "lucide-react";
 import { PrimaryBtn } from "../components/buttons/PrimaryBtn";
 import { PrimaryInput } from "../components/buttons/PrimaryInput";
+import { useNavigate } from "react-router-dom";
 
 export function CreateRoom() {
+  const navigate = useNavigate();
+
   return (
     <section className="flex items-center justify-center w-full h-[100vh]">
       <div className="flex flex-col space-y-10">
@@ -37,7 +40,9 @@ export function CreateRoom() {
               placeholder="Enter your displayed name"
             />
 
-            <PrimaryBtn icon={<Video />}>New Meeting</PrimaryBtn>
+            <PrimaryBtn onClick={() => navigate("/room/22")} icon={<Video />}>
+              New Meeting
+            </PrimaryBtn>
           </div>
         </div>
       </div>
