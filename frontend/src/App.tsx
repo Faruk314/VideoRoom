@@ -1,17 +1,18 @@
 import "./App.css";
-import { useSocket } from "./hooks/useSocket";
 import { Routes, Route } from "react-router-dom";
-import { CreateRoom } from "./pages/CreateRoom";
-import { Room } from "./pages/Room";
+import { CreateChannel } from "./features/channel/pages/CreateChannel";
+import { Channel } from "./features/channel/pages/Channel";
+import { ToastContainer } from "react-toastify";
 
 function App() {
-  const { socket } = useSocket();
-
   return (
-    <Routes>
-      <Route path="/" element={<CreateRoom />} />
-      <Route path="/room/:id" element={<Room />} />
-    </Routes>
+    <>
+      <Routes>
+        <Route path="/" element={<CreateChannel />} />
+        <Route path="/room/:id" element={<Channel />} />
+      </Routes>
+      <ToastContainer />
+    </>
   );
 }
 

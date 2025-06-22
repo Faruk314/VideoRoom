@@ -7,7 +7,7 @@ import {
   DialogTrigger,
 } from "../ui/dialog";
 import { PrimarySelect } from "../selects/PrimarySelect";
-import { useMediaStore } from "../../store/media";
+import { useMediaStore } from "../../features/media/store/media";
 import { Mic, Volume2, Video, Settings } from "lucide-react";
 import { IconBtn } from "../buttons/IconBtn";
 

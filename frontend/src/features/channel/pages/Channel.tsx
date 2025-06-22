@@ -1,11 +1,11 @@
 import { useEffect } from "react";
-import { MediaDevices as MediaDevicesModal } from "../components/modals/MediaDevices";
-import { useMedia } from "../hooks/useMedia";
+import { MediaDevices as MediaDevicesModal } from "../../../components/modals/MediaDevices";
+import { useMedia } from "../../media/hooks/useMedia";
 import { Mic, Phone, ScreenShare, Video } from "lucide-react";
-import { IconBtn } from "../components/buttons/IconBtn";
-import CallAvatar from "../components/CallAvatar";
+import { IconBtn } from "../../../components/buttons/IconBtn";
+import CallAvatar from "../../../components/CallAvatar";
 
-export function Room() {
+export function Channel() {
   const { setDevices } = useMedia();
 
   useEffect(() => {

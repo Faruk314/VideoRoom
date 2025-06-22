@@ -8,10 +8,10 @@ export function SocketProvider({ children }: { children: ReactNode }) {
   const [isConnected, setIsConnected] = useState(false);
 
   useEffect(() => {
-    const SERVER_URL = "http://localhost:3000";
+    const WS_URL = import.meta.env.VITE_WEBSOCKET_URL;
     const SOCKET_PATH = "/ws";
 
-    const socketInstance = clientIO(SERVER_URL, {
+    const socketInstance = clientIO(WS_URL, {
       path: SOCKET_PATH,
       withCredentials: true,
     });

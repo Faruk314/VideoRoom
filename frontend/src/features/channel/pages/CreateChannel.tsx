@@ -1,9 +1,9 @@
 import { Keyboard, Video, UserPlus, User } from "lucide-react";
-import { PrimaryBtn } from "../components/buttons/PrimaryBtn";
-import { PrimaryInput } from "../components/buttons/PrimaryInput";
+import { PrimaryBtn } from "../../../components/buttons/PrimaryBtn";
+import { PrimaryInput } from "../../../components/buttons/PrimaryInput";
 import { useNavigate } from "react-router-dom";
 
-export function CreateRoom() {
+export function CreateChannel() {
   const navigate = useNavigate();
 
   return (
