@@ -1,28 +1,17 @@
+import { env } from "env";
 import * as http from "http";
 import { initMediasoupWorker } from "mediasoup/methods/worker";
-import { Server as ServerIO, Socket } from "socket.io";
-import redis from "redis/client";
-import { env } from "env";
-
-const httpServer = http.createServer();
-
-const io = new ServerIO(httpServer, {
-  path: "/ws",
-  cors: {
-    origin: env.FRONTEND_URL,
-    credentials: true,
-  },
-});
+import { createSocketServer } from "websocket/io";
 
 async function main() {
   await initMediasoupWorker();
 
-  io.on("connection", (socket: Socket) => {
-    console.log(`user connected with id ${socket.id}`);
-  });
+  const httpServer = http.createServer();
 
-  httpServer.listen(3000, () => {
-    console.log(`✅ Socket.IO server running on ${process.env.FRONTEND_URL}`);
+  createSocketServer(httpServer);
+
+  httpServer.listen(env.BACKEND_PORT, () => {
+    console.log(`✅ Server running on ${env.BACKEND_PORT}`);
   });
 }
 
