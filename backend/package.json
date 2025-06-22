@@ -10,9 +10,13 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@t3-oss/env-core": "^0.13.8",
+    "dotenv": "^16.5.0",
+    "ioredis": "^5.6.1",
     "mediasoup": "^3.16.0",
     "nodemon": "^3.1.10",
-    "socket.io": "^4.8.1"
+    "socket.io": "^4.8.1",
+    "zod": "^3.25.67"
   },
   "devDependencies": {
     "@types/node": "^24.0.3",

@@ -1,13 +1,15 @@
 import * as http from "http";
 import { initMediasoupWorker } from "mediasoup/methods/worker";
 import { Server as ServerIO, Socket } from "socket.io";
+import redis from "redis/client";
+import { env } from "env";
 
 const httpServer = http.createServer();
 
 const io = new ServerIO(httpServer, {
   path: "/ws",
   cors: {
-    origin: "http://localhost:5173",
+    origin: env.FRONTEND_URL,
     credentials: true,
   },
 });
@@ -20,7 +22,7 @@ async function main() {
   });
 
   httpServer.listen(3000, () => {
-    console.log("✅ Socket.IO server running on http://localhost:3000");
+    console.log(`✅ Socket.IO server running on ${process.env.FRONTEND_URL}`);
   });
 }
 

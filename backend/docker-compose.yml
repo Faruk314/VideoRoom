@@ -1,0 +1,15 @@
+services:
+  redis:
+    image: redis:latest
+    container_name: videoRoom_redis_server
+    restart: always
+    ports:
+      - "6401:6379"
+    command: redis-server --requirepass ${REDIS_PASSWORD}
+    environment:
+      - REDIS_PASSWORD=${REDIS_PASSWORD}
+    volumes:
+      - redisdata:/data
+
+volumes:
+  redisdata:
