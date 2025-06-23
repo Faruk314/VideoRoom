@@ -11,4 +11,14 @@ interface IPeer {
   consumers?: Map<string, types.Consumer>;
 }
 
-export type { IPeer };
+interface IUser {
+  socketId: string;
+  name: string;
+  micMuted: boolean;
+  camMuted: boolean;
+  deafened: boolean;
+  currentRoom: string;
+  connected: boolean;
+}
+
+export type { IPeer, IUser };
