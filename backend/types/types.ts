@@ -1,5 +1,20 @@
 import { types } from "mediasoup";
 
+declare global {
+  namespace Express {
+    interface Request {
+      user?: { userId: string };
+    }
+  }
+}
+
+declare module "socket.io" {
+  interface Socket {
+    userId?: string;
+    userName?: string;
+  }
+}
+
 interface IPeer {
   peerId: string;
   userId: string;
