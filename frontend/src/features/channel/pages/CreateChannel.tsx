@@ -1,14 +1,28 @@
-import { Keyboard, Video, UserPlus, User } from "lucide-react";
+import { LogOut } from "lucide-react";
 import { PrimaryBtn } from "../../../components/buttons/PrimaryBtn";
-import { PrimaryInput } from "../../../components/buttons/PrimaryInput";
-import { useNavigate } from "react-router-dom";
+import { useUserStore } from "../../user/store/user";
+import ChannelForm from "../components/ChannelForm";
+import { useLogoutMutation } from "../../auth/queries/auth";
 
 export function CreateChannel() {
-  const navigate = useNavigate();
+  const { user } = useUserStore();
+  const { mutate: logoutUser } = useLogoutMutation();
 
   return (
-    <section className="flex items-center justify-center w-full h-[100vh]">
-      <div className="flex flex-col items-center space-y-10">
+    <section className="flex flex-col items-center justify-center w-full h-[100vh]">
+      <div className="fixed top-0 p-4 flex items-center justify-between w-full">
+        <div className="flex items-baseline space-x-2 text-2xl md:text-3xl">
+          <span className="font-semibold">Welcome</span>
+          <span className="text-gray-500 text-xl md:text-2xl">
+            {user?.userName}
+          </span>
+        </div>
+
+        <PrimaryBtn onClick={() => logoutUser()} icon={<LogOut size={20} />}>
+          Log Out
+        </PrimaryBtn>
+      </div>
+      <div className="flex flex-col justify-center items-center space-y-10">
         <div className="flex flex-col text-center px-4 md:px-0 items-center space-y-2">
           <h1 className="text-4xl font-semibold">
             Video Calls and Meetings for anyone!
@@ -18,33 +32,7 @@ export function CreateChannel() {
           </p>
         </div>
 
-        <div className="flex flex-col items-center space-y-10">
-          <div className="flex flex-col space-y-4 md:space-y-0 md:flex-row md:space-x-4">
-            <PrimaryInput
-              icon={<Keyboard />}
-              placeholder="Enter code or link"
-            />
-
-            <PrimaryBtn icon={<UserPlus size={20} />}>Join Meeting</PrimaryBtn>
-          </div>
-
-          <div className="flex items-center w-full space-x-4 text-gray-500">
-            <hr className="flex-grow border-t border-gray-300" />
-            <span className="text-sm font-medium">OR</span>
-            <hr className="flex-grow border-t border-gray-300" />
-          </div>
-
-          <div className="flex flex-col space-y-4 md:space-y-0 md:flex-row md:space-x-4">
-            <PrimaryInput
-              icon={<User />}
-              placeholder="Enter your displayed name"
-            />
-
-            <PrimaryBtn onClick={() => navigate("/room/22")} icon={<Video />}>
-              New Meeting
-            </PrimaryBtn>
-          </div>
-        </div>
+        <ChannelForm />
       </div>
     </section>
   );
