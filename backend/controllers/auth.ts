@@ -38,7 +38,7 @@ export const register = asyncHandler(async (req: Request, res: Response) => {
 
   try {
     const salt = await generateSalt();
-    const hashedPassword = await hashPassword(data.password, salt);
+    const hashedPassword = await hashPassword(password, salt);
 
     const userInfo = await insertUser({
       userName,
