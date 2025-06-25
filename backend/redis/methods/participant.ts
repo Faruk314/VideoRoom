@@ -1,29 +1,30 @@
 import redis from "redis/client";
 import { IUser } from "types/types";
 
-const USERS_KEY = "users";
+const CHANNEL_PARTICIPANT_KEY = "channel:participant";
 
-async function createUser(data: {
+async function createParticipant(data: {
   userId: string;
   userName: string;
-  socketId: string;
-  roomId: string;
+  channelId: string;
 }) {
-  const { userId, userName, socketId, roomId } = data;
+  const { userId, userName, channelId } = data;
 
   const user = {
-    socketId,
-    userName,
+    user: {
+      userId,
+      userName,
+    },
     micMuted: false,
     camMuted: false,
     deafened: false,
     isStreaming: false,
-    currentRoom: roomId,
+    currentChannel: channelId,
     connected: false,
   };
 
   try {
-    await redis.hset(USERS_KEY, userId, JSON.stringify(user));
+    await redis.hset(CHANNEL_PARTICIPANT_KEY, userId, JSON.stringify(user));
 
     return { error: false, message: "User created successfully", user };
   } catch {
@@ -31,9 +32,9 @@ async function createUser(data: {
   }
 }
 
-async function updateUser(userId: string, updates: Partial<IUser>) {
+async function updateParticipant(userId: string, updates: Partial<IUser>) {
   try {
-    const { user, error, message } = await getUser(userId);
+    const { user, error, message } = await getParticipant(userId);
 
     if (error || !user) {
       return { error, message };
@@ -41,7 +42,7 @@ async function updateUser(userId: string, updates: Partial<IUser>) {
 
     Object.assign(user, updates);
 
-    await redis.hset(USERS_KEY, userId, JSON.stringify(user));
+    await redis.hset(CHANNEL_PARTICIPANT_KEY, userId, JSON.stringify(user));
 
     return { error: false, message: "User updated successfully", user };
   } catch {
@@ -49,9 +50,9 @@ async function updateUser(userId: string, updates: Partial<IUser>) {
   }
 }
 
-async function getUser(userId: string) {
+async function getParticipant(userId: string) {
   try {
-    const userJSON = await redis.hget(USERS_KEY, userId);
+    const userJSON = await redis.hget(CHANNEL_PARTICIPANT_KEY, userId);
 
     if (!userJSON) {
       return { error: true, message: "User not found", user: null };
@@ -65,4 +66,4 @@ async function getUser(userId: string) {
   }
 }
 
-export { createUser, getUser, updateUser };
+export { createParticipant, updateParticipant, getParticipant };

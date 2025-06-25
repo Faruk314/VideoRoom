@@ -32,6 +32,7 @@ function createSocketServer(httpServer: import("http").Server) {
     }
 
     socket.userId = session.userId;
+    socket.userName = session.userName;
 
     next();
   });
