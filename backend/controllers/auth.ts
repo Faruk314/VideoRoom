@@ -47,7 +47,10 @@ export const register = asyncHandler(async (req: Request, res: Response) => {
       salt,
     });
 
-    const sessionId = await createUserSession({ userId: userInfo.userId });
+    const sessionId = await createUserSession({
+      userId: userInfo.userId,
+      userName: userInfo.userName,
+    });
 
     res
       .cookie(COOKIE_SESSION_KEY, sessionId, {

@@ -10,8 +10,8 @@ declare global {
 
 declare module "socket.io" {
   interface Socket {
-    userId?: string;
-    userName?: string;
+    userId: string;
+    userName: string;
   }
 }
 

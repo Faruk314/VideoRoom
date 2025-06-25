@@ -5,16 +5,19 @@ const USERS_KEY = "users";
 
 async function createUser(data: {
   userId: string;
+  userName: string;
   socketId: string;
   roomId: string;
 }) {
-  const { userId, socketId, roomId } = data;
+  const { userId, userName, socketId, roomId } = data;
 
   const user = {
     socketId,
+    userName,
     micMuted: false,
     camMuted: false,
     deafened: false,
+    isStreaming: false,
     currentRoom: roomId,
     connected: false,
   };

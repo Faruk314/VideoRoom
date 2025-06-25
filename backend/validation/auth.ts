@@ -13,6 +13,7 @@ const RegisterSchema = z.object({
 
 const SessionSchema = z.object({
   userId: z.string(),
+  userName: z.string().min(1, "Name is required"),
 });
 
 export { LoginSchema, RegisterSchema, SessionSchema };
