@@ -1,7 +1,7 @@
 interface IUser {
   userId: string;
   userName: string;
-  email: string;
+  email?: string;
   image: string | null;
 }
 
