@@ -66,4 +66,29 @@ async function getParticipant(userId: string) {
   }
 }
 
-export { createParticipant, updateParticipant, getParticipant };
+async function getParticipants(channelId: string) {
+  try {
+    const participantIds = await redis.smembers(
+      `channel:participants:${channelId}`
+    );
+
+    const participants = await Promise.all(
+      participantIds.map(async (userId) => {
+        const data = await getParticipant(userId);
+
+        return data.user;
+      })
+    );
+
+    return participants;
+  } catch {
+    throw new Error("Coult not fetch participants");
+  }
+}
+
+export {
+  createParticipant,
+  updateParticipant,
+  getParticipant,
+  getParticipants,
+};
