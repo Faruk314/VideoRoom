@@ -14,7 +14,7 @@ export function Channel() {
 
   return (
     <section className="flex flex-col gap-4 items-center justify-between h-[100vh] w-full">
-      <div className="flex-1 w-full border-b border-gray-300 bg-gray-100"></div>
+      <div className="flex-1 w-full"></div>
 
       <div className="flex space-x-2">
         <CallAvatar />
