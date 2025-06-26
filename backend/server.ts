@@ -1,6 +1,7 @@
 import { env } from "env";
 import * as http from "http";
 import authRoutes from "./routes/auth";
+import channelRoutes from "./routes/channel";
 import { initMediasoupWorker } from "mediasoup/methods/worker";
 import { createSocketServer } from "websocket/io";
 import express from "express";
@@ -33,6 +34,7 @@ async function main() {
   });
 
   app.use("/api/auth", authRoutes);
+  app.use("/api/channel", channelRoutes);
 
   app.use(errorHandler);
 }
