@@ -3,7 +3,7 @@ import { useToast } from "../../../hooks/useToast";
 import { useChannelEmitters } from "../websocket/emitters/channel";
 
 export function useChannel() {
-  const { emitCreateChannel } = useChannelEmitters();
+  const { emitCreateChannel, emitJoinChannel } = useChannelEmitters();
   const { toastSuccess, toastError } = useToast();
   const navigate = useNavigate();
 
@@ -14,11 +14,23 @@ export function useChannel() {
       toastSuccess(message);
       navigate(`/channel/${channelId}`);
     } catch (error: unknown) {
-      if (error instanceof Error) {
-        toastError(error.message);
-      }
+      if (error instanceof Error) toastError(error.message);
     }
   }
 
-  return { createChannel };
+  async function joinChannel(input: string) {
+    try {
+      const { channelId, message } = await emitJoinChannel({
+        channelId: input,
+      });
+
+      toastSuccess(message);
+
+      navigate(`/channel/${channelId}`);
+    } catch (error: unknown) {
+      if (error instanceof Error) toastError(error.message);
+    }
+  }
+
+  return { createChannel, joinChannel };
 }

@@ -32,5 +32,35 @@ export function useChannelEmitters() {
     });
   }
 
-  return { emitCreateChannel };
+  async function emitJoinChannel(data: { channelId: string }): Promise<{
+    channelId: string;
+    message: string;
+  }> {
+    return new Promise((resolve, reject) => {
+      socket?.emit(
+        "joinChannel",
+        data,
+        (response: {
+          error: boolean;
+          message: string;
+          data?: { channelId: string };
+        }) => {
+          if (response.error) {
+            return reject(new Error(response.message));
+          }
+
+          if (!response.data?.channelId) {
+            return reject(new Error("Invalid response: Missing channelId"));
+          }
+
+          resolve({
+            channelId: response.data.channelId,
+            message: response.message,
+          });
+        }
+      );
+    });
+  }
+
+  return { emitCreateChannel, emitJoinChannel };
 }
