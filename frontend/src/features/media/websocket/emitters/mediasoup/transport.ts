@@ -1,7 +1,7 @@
-import { useSocket } from "../../../../hooks/useSocket";
+import { useSocket } from "../../../../../hooks/useSocket";
 import type { RtpCapabilities } from "mediasoup-client/types";
 
-export function useMediasoupEmitters() {
+export function useTransportEmitters() {
   const { socket } = useSocket();
 
   async function emitGetRtpCapabilties(data: { channelId: string }): Promise<{

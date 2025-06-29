@@ -1,9 +1,9 @@
 import { useMediasoupStore } from "../../media/store/mediasoup";
-import { useMediasoupEmitters } from "../../media/websocket/emitters/mediasoup";
+import { useTransportEmitters } from "../../media/websocket/emitters/mediasoup/transport";
 import { Device } from "mediasoup-client";
 
 export default function useParticipant() {
-  const { emitGetRtpCapabilties } = useMediasoupEmitters();
+  const { emitGetRtpCapabilties } = useTransportEmitters();
   const { setDevice } = useMediasoupStore();
 
   async function connectMediasoup(channelId: string) {
