@@ -38,6 +38,8 @@ class ChannelListeners {
       channelId,
     });
 
+    this.socket.join(channelId);
+
     callback({ error: false, message: response.message, data: { channelId } });
   }
 
@@ -70,6 +72,12 @@ class ChannelListeners {
     if (data.error) {
       return callback({ error: true, message: "Error joining channel" });
     }
+
+    this.io
+      .to(channelId)
+      .emit("participantJoined", { participant: response.user });
+
+    this.socket.join(channelId);
 
     callback({
       error: false,
