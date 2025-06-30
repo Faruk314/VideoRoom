@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import type { IParticipant } from "../types/channel";
 
-interface ChannelState {
+interface ParticipantState {
   participants: Map<string, IParticipant>;
 
   setParticipants: (participants: IParticipant[]) => void;
@@ -10,7 +10,7 @@ interface ChannelState {
   updateParticipant: (userId: string, fields: Partial<IParticipant>) => void;
 }
 
-export const useChannelStore = create<ChannelState>((set) => ({
+export const useParticipantStore = create<ParticipantState>((set) => ({
   participants: new Map(),
 
   setParticipants: (participants) =>

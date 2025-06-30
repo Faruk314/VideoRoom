@@ -1,12 +1,12 @@
 import { useQuery } from "@tanstack/react-query";
 import { getErrorMessage } from "../../../lib/error";
 import { getChannel } from "../api/channel";
-import { useChannelStore } from "../store/channel";
+import { useParticipantStore } from "../store/participant";
 import { useUserStore } from "../../user/store/user";
 import type { IParticipant } from "../types/channel";
 
 export function useChannelQuery(channelId: string) {
-  const { setParticipants } = useChannelStore();
+  const { setParticipants } = useParticipantStore();
   const { user: localUser } = useUserStore();
 
   return useQuery({
