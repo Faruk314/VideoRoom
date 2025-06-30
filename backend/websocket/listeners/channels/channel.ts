@@ -3,6 +3,7 @@ import { nanoid } from "nanoid";
 import { joinChannel } from "redis/methods/channel";
 import { createParticipant } from "redis/methods/participant";
 import { ChannelIdSchema } from "validation/channel";
+import { createPeer } from "mediasoup/methods/peer";
 
 class ChannelListeners {
   io: Server;
@@ -38,6 +39,12 @@ class ChannelListeners {
       channelId,
     });
 
+    createPeer({
+      userId: this.socket.userId,
+      socketId: this.socket.id,
+      currentChannelId: channelId,
+    });
+
     this.socket.join(channelId);
 
     callback({ error: false, message: response.message, data: { channelId } });
@@ -66,6 +73,12 @@ class ChannelListeners {
 
     if (response.error)
       return callback({ error: true, message: "Error joining channel" });
+
+    createPeer({
+      userId: this.socket.userId,
+      socketId: this.socket.id,
+      currentChannelId: channelId,
+    });
 
     const data = await joinChannel(channelId, this.socket.userId);
 

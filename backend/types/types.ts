@@ -1,4 +1,5 @@
 import { types } from "mediasoup";
+import { IceParameters, IceCandidate, DtlsParameters } from "mediasoup/types";
 
 declare global {
   namespace Express {
@@ -16,10 +17,9 @@ declare module "socket.io" {
 }
 
 interface IPeer {
-  peerId: string;
   userId: string;
-  name: string;
-  channelId: string;
+  socketId: string;
+  currentChannelId: string;
   sendTransport?: types.WebRtcTransport;
   recvTransport?: types.WebRtcTransport;
   producers?: Map<string, types.Producer>;
@@ -36,4 +36,12 @@ interface IUser {
   connected: boolean;
 }
 
-export type { IPeer, IUser };
+interface ITransport {
+  id: string;
+  iceParameters: IceParameters;
+  iceCandidates: IceCandidate[];
+  dtlsParameters: DtlsParameters;
+  iceServers: { urls: string }[];
+}
+
+export type { IPeer, IUser, ITransport };

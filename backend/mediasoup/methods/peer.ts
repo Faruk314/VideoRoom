@@ -11,7 +11,7 @@ function createPeer(peerData: IPeer) {
     consumers: new Map(),
   };
 
-  peers.set(peerData.peerId, newPeer);
+  peers.set(peerData.userId, newPeer);
 }
 
 function getPeer(peerId: string) {
