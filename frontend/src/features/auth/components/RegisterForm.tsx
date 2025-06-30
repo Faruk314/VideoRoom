@@ -1,7 +1,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { RegisterSchema } from "../schemas/auth";
-import type { RegisterInput } from "../../types/auth";
+import type { RegisterInput } from "../types/auth";
 import { PrimaryInput } from "../../../components/buttons/PrimaryInput";
 import { Mail, Lock, User } from "lucide-react";
 import { PrimaryBtn } from "../../../components/buttons/PrimaryBtn";

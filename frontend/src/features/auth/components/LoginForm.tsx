@@ -3,7 +3,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { PrimaryBtn } from "../../../components/buttons/PrimaryBtn";
 import { PrimaryInput } from "../../../components/buttons/PrimaryInput";
-import type { LoginInput } from "../../types/auth";
+import type { LoginInput } from "../types/auth";
 import { useLoginMutation } from "../queries/auth";
 import { Lock, LogIn, Mail } from "lucide-react";
 import Separator from "../../../components/Separator";

@@ -1,4 +1,4 @@
-import { LoginSchema, RegisterSchema } from "../auth/schemas/auth";
+import { LoginSchema, RegisterSchema } from "../schemas/auth";
 import { z } from "zod";
 
 type LoginInput = z.infer<typeof LoginSchema>;

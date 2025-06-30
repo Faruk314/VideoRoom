@@ -1,5 +1,5 @@
 import apiClient from "../../../lib/apiClient";
-import type { LoginInput, RegisterInput } from "../../types/auth";
+import type { LoginInput, RegisterInput } from "../types/auth";
 
 const API_URL = "/api/auth/";
 
