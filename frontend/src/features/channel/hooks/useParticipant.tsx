@@ -1,10 +1,12 @@
+import useTransport from "../../media/hooks/useTransport";
 import { useMediasoupStore } from "../../media/store/mediasoup";
 import { useTransportEmitters } from "../../media/websocket/emitters/mediasoup/transport";
 import { Device } from "mediasoup-client";
 
 export default function useParticipant() {
-  const { emitGetRtpCapabilties } = useTransportEmitters();
+  const { emitGetRtpCapabilties, emitCreateTransport } = useTransportEmitters();
   const { setDevice } = useMediasoupStore();
+  const { setupSendTransport, setupRecvTransport } = useTransport();
 
   async function connectMediasoup(channelId: string) {
     try {
@@ -18,11 +20,15 @@ export default function useParticipant() {
 
       setDevice(device);
 
-      console.log("success", device);
-    } catch (error) {
-      if (error instanceof Error) throw new Error(error.message);
+      const { sendTransport, recvTransport } = await emitCreateTransport();
 
-      throw new Error("Failed to handle RTP capabilities");
+      setupSendTransport(sendTransport, device);
+
+      setupRecvTransport(recvTransport, device);
+    } catch (error) {
+      console.error("Failed to connect with mediasoup server");
+
+      if (error instanceof Error) throw new Error(error.message);
     }
   }
 
