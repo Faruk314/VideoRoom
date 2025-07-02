@@ -1,8 +1,13 @@
 import { create } from "zustand";
-import type { IParticipant } from "../types/channel";
+import type { ILocalParticipant, IParticipant } from "../types/channel";
 
 interface ParticipantState {
+  localParticipant: ILocalParticipant | null;
   participants: Map<string, IParticipant>;
+
+  setLocalParticipant: (participant: ILocalParticipant) => void;
+  updateLocalParticipant: (fields: Partial<ILocalParticipant>) => void;
+  removeLocalParticipant: () => void;
 
   setParticipants: (participants: IParticipant[]) => void;
   addParticipant: (participant: IParticipant) => void;
@@ -11,7 +16,29 @@ interface ParticipantState {
 }
 
 export const useParticipantStore = create<ParticipantState>((set) => ({
+  localParticipant: null,
   participants: new Map(),
+
+  setLocalParticipant: (participant) =>
+    set(() => ({
+      localParticipant: participant,
+    })),
+
+  updateLocalParticipant: (fields) =>
+    set((state) => {
+      if (!state.localParticipant) return {};
+      return {
+        localParticipant: {
+          ...state.localParticipant,
+          ...fields,
+        },
+      };
+    }),
+
+  removeLocalParticipant: () =>
+    set(() => ({
+      localParticipant: null,
+    })),
 
   setParticipants: (participants) =>
     set(() => {

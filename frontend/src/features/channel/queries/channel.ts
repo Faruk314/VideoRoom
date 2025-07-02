@@ -6,7 +6,7 @@ import { useUserStore } from "../../user/store/user";
 import type { IParticipant } from "../types/channel";
 
 export function useChannelQuery(channelId: string) {
-  const { setParticipants } = useParticipantStore();
+  const { setParticipants, setLocalParticipant } = useParticipantStore();
   const { user: localUser } = useUserStore();
 
   return useQuery({
@@ -14,21 +14,23 @@ export function useChannelQuery(channelId: string) {
     enabled: !!channelId,
     queryFn: async () => {
       try {
-        const data: { participants: IParticipant[] } = await getChannel(
-          channelId
+        const { participants }: { participants: IParticipant[] } =
+          await getChannel(channelId);
+
+        const others = participants.filter(
+          (p) => p.user.userId !== localUser?.userId
+        );
+        setParticipants(others);
+
+        const self = participants.find(
+          (p) => p.user.userId === localUser?.userId
         );
 
-        const sortedParticipants: IParticipant[] = Array.from(
-          data.participants.values()
-        ).sort((a, b) => {
-          if (a.user.userId === localUser?.userId) return -1;
-          if (b.user.userId === localUser?.userId) return 1;
-          return 0;
-        });
+        if (self) {
+          setLocalParticipant({ ...self, producers: [], streams: [] });
+        }
 
-        setParticipants(sortedParticipants);
-
-        return data;
+        return participants;
       } catch (error) {
         console.error(getErrorMessage(error));
         return [];

@@ -1,5 +1,16 @@
 import type { IUser } from "../../user/types/user";
-import { Consumer } from "mediasoup-client/types";
+import { Consumer, Producer } from "mediasoup-client/types";
+
+interface ILocalParticipant {
+  user: IUser;
+  micMuted: false;
+  camMuted: false;
+  isStreaming: false;
+  deafened: false;
+  connected: false;
+  producers: Producer[];
+  streams: MediaStream[];
+}
 
 interface IParticipant {
   user: IUser;
@@ -11,4 +22,4 @@ interface IParticipant {
   consumers: Consumer[];
 }
 
-export type { IParticipant };
+export type { ILocalParticipant, IParticipant };
