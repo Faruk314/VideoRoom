@@ -17,7 +17,7 @@ export function Settings() {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <IconBtn icon={<SettingsIcon />} />
+        <IconBtn description="Settings" icon={<SettingsIcon />} />
       </DialogTrigger>
 
       <DialogContent className="max-w-2xl">
