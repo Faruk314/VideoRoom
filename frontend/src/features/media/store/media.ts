@@ -1,6 +1,9 @@
 import { create } from "zustand";
 
 interface MediaDeviceState {
+  hasAudioPermission: boolean;
+  hasVideoPermission: boolean;
+
   microphones: MediaDeviceInfo[];
   cameras: MediaDeviceInfo[];
   speakers: MediaDeviceInfo[];
@@ -8,6 +11,9 @@ interface MediaDeviceState {
   selectedMic: MediaDeviceInfo | null;
   selectedCamera: MediaDeviceInfo | null;
   selectedSpeaker: MediaDeviceInfo | null;
+
+  setAudioPermission: (granted: boolean) => void;
+  setVideoPermission: (granted: boolean) => void;
 
   setMicrophones: (devices: MediaDeviceInfo[]) => void;
   setCameras: (devices: MediaDeviceInfo[]) => void;
@@ -19,6 +25,9 @@ interface MediaDeviceState {
 }
 
 export const useMediaStore = create<MediaDeviceState>((set) => ({
+  hasAudioPermission: false,
+  hasVideoPermission: false,
+
   microphones: [],
   cameras: [],
   speakers: [],
@@ -26,6 +35,9 @@ export const useMediaStore = create<MediaDeviceState>((set) => ({
   selectedMic: null,
   selectedCamera: null,
   selectedSpeaker: null,
+
+  setAudioPermission: (granted) => set({ hasAudioPermission: granted }),
+  setVideoPermission: (granted) => set({ hasVideoPermission: granted }),
 
   setMicrophones: (devices) => set({ microphones: devices }),
   setCameras: (devices) => set({ cameras: devices }),
