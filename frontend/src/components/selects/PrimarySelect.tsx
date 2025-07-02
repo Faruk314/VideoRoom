@@ -21,6 +21,7 @@ interface PrimarySelectProps {
   placeholder?: string;
   label?: string;
   icon?: ReactNode;
+  disabled?: boolean;
 }
 
 export function PrimarySelect({
@@ -30,9 +31,10 @@ export function PrimarySelect({
   placeholder = "Select an option",
   label,
   icon,
+  disabled = false,
 }: PrimarySelectProps) {
   return (
-    <Select value={value} onValueChange={onChange}>
+    <Select value={value} onValueChange={onChange} disabled={disabled}>
       <SelectTrigger className="bg-transparent ring-0 outline-none border border-black w-[14rem]">
         <div className="flex items-center space-x-2 truncate">
           {icon}
