@@ -96,7 +96,47 @@ class TransportListeners {
     });
   }
 
-  onConnectTransport() {}
+  async onConnectTransport(
+    {
+      transportId,
+      dtlsParameters,
+      type,
+    }: {
+      transportId: string;
+      dtlsParameters: types.DtlsParameters;
+      type: "send" | "recv";
+    },
+    callback: (response: { error: boolean; message: string }) => void
+  ) {
+    const peer = getPeer(this.socket.userId);
+
+    if (!peer) {
+      return callback({ error: true, message: "Peer state not found" });
+    }
+
+    const transport = type === "send" ? peer.sendTransport : peer.recvTransport;
+
+    if (!transport || transport.id !== transportId) {
+      return callback({
+        error: true,
+        message: `${
+          type === "send" ? "Send" : "Recv"
+        } Transport not found or ID mismatch`,
+      });
+    }
+
+    try {
+      await transport.connect({ dtlsParameters });
+      return callback({ error: false, message: `${type} transport connected` });
+    } catch (error) {
+      return callback({
+        error: true,
+        message:
+          (error as Error).message ||
+          `Unknown error connecting ${type} transport`,
+      });
+    }
+  }
 }
 
 export default TransportListeners;

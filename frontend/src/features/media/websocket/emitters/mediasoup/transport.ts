@@ -1,5 +1,5 @@
 import { useSocket } from "../../../../../hooks/useSocket";
-import type { RtpCapabilities } from "mediasoup-client/types";
+import type { RtpCapabilities, DtlsParameters } from "mediasoup-client/types";
 import type { ITransport } from "../../../types/mediasoup";
 
 export function useTransportEmitters() {
@@ -68,5 +68,28 @@ export function useTransportEmitters() {
     });
   }
 
-  return { emitGetRtpCapabilties, emitCreateTransport };
+  async function emitConnectTransport(data: {
+    transportId: string;
+    dtlsParameters: DtlsParameters;
+    type: "send" | "recv";
+  }): Promise<{
+    error: boolean;
+    message: string;
+  }> {
+    return new Promise((resolve, reject) => {
+      socket?.emit(
+        "connectTransport",
+        data,
+        (response: { error: boolean; message: string }) => {
+          if (response.error) {
+            return reject(new Error(response.message));
+          }
+
+          resolve(response);
+        }
+      );
+    });
+  }
+
+  return { emitGetRtpCapabilties, emitCreateTransport, emitConnectTransport };
 }

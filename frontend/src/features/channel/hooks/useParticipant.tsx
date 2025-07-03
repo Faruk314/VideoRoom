@@ -1,3 +1,4 @@
+import { useCallback } from "react";
 import useTransport from "../../media/hooks/useTransport";
 import { useMediasoupStore } from "../../media/store/mediasoup";
 import { useTransportEmitters } from "../../media/websocket/emitters/mediasoup/transport";
@@ -8,7 +9,7 @@ export default function useParticipant() {
   const { setDevice } = useMediasoupStore();
   const { setupSendTransport, setupRecvTransport } = useTransport();
 
-  async function connectMediasoup(channelId: string) {
+  const connectMediasoup = useCallback(async (channelId: string) => {
     try {
       const { routerRtpCapabilities } = await emitGetRtpCapabilties({
         channelId,
@@ -22,15 +23,16 @@ export default function useParticipant() {
 
       const { sendTransport, recvTransport } = await emitCreateTransport();
 
-      setupSendTransport(sendTransport, device);
-
-      setupRecvTransport(recvTransport, device);
+      await Promise.all([
+        setupSendTransport(sendTransport, device),
+        setupRecvTransport(recvTransport, device),
+      ]);
     } catch (error) {
       console.error("Failed to connect with mediasoup server");
 
       if (error instanceof Error) throw new Error(error.message);
     }
-  }
+  }, []);
 
   return { connectMediasoup };
 }
