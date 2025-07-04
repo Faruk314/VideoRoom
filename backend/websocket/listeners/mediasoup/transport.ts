@@ -2,7 +2,7 @@ import { getOrCreateRouter } from "mediasoup/methods/router";
 import { Server, Socket } from "socket.io";
 import { types } from "mediasoup";
 import { createWebRtcTransport } from "mediasoup/methods/transport";
-import { getPeer } from "mediasoup/methods/peer";
+import { createPeer, getPeer } from "mediasoup/methods/peer";
 import { ITransport } from "types/types";
 
 class TransportListeners {
@@ -36,6 +36,12 @@ class TransportListeners {
   ) {
     try {
       const router = await getOrCreateRouter(channelId);
+
+      createPeer({
+        userId: this.socket.userId,
+        socketId: this.socket.id,
+        currentChannelId: channelId,
+      });
 
       callback({
         error: false,
@@ -127,6 +133,7 @@ class TransportListeners {
 
     try {
       await transport.connect({ dtlsParameters });
+
       return callback({ error: false, message: `${type} transport connected` });
     } catch (error) {
       return callback({
