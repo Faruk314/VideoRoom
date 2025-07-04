@@ -1,6 +1,6 @@
 import { types } from "mediasoup";
 import { getPeer } from "mediasoup/methods/peer";
-import { setupProducerListeners } from "mediasoup/methods/producer";
+import { producers, setupProducerListeners } from "mediasoup/methods/producer";
 import { Server, Socket } from "socket.io";
 
 class ProducerListeners {
@@ -54,6 +54,8 @@ class ProducerListeners {
       });
 
       peer.producers?.set(producer.id, producer);
+
+      producers.set(producer.id, producer);
 
       setupProducerListeners(this.socket, peer, producer);
 

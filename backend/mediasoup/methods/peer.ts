@@ -1,4 +1,5 @@
 import { IPeer } from "types/types";
+import { producers } from "./producer";
 
 const peers: Map<string, IPeer> = new Map();
 
@@ -29,7 +30,11 @@ function cleanupPeerResources(peerId: string) {
     throw new Error("Cleanup skipped peer does not exist");
   }
 
-  peer.producers?.forEach((producer) => producer.close());
+  peer.producers?.forEach((producer) => {
+    producer.close();
+
+    producers.delete(producer.id);
+  });
 
   peer.producers?.clear();
 
