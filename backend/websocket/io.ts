@@ -3,6 +3,7 @@ import { env } from "../env";
 import ChannelListeners from "./listeners/channels/channel";
 import { getUserSessionById } from "redis/methods/session";
 import TransportListeners from "./listeners/mediasoup/transport";
+import ProducerListeners from "./listeners/mediasoup/producer";
 
 function createSocketServer(httpServer: import("http").Server) {
   const io = new ServerIO(httpServer, {
@@ -43,6 +44,7 @@ function createSocketServer(httpServer: import("http").Server) {
 
     new ChannelListeners(io, socket).registerListeners();
     new TransportListeners(io, socket).registerListeners();
+    new ProducerListeners(io, socket).registerListeners();
   });
 }
 
