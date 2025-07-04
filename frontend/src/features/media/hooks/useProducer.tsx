@@ -4,10 +4,15 @@ import { useParticipantStore } from "../../channel/store/participant";
 
 export default function useProducer() {
   const { getMediaStream } = useMedia();
-  const { updateLocalParticipant, localParticipant } = useParticipantStore();
+  const { updateLocalParticipant } = useParticipantStore();
 
   async function createVideoProducer(clientSendTransport: Transport) {
     try {
+      const localParticipant = useParticipantStore.getState().localParticipant;
+
+      if (!localParticipant)
+        throw new Error("Local participant does not exist");
+
       const { stream, videoTrack } = await getMediaStream();
 
       const newProducer = await clientSendTransport.produce({
@@ -21,10 +26,11 @@ export default function useProducer() {
       });
 
       updateLocalParticipant({
-        producers: [...localParticipant!.producers, newProducer],
-        streams: [...localParticipant!.streams, stream],
+        producers: [...localParticipant.producers, newProducer],
+        streams: [...localParticipant.streams, stream],
       });
-    } catch {
+    } catch (error) {
+      console.error(error);
       throw new Error("Error creating video producer");
     }
   }
