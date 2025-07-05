@@ -66,13 +66,15 @@ export default function useTransport() {
 
     setRecvTransport(clientRecvTransport);
 
-    clientRecvTransport.on("connect", async ({ dtlsParameters }) => {
+    clientRecvTransport.on("connect", async ({ dtlsParameters }, callback) => {
       try {
         await emitConnectTransport({
           transportId: clientRecvTransport.id,
           dtlsParameters,
           type: "recv",
         });
+
+        callback();
       } catch (error) {
         console.error("Failed to connect recv transport");
 
