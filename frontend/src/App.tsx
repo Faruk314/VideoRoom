@@ -11,9 +11,9 @@ import Loader from "./components/loaders/Loader";
 function App() {
   const { isPending } = useLoginStatusQuery();
 
-  if (isPending) {
-    return <Loader />;
-  }
+  // if (isPending) {
+  //   return <Loader />;
+  // }
 
   return (
     <>

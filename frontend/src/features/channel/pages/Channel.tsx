@@ -1,25 +1,47 @@
-import { useEffect } from "react";
-import { MediaDevices as MediaDevicesModal } from "../../../components/modals/MediaDevices";
-import { useMedia } from "../../media/hooks/useMedia";
-import { Mic, Phone, ScreenShare, Video } from "lucide-react";
-import { IconBtn } from "../../../components/buttons/IconBtn";
+import { useEffect, useRef } from "react";
 import CallAvatar from "../../../components/CallAvatar";
 import { useChannelQuery } from "../queries/channel";
 import { useParams } from "react-router-dom";
 import Loader from "../../../components/loaders/Loader";
-import { useChannelStore } from "../store/channel";
+import { useParticipantStore } from "../store/remoteParticipant";
+import useParticipant from "../hooks/useChannelManager";
+import { useChannelEvents } from "../websocket/listeners/channel";
+import ChannelFooter from "../components/ChannelFooter";
+import usePermissionWatcher from "../../../hooks/usePermissionWatcher";
+import useMediasoupEvents from "../../media/websocket/listeners/mediasoup";
+import { useLocalParticipantStore } from "../store/localParticipant";
 
 export function Channel() {
+  const connectingRef = useRef(false);
   const { id } = useParams<{ id: string }>();
-  const { setDevices } = useMedia();
   const { isLoading } = useChannelQuery(id || "");
-  const { participants } = useChannelStore();
+  const { participants } = useParticipantStore.getState();
+  const { localParticipant } = useLocalParticipantStore();
+  const { connectMediasoup } = useParticipant();
 
   console.log(participants, "part");
 
+  useChannelEvents();
+
+  useMediasoupEvents();
+
+  usePermissionWatcher();
+
   useEffect(() => {
-    setDevices();
-  }, []);
+    if (localParticipant == null) return;
+
+    if (!id || connectingRef.current) return;
+
+    connectingRef.current = true;
+
+    (async () => {
+      try {
+        await connectMediasoup(id);
+      } finally {
+        connectingRef.current = false;
+      }
+    })();
+  }, [id, localParticipant]);
 
   if (isLoading) {
     return <Loader />;
@@ -30,25 +52,48 @@ export function Channel() {
       <div className="flex-1 w-full"></div>
 
       <div className="flex space-x-2">
-        {[...participants.values()].map((participant) => (
-          <CallAvatar key={participant.user.userId} />
-        ))}
+        {localParticipant && (
+          <div
+            key={localParticipant.user.userId}
+            className="flex space-x-2 participant-group"
+          >
+            <CallAvatar
+              participant={localParticipant}
+              stream={localParticipant.streams.video}
+            />
+
+            {localParticipant.streams.screen && (
+              <CallAvatar
+                participant={localParticipant}
+                stream={localParticipant.streams.screen}
+              />
+            )}
+          </div>
+        )}
+
+        {[...participants.values()].map((participant) => {
+          const videoConsumer = participant.consumers?.video;
+          const screenConsumer = participant.consumers?.screen;
+
+          return (
+            <div
+              key={participant.user.userId}
+              className="flex space-x-2 participant-group"
+            >
+              <CallAvatar participant={participant} consumer={videoConsumer} />
+
+              {screenConsumer && (
+                <CallAvatar
+                  participant={participant}
+                  consumer={screenConsumer}
+                />
+              )}
+            </div>
+          );
+        })}
       </div>
 
-      <div className="flex space-x-4 border border-gray-300 px-5 md:px-14 py-3 rounded-full shadow-md mb-4">
-        <IconBtn icon={<Video />} />
-
-        <IconBtn icon={<Mic />} />
-
-        <IconBtn icon={<ScreenShare />} />
-
-        <MediaDevicesModal />
-
-        <IconBtn
-          icon={<Phone size={20} />}
-          className="text-white bg-red-500 hover:bg-red-400"
-        />
-      </div>
+      <ChannelFooter />
     </section>
   );
 }
