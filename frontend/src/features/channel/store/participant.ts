@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import type { ILocalParticipant, IParticipant } from "../types/channel";
+import type { Consumer } from "mediasoup-client/types";
 
 interface ParticipantState {
   localParticipant: ILocalParticipant | null;
@@ -13,6 +14,9 @@ interface ParticipantState {
   addParticipant: (participant: IParticipant) => void;
   removeParticipant: (userId: string) => void;
   updateParticipant: (userId: string, fields: Partial<IParticipant>) => void;
+
+  updateParticipantConsumers: (userId: string, consumer: Consumer) => void;
+  removeParticipantConsumer: (userId: string, consumerId: string) => void;
 }
 
 export const useParticipantStore = create<ParticipantState>((set) => ({
@@ -70,6 +74,39 @@ export const useParticipantStore = create<ParticipantState>((set) => ({
       if (participant) {
         updated.set(userId, { ...participant, ...fields });
       }
+      return { participants: updated };
+    }),
+
+  updateParticipantConsumers: (userId, consumer) =>
+    set((state) => {
+      const updated = new Map(state.participants);
+      const participant = updated.get(userId);
+
+      if (!participant) return { participants: updated };
+
+      const consumers = participant.consumers || [];
+      const filtered = consumers.filter((c) => c.id !== consumer.id);
+
+      updated.set(userId, {
+        ...participant,
+        consumers: [...filtered, consumer],
+      });
+
+      return { participants: updated };
+    }),
+
+  removeParticipantConsumer: (userId, consumerId) =>
+    set((state) => {
+      const updated = new Map(state.participants);
+      const participant = updated.get(userId);
+
+      if (!participant) return { participants: updated };
+
+      updated.set(userId, {
+        ...participant,
+        consumers: participant.consumers.filter((c) => c.id !== consumerId),
+      });
+
       return { participants: updated };
     }),
 }));
