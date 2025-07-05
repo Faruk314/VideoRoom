@@ -3,23 +3,35 @@ import { Consumer, Producer } from "mediasoup-client/types";
 
 interface ILocalParticipant {
   user: IUser;
-  micMuted: false;
-  camMuted: false;
-  isStreaming: false;
-  deafened: false;
-  connected: false;
-  producers: Producer[];
-  streams: MediaStream[];
+  micMuted: boolean;
+  camMuted: boolean;
+  isStreaming: boolean;
+  deafened: boolean;
+  connected: boolean;
+  producers: {
+    audio?: Producer;
+    video?: Producer;
+    screen?: Producer;
+  };
+  streams: {
+    audio?: MediaStream;
+    video?: MediaStream;
+    screen?: MediaStream;
+  };
 }
 
 interface IParticipant {
   user: IUser;
-  micMuted: false;
-  camMuted: false;
-  isStreaming: false;
-  deafened: false;
-  connected: false;
-  consumers: Consumer[];
+  micMuted: boolean;
+  camMuted: boolean;
+  isStreaming: boolean;
+  deafened: boolean;
+  connected: boolean;
+  consumers: {
+    audio?: Consumer;
+    video?: Consumer;
+    screen?: Consumer;
+  };
 }
 
 export type { ILocalParticipant, IParticipant };

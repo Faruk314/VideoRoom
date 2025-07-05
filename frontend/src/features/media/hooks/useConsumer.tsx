@@ -1,6 +1,7 @@
 import type { types } from "mediasoup-client";
-import { useParticipantStore } from "../../channel/store/participant";
+import { useParticipantStore } from "../../channel/store/remoteParticipant";
 import { useMediasoupStore } from "../store/mediasoup";
+import type { MediaKind } from "../types/media";
 
 export default function useConsumer() {
   const { updateParticipantConsumers, removeParticipantConsumer } =
@@ -28,18 +29,20 @@ export default function useConsumer() {
         appData: consumerData.appData,
       });
 
-      updateParticipantConsumers(consumerData.userId, consumer);
+      const consumerType = consumerData.appData.streamType as MediaKind;
+
+      updateParticipantConsumers(consumerData.userId, consumerType, consumer);
 
       consumer.on("transportclose", () => {
-        removeParticipantConsumer(consumerData.userId, consumer.id);
+        removeParticipantConsumer(consumerData.userId, consumerType);
       });
 
       consumer.on("@close", () => {
-        removeParticipantConsumer(consumerData.userId, consumer.id);
+        removeParticipantConsumer(consumerData.userId, consumerType);
       });
 
       consumer.on("trackended", () => {
-        removeParticipantConsumer(consumerData.userId, consumer.id);
+        removeParticipantConsumer(consumerData.userId, consumerType);
       });
 
       consumer.on("@resume", () => consumer.resume());

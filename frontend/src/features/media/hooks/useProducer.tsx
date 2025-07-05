@@ -1,18 +1,13 @@
 import type { Transport } from "mediasoup-client/types";
 import { useMedia } from "./useMedia";
-import { useParticipantStore } from "../../channel/store/participant";
+import { useLocalParticipantStore } from "../../channel/store/localParticipant";
 
 export default function useProducer() {
   const { getMediaStream } = useMedia();
-  const { updateLocalParticipant } = useParticipantStore();
+  const { addProducer, addStream } = useLocalParticipantStore();
 
   async function createVideoProducer(clientSendTransport: Transport) {
     try {
-      const localParticipant = useParticipantStore.getState().localParticipant;
-
-      if (!localParticipant)
-        throw new Error("Local participant does not exist");
-
       const { stream, videoTrack } = await getMediaStream();
 
       const newProducer = await clientSendTransport.produce({
@@ -25,10 +20,8 @@ export default function useProducer() {
         ],
       });
 
-      updateLocalParticipant({
-        producers: [...localParticipant.producers, newProducer],
-        streams: [...localParticipant.streams, stream],
-      });
+      addStream("video", stream);
+      addProducer("video", newProducer);
     } catch (error) {
       console.error(error);
       throw new Error("Error creating video producer");

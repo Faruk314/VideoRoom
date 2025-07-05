@@ -1,6 +1,6 @@
 import { useCallback } from "react";
 import type { IParticipant } from "../../types/channel";
-import { useParticipantStore } from "../../store/participant";
+import { useParticipantStore } from "../../store/remoteParticipant";
 
 export function useChannelHandlers() {
   const { addParticipant } = useParticipantStore();
@@ -9,7 +9,7 @@ export function useChannelHandlers() {
     async (data: { participant: IParticipant }) => {
       const { participant } = data;
 
-      addParticipant({ ...participant, consumers: [] });
+      addParticipant({ ...participant });
     },
     []
   );

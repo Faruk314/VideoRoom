@@ -1,48 +1,27 @@
 import { create } from "zustand";
-import type { ILocalParticipant, IParticipant } from "../types/channel";
+import type { IParticipant } from "../types/channel";
+import type { MediaKind } from "../../media/types/media";
 import type { Consumer } from "mediasoup-client/types";
 
 interface ParticipantState {
-  localParticipant: ILocalParticipant | null;
   participants: Map<string, IParticipant>;
-
-  setLocalParticipant: (participant: ILocalParticipant) => void;
-  updateLocalParticipant: (fields: Partial<ILocalParticipant>) => void;
-  removeLocalParticipant: () => void;
 
   setParticipants: (participants: IParticipant[]) => void;
   addParticipant: (participant: IParticipant) => void;
   removeParticipant: (userId: string) => void;
   updateParticipant: (userId: string, fields: Partial<IParticipant>) => void;
 
-  updateParticipantConsumers: (userId: string, consumer: Consumer) => void;
-  removeParticipantConsumer: (userId: string, consumerId: string) => void;
+  updateParticipantConsumers: (
+    userId: string,
+    consumerType: MediaKind,
+    consumer: Consumer
+  ) => void;
+
+  removeParticipantConsumer: (userId: string, consumerType: MediaKind) => void;
 }
 
 export const useParticipantStore = create<ParticipantState>((set) => ({
-  localParticipant: null,
   participants: new Map(),
-
-  setLocalParticipant: (participant) =>
-    set(() => ({
-      localParticipant: participant,
-    })),
-
-  updateLocalParticipant: (fields) =>
-    set((state) => {
-      if (!state.localParticipant) return {};
-      return {
-        localParticipant: {
-          ...state.localParticipant,
-          ...fields,
-        },
-      };
-    }),
-
-  removeLocalParticipant: () =>
-    set(() => ({
-      localParticipant: null,
-    })),
 
   setParticipants: (participants) =>
     set(() => {
@@ -52,7 +31,6 @@ export const useParticipantStore = create<ParticipantState>((set) => ({
       });
       return { participants: participantMap };
     }),
-
   addParticipant: (participant) =>
     set((state) => {
       const updated = new Map(state.participants);
@@ -77,34 +55,43 @@ export const useParticipantStore = create<ParticipantState>((set) => ({
       return { participants: updated };
     }),
 
-  updateParticipantConsumers: (userId, consumer) =>
+  updateParticipantConsumers: (userId, consumerType, consumer) =>
     set((state) => {
       const updated = new Map(state.participants);
       const participant = updated.get(userId);
 
-      if (!participant) return { participants: updated };
+      if (!participant) {
+        return { participants: updated };
+      }
 
-      const consumers = participant.consumers || [];
-      const filtered = consumers.filter((c) => c.id !== consumer.id);
+      const newConsumers = {
+        ...participant.consumers,
+        [consumerType]: consumer,
+      };
 
       updated.set(userId, {
         ...participant,
-        consumers: [...filtered, consumer],
+        consumers: newConsumers,
       });
 
       return { participants: updated };
     }),
 
-  removeParticipantConsumer: (userId, consumerId) =>
+  removeParticipantConsumer: (userId, consumerType) =>
     set((state) => {
       const updated = new Map(state.participants);
       const participant = updated.get(userId);
 
-      if (!participant) return { participants: updated };
+      if (!participant) {
+        return { participants: updated };
+      }
+
+      const newConsumers = { ...participant.consumers };
+      delete newConsumers[consumerType];
 
       updated.set(userId, {
         ...participant,
-        consumers: participant.consumers.filter((c) => c.id !== consumerId),
+        consumers: newConsumers,
       });
 
       return { participants: updated };
