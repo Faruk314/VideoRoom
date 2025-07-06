@@ -7,13 +7,22 @@ import Login from "./features/auth/pages/Login";
 import Register from "./features/auth/pages/Register";
 import { useLoginStatusQuery } from "./features/auth/queries/auth";
 import Loader from "./components/loaders/Loader";
+import { useChannelEvents } from "./features/channel/websocket/listeners/channel";
+import useMediasoupEvents from "./features/media/websocket/listeners/mediasoup";
+import usePermissionWatcher from "./hooks/usePermissionWatcher";
 
 function App() {
-  const { isPending } = useLoginStatusQuery();
+  const { isLoading } = useLoginStatusQuery();
 
-  // if (isPending) {
-  //   return <Loader />;
-  // }
+  useChannelEvents();
+
+  useMediasoupEvents();
+
+  usePermissionWatcher();
+
+  if (isLoading) {
+    return <Loader />;
+  }
 
   return (
     <>
