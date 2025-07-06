@@ -26,9 +26,7 @@ function deletePeer(peerId: string) {
 function cleanupPeerResources(peerId: string) {
   const peer = getPeer(peerId);
 
-  if (!peer) {
-    throw new Error("Cleanup skipped peer does not exist");
-  }
+  if (!peer) return;
 
   peer.producers?.forEach((producer) => {
     producer.close();

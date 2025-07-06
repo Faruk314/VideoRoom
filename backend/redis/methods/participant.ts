@@ -50,6 +50,22 @@ async function updateParticipant(userId: string, updates: Partial<IUser>) {
   }
 }
 
+async function deleteParticipant(userId: string) {
+  try {
+    const exists = await redis.hexists(CHANNEL_PARTICIPANT_KEY, userId);
+
+    if (!exists) {
+      return { error: true, message: "User not found" };
+    }
+
+    await redis.hdel(CHANNEL_PARTICIPANT_KEY, userId);
+
+    return { error: false, message: "User deleted successfully" };
+  } catch {
+    return { error: true, message: "Failed to delete user" };
+  }
+}
+
 async function getParticipant(userId: string) {
   try {
     const userJSON = await redis.hget(CHANNEL_PARTICIPANT_KEY, userId);
@@ -89,6 +105,7 @@ async function getParticipants(channelId: string) {
 export {
   createParticipant,
   updateParticipant,
+  deleteParticipant,
   getParticipant,
   getParticipants,
 };
