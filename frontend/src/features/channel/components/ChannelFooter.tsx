@@ -5,9 +5,11 @@ import CameraBtn from "../../../components/buttons/CameraBtn";
 import MicrophoneBtn from "../../../components/buttons/MicrophoneBtn";
 import ScreenShareBtn from "../../../components/buttons/ScreenShareBtn";
 import { useLocalParticipantStore } from "../store/localParticipant";
+import { useChannel } from "../hooks/useChannel";
 
 export default function ChannelFooter() {
   const { localParticipant } = useLocalParticipantStore();
+  const { leaveChannel } = useChannel();
 
   return (
     <div className="flex items-center justify-center py-4 space-x-4 border border-gray-300 w-full">
@@ -21,6 +23,7 @@ export default function ChannelFooter() {
         <SettingsModal />
 
         <IconBtn
+          onClick={leaveChannel}
           description="Leave Call"
           icon={<Phone size={20} />}
           className="text-white bg-red-500 hover:bg-red-400"

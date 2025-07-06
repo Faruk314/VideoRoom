@@ -62,5 +62,25 @@ export function useChannelEmitters() {
     });
   }
 
-  return { emitCreateChannel, emitJoinChannel };
+  async function emitLeaveChannel(data: { channelId: string }): Promise<{
+    message: string;
+  }> {
+    return new Promise((resolve, reject) => {
+      socket?.emit(
+        "leaveChannel",
+        data,
+        (response: { error: boolean; message: string }) => {
+          if (response.error) {
+            return reject(new Error(response.message));
+          }
+
+          resolve({
+            message: response.message,
+          });
+        }
+      );
+    });
+  }
+
+  return { emitCreateChannel, emitJoinChannel, emitLeaveChannel };
 }
