@@ -8,6 +8,7 @@ interface ParticipantState {
 
   setParticipants: (participants: IParticipant[]) => void;
   addParticipant: (participant: IParticipant) => void;
+  getParticipant: (userId: string) => IParticipant | undefined;
   removeParticipant: (userId: string) => void;
   updateParticipant: (userId: string, fields: Partial<IParticipant>) => void;
 
@@ -20,7 +21,7 @@ interface ParticipantState {
   removeParticipantConsumer: (userId: string, consumerType: MediaKind) => void;
 }
 
-export const useParticipantStore = create<ParticipantState>((set) => ({
+export const useParticipantStore = create<ParticipantState>((set, get) => ({
   participants: new Map(),
 
   setParticipants: (participants) =>
@@ -37,6 +38,10 @@ export const useParticipantStore = create<ParticipantState>((set) => ({
       updated.set(participant.user.userId, participant);
       return { participants: updated };
     }),
+
+  getParticipant: (userId) => {
+    return get().participants.get(userId);
+  },
 
   removeParticipant: (userId) =>
     set((state) => {

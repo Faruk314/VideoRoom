@@ -4,7 +4,9 @@ import { useChannelHandlers } from "../handlers/channel";
 
 export function useChannelEvents() {
   const { socket } = useSocket();
-  const { onParticipantJoin } = useChannelHandlers();
+  const { onParticipantJoin, onParticipantLeave } = useChannelHandlers();
 
   useSocketEvent(socket, "participantJoined", onParticipantJoin);
+
+  useSocketEvent(socket, "participantLeft", onParticipantLeave);
 }
