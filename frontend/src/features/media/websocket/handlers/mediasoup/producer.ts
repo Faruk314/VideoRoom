@@ -3,10 +3,12 @@ import { useCallback } from "react";
 import useConsumer from "../../../hooks/useConsumer";
 import useConsumerEmitters from "../../emitters/mediasoup/consumer";
 import { useMediasoupStore } from "../../../store/mediasoup";
+import { useParticipantStore } from "../../../../channel/store/remoteParticipant";
 
 export default function useProducerHandlers() {
   const { emitCreateConsumer } = useConsumerEmitters();
   const { setupConsumer } = useConsumer();
+  const { getParticipant, removeParticipantConsumer } = useParticipantStore();
 
   const onNewProducer = useCallback(
     async (producerData: {
@@ -38,5 +40,29 @@ export default function useProducerHandlers() {
     []
   );
 
-  return { onNewProducer };
+  const onProducerClosed = useCallback(
+    (producerData: { producerId: string; userId: string }) => {
+      const { producerId, userId } = producerData;
+
+      const participant = getParticipant(userId);
+
+      if (!participant) return console.error("Participant not found");
+
+      const consumers = participant.consumers;
+
+      (["audio", "video", "screen"] as const).forEach((type) => {
+        const consumer = consumers[type];
+
+        if (consumer?.producerId === producerId) {
+          consumer.close?.();
+          consumer.track?.stop?.();
+
+          removeParticipantConsumer(userId, type);
+        }
+      });
+    },
+    []
+  );
+
+  return { onNewProducer, onProducerClosed };
 }
