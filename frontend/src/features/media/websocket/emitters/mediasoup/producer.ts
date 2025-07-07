@@ -41,5 +41,37 @@ export default function useProducerEmitters() {
     });
   }
 
-  return { emitCreateProducer };
+  async function emitCloseProducer(data: { producerId: string }): Promise<{
+    producerId: string;
+    message: string;
+  }> {
+    return new Promise((resolve, reject) => {
+      socket?.emit(
+        "closeProducer",
+        data,
+        (response: {
+          error: boolean;
+          message: string;
+          data?: { producerId: string };
+        }) => {
+          if (response.error) {
+            return reject(new Error(response.message));
+          }
+
+          if (!response.data?.producerId) {
+            return reject(
+              new Error("Invalid response. Missing producer id from backend")
+            );
+          }
+
+          resolve({
+            producerId: response.data.producerId,
+            message: response.message,
+          });
+        }
+      );
+    });
+  }
+
+  return { emitCreateProducer, emitCloseProducer };
 }

@@ -3,11 +3,18 @@ import useTransport from "../../media/hooks/useTransport";
 import { useMediasoupStore } from "../../media/store/mediasoup";
 import { useTransportEmitters } from "../../media/websocket/emitters/mediasoup/transport";
 import { Device } from "mediasoup-client";
+import { useLocalParticipantStore } from "../store/localParticipant";
+import useProducer from "../../media/hooks/useProducer";
+import useProducerEmitters from "../../media/websocket/emitters/mediasoup/producer";
 
 export default function useChannelManager() {
   const { emitGetRtpCapabilties, emitCreateTransport } = useTransportEmitters();
-  const { setDevice } = useMediasoupStore();
+  const { emitCloseProducer } = useProducerEmitters();
+  const { setDevice, sendTransport } = useMediasoupStore();
   const { setupSendTransport, setupRecvTransport } = useTransport();
+  const { createVideoProducer } = useProducer();
+  const { removeProducer, removeStream, updateLocalParticipant } =
+    useLocalParticipantStore();
 
   const connectMediasoup = useCallback(async (channelId: string) => {
     try {
@@ -34,5 +41,35 @@ export default function useChannelManager() {
     }
   }, []);
 
-  return { connectMediasoup };
+  async function toogleCamera() {
+    const { localParticipant } = useLocalParticipantStore.getState();
+
+    const videoProducer = localParticipant?.producers.video;
+
+    if (!videoProducer) {
+      if (!sendTransport)
+        throw new Error("create video producer failed. Send transport missing");
+
+      return await createVideoProducer(sendTransport);
+    }
+
+    try {
+      await emitCloseProducer({
+        producerId: videoProducer.id,
+      });
+
+      videoProducer.close();
+      localParticipant.streams.video
+        ?.getTracks()
+        .forEach((track) => track.stop());
+      removeProducer("video");
+      removeStream("video");
+      updateLocalParticipant({ camMuted: true });
+    } catch (error) {
+      console.error("Failed to close video producer");
+      if (error instanceof Error) throw new Error(error.message);
+    }
+  }
+
+  return { connectMediasoup, toogleCamera };
 }

@@ -5,10 +5,7 @@ import { useParams } from "react-router-dom";
 import Loader from "../../../components/loaders/Loader";
 import { useParticipantStore } from "../store/remoteParticipant";
 import useParticipant from "../hooks/useChannelManager";
-import { useChannelEvents } from "../websocket/listeners/channel";
 import ChannelFooter from "../components/ChannelFooter";
-import usePermissionWatcher from "../../../hooks/usePermissionWatcher";
-import useMediasoupEvents from "../../media/websocket/listeners/mediasoup";
 import { useLocalParticipantStore } from "../store/localParticipant";
 
 export function Channel() {
@@ -19,17 +16,7 @@ export function Channel() {
   const { localParticipant } = useLocalParticipantStore();
   const { connectMediasoup } = useParticipant();
 
-  console.log(participants, "part");
-
-  useChannelEvents();
-
-  useMediasoupEvents();
-
-  usePermissionWatcher();
-
   useEffect(() => {
-    if (localParticipant == null) return;
-
     if (!id || connectingRef.current) return;
 
     connectingRef.current = true;
@@ -41,7 +28,7 @@ export function Channel() {
         connectingRef.current = false;
       }
     })();
-  }, [id, localParticipant]);
+  }, [id]);
 
   if (isLoading) {
     return <Loader />;

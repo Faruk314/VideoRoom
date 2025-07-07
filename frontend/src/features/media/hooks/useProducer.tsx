@@ -4,7 +4,8 @@ import { useLocalParticipantStore } from "../../channel/store/localParticipant";
 
 export default function useProducer() {
   const { getMediaStream } = useMedia();
-  const { addProducer, addStream } = useLocalParticipantStore();
+  const { addProducer, addStream, updateLocalParticipant } =
+    useLocalParticipantStore();
 
   async function createVideoProducer(clientSendTransport: Transport) {
     try {
@@ -22,6 +23,7 @@ export default function useProducer() {
 
       addStream("video", stream);
       addProducer("video", newProducer);
+      updateLocalParticipant({ camMuted: false });
     } catch (error) {
       console.error(error);
       throw new Error("Error creating video producer");
