@@ -37,7 +37,7 @@ export default function useProducerHandlers() {
         if (error instanceof Error) throw new Error(error.message);
       }
     },
-    []
+    [emitCreateConsumer, setupConsumer]
   );
 
   const onProducerClosed = useCallback(
@@ -61,7 +61,7 @@ export default function useProducerHandlers() {
         }
       });
     },
-    []
+    [getParticipant, removeParticipantConsumer]
   );
 
   return { onNewProducer, onProducerClosed };

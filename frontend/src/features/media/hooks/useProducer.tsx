@@ -3,7 +3,7 @@ import { useMedia } from "./useMedia";
 import { useLocalParticipantStore } from "../../channel/store/localParticipant";
 
 export default function useProducer() {
-  const { getMediaStream } = useMedia();
+  const { getMediaStream, getDisplayStream } = useMedia();
   const { addProducer, addStream, updateLocalParticipant } =
     useLocalParticipantStore();
 
@@ -30,5 +30,23 @@ export default function useProducer() {
     }
   }
 
-  return { createVideoProducer };
+  async function createDisplayProducer(clientSendTransport: Transport) {
+    try {
+      const { stream, screenTrack } = await getDisplayStream();
+
+      const newProducer = await clientSendTransport.produce({
+        track: screenTrack,
+        appData: { streamType: "screen" },
+      });
+
+      addStream("screen", stream);
+      addProducer("screen", newProducer);
+      updateLocalParticipant({ isStreaming: true });
+    } catch (error) {
+      console.error(error);
+      throw new Error("Error creating display producer");
+    }
+  }
+
+  return { createVideoProducer, createDisplayProducer };
 }

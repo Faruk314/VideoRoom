@@ -12,7 +12,7 @@ export default function useChannelManager() {
   const { emitCloseProducer } = useProducerEmitters();
   const { setDevice, sendTransport } = useMediasoupStore();
   const { setupSendTransport, setupRecvTransport } = useTransport();
-  const { createVideoProducer } = useProducer();
+  const { createVideoProducer, createDisplayProducer } = useProducer();
   const { removeProducer, removeStream, updateLocalParticipant } =
     useLocalParticipantStore();
 
@@ -47,8 +47,7 @@ export default function useChannelManager() {
     const videoProducer = localParticipant?.producers.video;
 
     if (!videoProducer) {
-      if (!sendTransport)
-        throw new Error("create video producer failed. Send transport missing");
+      if (!sendTransport) throw new Error("Send transport missing");
 
       return await createVideoProducer(sendTransport);
     }
@@ -59,9 +58,11 @@ export default function useChannelManager() {
       });
 
       videoProducer.close();
+
       localParticipant.streams.video
         ?.getTracks()
         .forEach((track) => track.stop());
+
       removeProducer("video");
       removeStream("video");
       updateLocalParticipant({ camMuted: true });
@@ -71,5 +72,34 @@ export default function useChannelManager() {
     }
   }
 
-  return { connectMediasoup, toogleCamera };
+  async function toogleScreenShare() {
+    const { localParticipant } = useLocalParticipantStore.getState();
+
+    const displayProducer = localParticipant?.producers.screen;
+
+    if (!displayProducer) {
+      if (!sendTransport) throw new Error("Send transport missing");
+
+      return createDisplayProducer(sendTransport);
+    }
+
+    try {
+      await emitCloseProducer({ producerId: displayProducer.id });
+
+      displayProducer.close();
+
+      localParticipant.streams.screen
+        ?.getTracks()
+        .forEach((track) => track.stop());
+
+      removeProducer("screen");
+      removeStream("screen");
+      updateLocalParticipant({ isStreaming: false });
+    } catch (error) {
+      console.error("Failed to close display producer");
+      if (error instanceof Error) throw new Error(error.message);
+    }
+  }
+
+  return { connectMediasoup, toogleCamera, toogleScreenShare };
 }

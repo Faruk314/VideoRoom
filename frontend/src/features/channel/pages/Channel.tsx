@@ -16,6 +16,8 @@ export function Channel() {
   const { localParticipant } = useLocalParticipantStore();
   const { connectMediasoup } = useParticipant();
 
+  console.log(participants, "part");
+
   useEffect(() => {
     if (!id || connectingRef.current) return;
 
