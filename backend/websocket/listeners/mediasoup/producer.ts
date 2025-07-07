@@ -14,6 +14,7 @@ class ProducerListeners {
 
   registerListeners() {
     this.socket.on("createProducer", this.onCreateProducer.bind(this));
+    this.socket.on("closeProducer", this.onCloseProducer.bind(this));
   }
 
   async onCreateProducer(
@@ -73,6 +74,52 @@ class ProducerListeners {
       });
     } catch {
       callback({ error: true, message: "Failed to create backend producer" });
+    }
+  }
+
+  async onCloseProducer(
+    data: { producerId: string },
+    callback: (response: {
+      error: boolean;
+      message: string;
+      data?: { producerId: string };
+    }) => void
+  ) {
+    const { producerId } = data;
+
+    const peer = getPeer(this.socket.userId);
+
+    if (!peer) {
+      return callback({ error: true, message: "Peer not found" });
+    }
+
+    const producer = peer.producers?.get(producerId);
+
+    if (!producer) {
+      return callback({
+        error: true,
+        message: "Failed to close producer. Producer not found",
+      });
+    }
+
+    try {
+      producer.close();
+
+      peer.producers?.delete(producerId);
+
+      producers.delete(producerId);
+
+      this.socket
+        .to(peer.currentChannelId)
+        .emit("producerClosed", { producerId, userId: peer.userId });
+
+      callback({
+        error: false,
+        message: "Producer closed succesfully",
+        data: { producerId },
+      });
+    } catch (error) {
+      callback({ error: true, message: "Failed to close producer" });
     }
   }
 }
