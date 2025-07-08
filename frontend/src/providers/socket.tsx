@@ -3,11 +3,13 @@ import type { ReactNode } from "react";
 import { io as clientIO, type Socket } from "socket.io-client";
 import { SocketContext } from "../context/socket";
 import { useUserStore } from "../features/user/store/user";
+import { useLocalParticipantStore } from "../features/channel/store/localParticipant";
 
 export function SocketProvider({ children }: { children: ReactNode }) {
   const [socket, setSocket] = useState<Socket | null>(null);
   const [isConnected, setIsConnected] = useState(false);
   const { isLogged } = useUserStore();
+  const { updateLocalParticipant } = useLocalParticipantStore();
 
   useEffect(() => {
     if (isLogged && socket) return;
@@ -23,7 +25,10 @@ export function SocketProvider({ children }: { children: ReactNode }) {
     });
 
     socketInstance.on("connect", () => setIsConnected(true));
-    socketInstance.on("disconnect", () => setIsConnected(false));
+    socketInstance.on("disconnect", () => {
+      setIsConnected(false);
+      updateLocalParticipant({ connected: false, isStreaming: false });
+    });
 
     socketInstance.on("connect_error", (err) =>
       console.error("Connection Error:", err.message)
