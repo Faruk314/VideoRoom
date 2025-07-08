@@ -6,6 +6,8 @@ import { Device } from "mediasoup-client";
 import { useLocalParticipantStore } from "../store/localParticipant";
 import useProducer from "../../media/hooks/useProducer";
 import useProducerEmitters from "../../media/websocket/emitters/mediasoup/producer";
+import useConsumerEmitters from "../../media/websocket/emitters/mediasoup/consumer";
+import useConsumer from "../../media/hooks/useConsumer";
 
 export default function useChannelManager() {
   const { emitGetRtpCapabilties, emitCreateTransport } = useTransportEmitters();
@@ -13,10 +15,15 @@ export default function useChannelManager() {
   const { setDevice, sendTransport } = useMediasoupStore();
   const { setupSendTransport, setupRecvTransport } = useTransport();
   const { createVideoProducer, createDisplayProducer } = useProducer();
+  const { emitCreateConsumers } = useConsumerEmitters();
+  const { setupConsumer } = useConsumer();
   const { removeProducer, removeStream, updateLocalParticipant } =
     useLocalParticipantStore();
 
   const connectMediasoup = useCallback(async (channelId: string) => {
+    const localParticipant =
+      useLocalParticipantStore.getState().localParticipant;
+
     try {
       const { routerRtpCapabilities } = await emitGetRtpCapabilties({
         channelId,
@@ -37,7 +44,16 @@ export default function useChannelManager() {
 
       setupRecvTransport(recvTransport, device);
 
-      await createVideoProducer(clientSendTransport);
+      if (!localParticipant?.camMuted)
+        await createVideoProducer(clientSendTransport);
+
+      const { data: consumersData } = await emitCreateConsumers({
+        rtpCapabilities: device.rtpCapabilities,
+      });
+
+      await Promise.all(
+        consumersData.map((consumer) => setupConsumer(consumer))
+      );
     } catch (error) {
       console.error("Failed to connect with mediasoup server");
 

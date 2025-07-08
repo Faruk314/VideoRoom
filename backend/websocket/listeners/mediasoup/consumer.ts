@@ -3,6 +3,7 @@ import { setupConsumerListeners } from "mediasoup/methods/consumer";
 import { getPeer } from "mediasoup/methods/peer";
 import { producers } from "mediasoup/methods/producer";
 import { getOrCreateRouter } from "mediasoup/methods/router";
+import redis from "redis/client";
 import { Server, Socket } from "socket.io";
 
 class ConsumerListeners {
@@ -16,6 +17,7 @@ class ConsumerListeners {
 
   registerListeners() {
     this.socket.on("createConsumer", this.onCreateConsumer.bind(this));
+    this.socket.on("createConsumers", this.onCreateConsumers.bind(this));
   }
 
   async onCreateConsumer(
@@ -107,6 +109,111 @@ class ConsumerListeners {
         message: "Failed to create consumer",
       });
     }
+  }
+
+  async onCreateConsumers(
+    data: { rtpCapabilities: types.RtpCapabilities },
+    callback: (response: {
+      error: boolean;
+      message: string;
+      data?: {
+        id: string;
+        producerId: string;
+        kind: types.MediaKind;
+        rtpParameters: types.RtpParameters;
+        appData: types.AppData;
+        userId: string;
+      }[];
+    }) => void
+  ) {
+    const peer = getPeer(this.socket.userId);
+
+    if (!peer) {
+      return callback({ error: true, message: "Peer state not found" });
+    }
+
+    const router = await getOrCreateRouter(peer.currentChannelId);
+
+    if (!router) {
+      return callback({ error: true, message: "Mediasoup Router not found" });
+    }
+
+    const recvTransport = peer.recvTransport;
+
+    if (!recvTransport) {
+      return callback({
+        error: true,
+        message: "Receive transport not initialized",
+      });
+    }
+
+    const participantIds = await redis.smembers(
+      `channel:participants:${peer.currentChannelId}`
+    );
+
+    const otherParticipantIds = participantIds.filter(
+      (id) => id !== this.socket.userId
+    );
+
+    const { rtpCapabilities } = data;
+
+    const consumers: {
+      id: string;
+      producerId: string;
+      kind: types.MediaKind;
+      rtpParameters: types.RtpParameters;
+      appData: types.AppData;
+      userId: string;
+    }[] = [];
+
+    for (const userId of otherParticipantIds) {
+      const remotePeer = getPeer(userId);
+
+      if (!remotePeer?.producers) continue;
+
+      for (const producer of remotePeer.producers.values()) {
+        if (
+          !router.canConsume({
+            producerId: producer.id,
+            rtpCapabilities: rtpCapabilities,
+          })
+        )
+          continue;
+
+        try {
+          const consumer = await recvTransport.consume({
+            producerId: producer.id,
+            rtpCapabilities: rtpCapabilities,
+            paused: producer.paused,
+            appData: producer.appData,
+          });
+
+          peer.consumers?.set(consumer.id, consumer);
+
+          setupConsumerListeners(this.socket, peer, consumer);
+
+          consumers.push({
+            id: consumer.id,
+            producerId: producer.id,
+            kind: consumer.kind,
+            rtpParameters: consumer.rtpParameters,
+            appData: consumer.appData,
+            userId,
+          });
+        } catch (err) {
+          console.error(
+            `Failed to consume producer ${producer.id} from ${userId}:`,
+            err
+          );
+        }
+      }
+    }
+
+    callback({
+      error: false,
+      message: "Consumers created",
+      data: consumers,
+    });
   }
 }
 

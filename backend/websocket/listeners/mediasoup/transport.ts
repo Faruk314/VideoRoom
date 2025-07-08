@@ -43,6 +43,8 @@ class TransportListeners {
         currentChannelId: channelId,
       });
 
+      this.socket.join(channelId);
+
       callback({
         error: false,
         message: "Success geting routers rtp capabilities",
