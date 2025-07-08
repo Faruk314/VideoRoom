@@ -4,8 +4,11 @@ import { useMediasoupStore } from "../store/mediasoup";
 import type { MediaKind } from "../types/media";
 
 export default function useConsumer() {
-  const { updateParticipantConsumers, removeParticipantConsumer } =
-    useParticipantStore();
+  const {
+    updateParticipantConsumers,
+    removeParticipantConsumer,
+    updateParticipant,
+  } = useParticipantStore();
 
   async function setupConsumer(consumerData: {
     id: string;
@@ -30,6 +33,12 @@ export default function useConsumer() {
       });
 
       const consumerType = consumerData.appData.streamType as MediaKind;
+
+      if (consumerType === "video")
+        updateParticipant(consumerData.userId, { camMuted: false });
+
+      if (consumerType === "screen")
+        updateParticipant(consumerData.userId, { isStreaming: true });
 
       updateParticipantConsumers(consumerData.userId, consumerType, consumer);
 

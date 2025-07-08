@@ -31,6 +31,7 @@ interface IUser {
   name: string;
   micMuted: boolean;
   camMuted: boolean;
+  isStreaming: boolean;
   deafened: boolean;
   currentRoom: string;
   connected: boolean;

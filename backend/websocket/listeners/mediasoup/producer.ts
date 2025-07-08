@@ -1,6 +1,7 @@
 import { types } from "mediasoup";
 import { getPeer } from "mediasoup/methods/peer";
 import { producers, setupProducerListeners } from "mediasoup/methods/producer";
+import { updateParticipant } from "redis/methods/participant";
 import { Server, Socket } from "socket.io";
 
 class ProducerListeners {
@@ -60,6 +61,12 @@ class ProducerListeners {
 
       setupProducerListeners(this.socket, peer, producer);
 
+      if (appData.streamType === "screen")
+        await updateParticipant(this.socket.userId, { isStreaming: true });
+
+      if (appData.streamType === "video")
+        await updateParticipant(this.socket.userId, { camMuted: false });
+
       this.socket.to(peer.currentChannelId).emit("newProducer", {
         producerId: producer.id,
         userId: this.socket.userId,
@@ -103,6 +110,13 @@ class ProducerListeners {
     }
 
     try {
+      if (producer.appData.streamType === "screen")
+        await updateParticipant(peer.userId, { isStreaming: false });
+
+      if (producer.appData.streamType === "video") {
+        await updateParticipant(peer.userId, { camMuted: true });
+      }
+
       producer.close();
 
       peer.producers?.delete(producerId);
