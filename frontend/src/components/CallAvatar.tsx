@@ -7,9 +7,15 @@ interface Props {
   participant: Omit<IParticipant, "consumers">;
   consumer?: Consumer | null;
   stream?: MediaStream | null;
+  isDisplayStream?: boolean;
 }
 
-export default function CallAvatar({ participant, consumer, stream }: Props) {
+export default function CallAvatar({
+  participant,
+  consumer,
+  stream,
+  isDisplayStream,
+}: Props) {
   const videoRef = useRef<HTMLVideoElement | null>(null);
 
   useEffect(() => {
@@ -46,6 +52,12 @@ export default function CallAvatar({ participant, consumer, stream }: Props) {
         />
       ) : (
         <Avatar name={participant.user.userName} />
+      )}
+
+      {isDisplayStream && (
+        <div className="absolute top-1 right-1 text-white bg-red-500 opacity-70 font-black rounded-full text-[0.9rem] px-2">
+          Live
+        </div>
       )}
 
       <div className="absolute bottom-1 left-1 text-white bg-black opacity-70 font-black rounded-full text-[0.9rem] px-2">

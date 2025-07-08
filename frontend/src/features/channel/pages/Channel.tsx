@@ -55,6 +55,7 @@ export function Channel() {
               <CallAvatar
                 participant={localParticipant}
                 stream={localParticipant.streams.screen}
+                isDisplayStream
               />
             )}
           </div>
@@ -75,6 +76,7 @@ export function Channel() {
                 <CallAvatar
                   participant={participant}
                   consumer={screenConsumer}
+                  isDisplayStream
                 />
               )}
             </div>
