@@ -2,16 +2,13 @@ import type { ITransport } from "../types/mediasoup";
 import type { Device } from "mediasoup-client/types";
 import { useMediasoupStore } from "../store/mediasoup";
 import { useTransportEmitters } from "../websocket/emitters/mediasoup/transport";
-import { useMediaStore } from "../store/media";
-import useProducer from "./useProducer";
 import useProducerEmitters from "../websocket/emitters/mediasoup/producer";
 
 export default function useTransport() {
   const { setSendTransport, setRecvTransport } = useMediasoupStore();
-  const { hasVideoPermission } = useMediaStore();
+
   const { emitConnectTransport } = useTransportEmitters();
   const { emitCreateProducer } = useProducerEmitters();
-  const { createVideoProducer } = useProducer();
 
   async function setupSendTransport(transportData: ITransport, device: Device) {
     const clientSendTransport = device.createSendTransport(transportData);
@@ -55,7 +52,7 @@ export default function useTransport() {
       }
     );
 
-    await createVideoProducer(clientSendTransport);
+    return clientSendTransport;
   }
 
   function setupRecvTransport(transportData: ITransport, device: Device) {

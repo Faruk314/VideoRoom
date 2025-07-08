@@ -30,10 +30,14 @@ export default function useChannelManager() {
 
       const { sendTransport, recvTransport } = await emitCreateTransport();
 
-      await Promise.all([
-        setupSendTransport(sendTransport, device),
-        setupRecvTransport(recvTransport, device),
-      ]);
+      const clientSendTransport = await setupSendTransport(
+        sendTransport,
+        device
+      );
+
+      setupRecvTransport(recvTransport, device);
+
+      await createVideoProducer(clientSendTransport);
     } catch (error) {
       console.error("Failed to connect with mediasoup server");
 
