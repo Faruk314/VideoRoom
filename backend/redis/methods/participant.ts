@@ -95,25 +95,7 @@ async function getParticipants(channelId: string) {
       participantIds.map(async (userId) => {
         const data = await getParticipant(userId);
 
-        const peer = getPeer(userId);
-
-        const producersData: {
-          producerId: string;
-          userId: string;
-          kind: types.MediaKind;
-          appData: types.AppData;
-        }[] = [];
-
-        peer?.producers?.forEach((producer) => {
-          producersData.push({
-            producerId: producer.id,
-            userId,
-            kind: producer.kind,
-            appData: producer.appData,
-          });
-        });
-
-        return { ...data.user, producers: producersData };
+        return data.user;
       })
     );
 

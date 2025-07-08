@@ -28,12 +28,6 @@ interface IParticipant {
   isStreaming: boolean;
   deafened: boolean;
   connected: boolean;
-  producers: {
-    producerId: string;
-    userId: string;
-    kind: types.MediaKind;
-    appData: types.AppData;
-  }[];
   consumers: {
     audio?: Consumer;
     video?: Consumer;
