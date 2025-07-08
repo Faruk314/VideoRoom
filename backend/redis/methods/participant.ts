@@ -1,3 +1,6 @@
+import { types } from "mediasoup";
+import { getPeer } from "mediasoup/methods/peer";
+import { producers } from "mediasoup/methods/producer";
 import redis from "redis/client";
 import { IUser } from "types/types";
 
@@ -92,7 +95,25 @@ async function getParticipants(channelId: string) {
       participantIds.map(async (userId) => {
         const data = await getParticipant(userId);
 
-        return data.user;
+        const peer = getPeer(userId);
+
+        const producersData: {
+          producerId: string;
+          userId: string;
+          kind: types.MediaKind;
+          appData: types.AppData;
+        }[] = [];
+
+        peer?.producers?.forEach((producer) => {
+          producersData.push({
+            producerId: producer.id,
+            userId,
+            kind: producer.kind,
+            appData: producer.appData,
+          });
+        });
+
+        return { ...data.user, producers: producersData };
       })
     );
 

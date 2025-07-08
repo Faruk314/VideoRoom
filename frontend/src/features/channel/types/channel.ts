@@ -1,3 +1,4 @@
+import type { types } from "mediasoup-client";
 import type { IUser } from "../../user/types/user";
 import { Consumer, Producer } from "mediasoup-client/types";
 
@@ -27,6 +28,12 @@ interface IParticipant {
   isStreaming: boolean;
   deafened: boolean;
   connected: boolean;
+  producers: {
+    producerId: string;
+    userId: string;
+    kind: types.MediaKind;
+    appData: types.AppData;
+  }[];
   consumers: {
     audio?: Consumer;
     video?: Consumer;
