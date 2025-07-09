@@ -8,6 +8,7 @@ interface Props {
   consumer?: Consumer | null;
   stream?: MediaStream | null;
   isDisplayStream?: boolean;
+  muteCamera?: boolean;
 }
 
 export default function CallAvatar({
@@ -15,6 +16,7 @@ export default function CallAvatar({
   consumer,
   stream,
   isDisplayStream,
+  muteCamera,
 }: Props) {
   const videoRef = useRef<HTMLVideoElement | null>(null);
 
@@ -46,8 +48,8 @@ export default function CallAvatar({
         <video
           ref={videoRef}
           className="w-full h-full object-cover"
-          muted={participant.camMuted}
           playsInline
+          muted={muteCamera}
           autoPlay
         />
       ) : (

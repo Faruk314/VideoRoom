@@ -47,6 +47,7 @@ export function Channel() {
             className="flex space-x-2 participant-group"
           >
             <CallAvatar
+              muteCamera
               participant={localParticipant}
               stream={localParticipant.streams.video}
             />
