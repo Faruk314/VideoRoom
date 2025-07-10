@@ -1,7 +1,9 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import Avatar from "./Avatar";
 import type { IParticipant } from "../features/channel/types/channel";
 import type { Consumer } from "mediasoup-client/types";
+import classNames from "classnames";
+import { useChannelStore } from "../features/channel/store/channel";
 
 interface Props {
   participant: Omit<IParticipant, "consumers">;
@@ -9,16 +11,23 @@ interface Props {
   stream?: MediaStream | null;
   isDisplayStream?: boolean;
   muteCamera?: boolean;
+  isDisplayed?: boolean;
 }
 
-export default function CallAvatar({
-  participant,
-  consumer,
-  stream,
-  isDisplayStream,
-  muteCamera,
-}: Props) {
+export default function CallAvatar(props: Props) {
+  const {
+    participant,
+    consumer,
+    stream,
+    isDisplayStream,
+    muteCamera,
+    isDisplayed,
+  } = props;
+  const [isHovering, setIsHovering] = useState(false);
   const videoRef = useRef<HTMLVideoElement | null>(null);
+  const setDisplayedAvatar = useChannelStore(
+    (state) => state.setDisplayedAvatar
+  );
 
   useEffect(() => {
     const video = videoRef.current;
@@ -43,28 +52,41 @@ export default function CallAvatar({
   const hasVideo = !!stream || !!consumer?.track;
 
   return (
-    <div className="relative border border-gray-300 w-55 h-30 rounded-md flex items-center justify-center overflow-hidden cursor-pointer">
+    <div
+      onMouseOver={() => setIsHovering(true)}
+      onMouseLeave={() => setIsHovering(false)}
+      onClick={() => setDisplayedAvatar({ ...props })}
+      className={classNames(
+        "relative border border-gray-300 w-55 h-30 rounded-md flex items-center justify-center overflow-hidden cursor-pointer",
+        {
+          "w-[70rem] h-full": isDisplayed,
+          "bg-black": hasVideo,
+          "bg-white": !hasVideo,
+        }
+      )}
+    >
       {hasVideo ? (
-        <video
-          ref={videoRef}
-          className="w-full h-full object-cover"
-          playsInline
-          muted={muteCamera}
-          autoPlay
-        />
+        <video ref={videoRef} playsInline muted={muteCamera} autoPlay />
       ) : (
-        <Avatar name={participant.user.userName} />
+        <Avatar
+          className={classNames("text-2xl", {
+            "text-7xl h-30 w-30": isDisplayed,
+          })}
+          name={participant.user.userName}
+        />
       )}
 
       {isDisplayStream && (
-        <div className="absolute top-1 right-1 text-white bg-red-500 opacity-70 font-black rounded-full text-[0.9rem] px-2">
+        <div className="absolute top-1 right-1 text-white bg-red-500 font-black rounded-full text-[0.9rem] px-2">
           Live
         </div>
       )}
 
-      <div className="absolute bottom-1 left-1 text-white bg-black opacity-70 font-black rounded-full text-[0.9rem] px-2">
-        {participant.user.userName}
-      </div>
+      {isHovering && (
+        <span className="absolute bottom-1 left-1 text-white bg-black font-black rounded-full text-[0.9rem] px-2 slide-up">
+          {participant.user.userName}
+        </span>
+      )}
     </div>
   );
 }

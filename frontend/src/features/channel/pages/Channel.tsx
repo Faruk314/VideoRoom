@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import CallAvatar from "../../../components/CallAvatar";
 import { useChannelQuery } from "../queries/channel";
 import { useParams } from "react-router-dom";
@@ -7,14 +7,17 @@ import { useParticipantStore } from "../store/remoteParticipant";
 import useParticipant from "../hooks/useChannelManager";
 import ChannelFooter from "../components/ChannelFooter";
 import { useLocalParticipantStore } from "../store/localParticipant";
+import { useChannelStore } from "../store/channel";
 
 export function Channel() {
+  const [isHover, setIsHover] = useState(false);
   const connectingRef = useRef(false);
   const { id } = useParams<{ id: string }>();
   const { isLoading } = useChannelQuery(id || "");
   const { participants } = useParticipantStore.getState();
   const { localParticipant } = useLocalParticipantStore();
   const { connectMediasoup } = useParticipant();
+  const displayedAvatar = useChannelStore((state) => state.displayedAvatar);
 
   console.log(participants, "part");
 
@@ -37,10 +40,16 @@ export function Channel() {
   }
 
   return (
-    <section className="flex flex-col gap-4 items-center justify-between h-[100vh] w-full">
-      <div className="flex-1 w-full"></div>
+    <section
+      onMouseOver={() => setIsHover(true)}
+      onMouseLeave={() => setIsHover(false)}
+      className="flex flex-col gap-4 items-center justify-between h-[100vh] w-full overflow-y-hidden bg-gray-100"
+    >
+      <div className="flex-1 flex items-center justify-center w-full pt-4">
+        {displayedAvatar && <CallAvatar {...displayedAvatar} isDisplayed />}
+      </div>
 
-      <div className="flex space-x-2">
+      <div className="flex space-x-2 mb-24">
         {localParticipant && (
           <div
             key={localParticipant.user.userId}
@@ -85,7 +94,7 @@ export function Channel() {
         })}
       </div>
 
-      <ChannelFooter />
+      {isHover && <ChannelFooter />}
     </section>
   );
 }

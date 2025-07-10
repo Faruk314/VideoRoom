@@ -1,4 +1,11 @@
-import { Phone } from "lucide-react";
+import {
+  Expand,
+  ExternalLink,
+  Fullscreen,
+  Maximize,
+  Phone,
+  SquareArrowOutUpRight,
+} from "lucide-react";
 import { IconBtn } from "../../../components/buttons/IconBtn";
 import { Settings as SettingsModal } from "../../../components/modals/Settings";
 import CameraBtn from "../../../components/buttons/CameraBtn";
@@ -12,27 +19,31 @@ export default function ChannelFooter() {
   const { leaveChannel } = useChannel();
 
   return (
-    <div className="flex items-center justify-center py-4 space-x-4 border border-gray-300 w-full">
-      <div className="flex items-center space-x-2">
-        <CameraBtn camMuted={localParticipant?.camMuted || false} />
+    <div className="fixed bottom-0 w-full mb-4 slide-up">
+      <div className="flex items-center justify-between w-full mx-auto py-2 px-4">
+        <div className="fixed bottom-0 left-1/2 -translate-x-1/2 flex items-center space-x-2 border border-gray-300 rounded-md px-2 py-2 shadow-md bg-white z-50">
+          <CameraBtn camMuted={localParticipant?.camMuted || false} />
+          <MicrophoneBtn micMuted={localParticipant?.micMuted || false} />
+          <ScreenShareBtn
+            isStreaming={localParticipant?.isStreaming || false}
+          />
+          <SettingsModal />
+          <IconBtn
+            onClick={leaveChannel}
+            description="Leave Call"
+            icon={<Phone size={20} />}
+            className="text-white bg-red-500 hover:bg-red-400"
+          />
+        </div>
 
-        <MicrophoneBtn micMuted={localParticipant?.micMuted || false} />
-
-        <ScreenShareBtn isStreaming={localParticipant?.isStreaming || false} />
-
-        <SettingsModal />
-
-        <IconBtn
-          onClick={leaveChannel}
-          description="Leave Call"
-          icon={<Phone size={20} />}
-          className="text-white bg-red-500 hover:bg-red-400"
-        />
+        <div className="fixed bottom-0 right-6 flex space-x-2 z-50">
+          <IconBtn
+            description="Pop Out"
+            className="bg-transparent text-black hover:bg-gray-200"
+            icon={<SquareArrowOutUpRight size={30} />}
+          />
+        </div>
       </div>
-
-      {/* <button className="justify-self-end">
-        <Fullscreen />
-      </button> */}
     </div>
   );
 }
