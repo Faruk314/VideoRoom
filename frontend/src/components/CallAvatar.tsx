@@ -4,6 +4,8 @@ import type { IParticipant } from "../features/channel/types/channel";
 import type { Consumer } from "mediasoup-client/types";
 import classNames from "classnames";
 import { useChannelStore } from "../features/channel/store/channel";
+import { IconBtn } from "./buttons/IconBtn";
+import { Ellipsis } from "lucide-react";
 
 interface Props {
   participant: Omit<IParticipant, "consumers">;
@@ -77,15 +79,24 @@ export default function CallAvatar(props: Props) {
       )}
 
       {isDisplayStream && (
-        <div className="absolute top-1 right-1 text-white bg-red-500 font-black rounded-full text-[0.9rem] px-2">
+        <div className="absolute top-2 right-2 text-white bg-red-500 font-black rounded-full text-[0.9rem] px-2">
           Live
         </div>
       )}
 
       {isHovering && (
-        <span className="absolute bottom-1 left-1 text-white bg-black font-black rounded-full text-[0.9rem] px-2 slide-up">
+        <span className="absolute bottom-2 left-2 text-white bg-black/60 font-black rounded-md text-[0.9rem] px-2 py-1 slide-up">
           {participant.user.userName}
         </span>
+      )}
+
+      {isHovering && (
+        <div className="absolute bottom-2 right-2">
+          <IconBtn
+            className="bg-black/60 opacity-[0.7] md:h-max md:w-max px-2 py-1 rounded-md slide-up hover:bg-black/30"
+            icon={<Ellipsis />}
+          />
+        </div>
       )}
     </div>
   );

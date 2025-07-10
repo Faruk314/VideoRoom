@@ -1,11 +1,4 @@
-import {
-  Expand,
-  ExternalLink,
-  Fullscreen,
-  Maximize,
-  Phone,
-  SquareArrowOutUpRight,
-} from "lucide-react";
+import { Phone, SquareArrowOutUpRight } from "lucide-react";
 import { IconBtn } from "../../../components/buttons/IconBtn";
 import { Settings as SettingsModal } from "../../../components/modals/Settings";
 import CameraBtn from "../../../components/buttons/CameraBtn";
@@ -19,7 +12,7 @@ export default function ChannelFooter() {
   const { leaveChannel } = useChannel();
 
   return (
-    <div className="fixed bottom-0 w-full mb-4 slide-up">
+    <div className="fixed bottom-0 w-full mb-4 slide-up z-50">
       <div className="flex items-center justify-between w-full mx-auto py-2 px-4">
         <div className="fixed bottom-0 left-1/2 -translate-x-1/2 flex items-center space-x-2 border border-gray-300 rounded-md px-2 py-2 shadow-md bg-white z-50">
           <CameraBtn camMuted={localParticipant?.camMuted || false} />

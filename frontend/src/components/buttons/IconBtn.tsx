@@ -29,9 +29,9 @@ export function IconBtn({
       </button>
 
       {isHovering && description && (
-        <div className="absolute font-black bottom-full left-1/2 mb-2 -translate-x-1/2 bg-black text-white rounded px-2 py-1 whitespace-nowrap">
+        <span className="absolute font-black bottom-full left-1/2 mb-2 -translate-x-1/2 bg-black/60 text-white rounded px-2 py-1 whitespace-nowrap">
           {description}
-        </div>
+        </span>
       )}
     </div>
   );
