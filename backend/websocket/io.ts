@@ -7,6 +7,7 @@ import ProducerListeners from "./listeners/mediasoup/producer";
 import ConsumerListeners from "./listeners/mediasoup/consumer";
 import { cleanupPeerResources } from "mediasoup/methods/peer";
 import { updateParticipant } from "redis/methods/participant";
+import ParticipantListeners from "./listeners/channels/participant";
 
 function createSocketServer(httpServer: import("http").Server) {
   const io = new ServerIO(httpServer, {
@@ -46,6 +47,7 @@ function createSocketServer(httpServer: import("http").Server) {
     console.log(`user connected with id ${socket.userId}`);
 
     new ChannelListeners(io, socket).registerListeners();
+    new ParticipantListeners(io, socket).registerListeners();
     new TransportListeners(io, socket).registerListeners();
     new ProducerListeners(io, socket).registerListeners();
     new ConsumerListeners(io, socket).registerListeners();
