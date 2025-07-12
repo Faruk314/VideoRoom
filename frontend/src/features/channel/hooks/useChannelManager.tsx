@@ -17,8 +17,7 @@ export default function useChannelManager() {
   const { createVideoProducer, createDisplayProducer } = useProducer();
   const { emitCreateConsumers } = useConsumerEmitters();
   const { setupConsumer } = useConsumer();
-  const { removeProducer, removeStream, updateLocalParticipant } =
-    useLocalParticipantStore();
+  const { removeProducer, removeStream } = useLocalParticipantStore();
 
   const connectMediasoup = useCallback(async (channelId: string) => {
     const localParticipant =
@@ -61,6 +60,34 @@ export default function useChannelManager() {
     }
   }, []);
 
+  async function stopStream(kind: "video" | "screen") {
+    try {
+      const { localParticipant, updateLocalParticipant } =
+        useLocalParticipantStore.getState();
+      const producer = localParticipant?.producers[kind];
+      const stream = localParticipant?.streams[kind];
+
+      if (!producer) return;
+
+      await emitCloseProducer({ producerId: producer.id });
+
+      producer.close();
+      stream?.getTracks().forEach((track) => track.stop());
+
+      removeProducer(kind);
+      removeStream(kind);
+
+      if (kind === "video") {
+        updateLocalParticipant({ camMuted: true });
+      } else if (kind === "screen") {
+        updateLocalParticipant({ isStreaming: false });
+      }
+    } catch (error) {
+      console.error(`Failed to stop ${kind} stream`);
+      if (error instanceof Error) throw new Error(error.message);
+    }
+  }
+
   async function toogleCamera() {
     const { localParticipant } = useLocalParticipantStore.getState();
 
@@ -72,24 +99,7 @@ export default function useChannelManager() {
       return await createVideoProducer(sendTransport);
     }
 
-    try {
-      await emitCloseProducer({
-        producerId: videoProducer.id,
-      });
-
-      videoProducer.close();
-
-      localParticipant.streams.video
-        ?.getTracks()
-        .forEach((track) => track.stop());
-
-      removeProducer("video");
-      removeStream("video");
-      updateLocalParticipant({ camMuted: true });
-    } catch (error) {
-      console.error("Failed to close video producer");
-      if (error instanceof Error) throw new Error(error.message);
-    }
+    await stopStream("video");
   }
 
   async function toogleScreenShare() {
@@ -103,22 +113,7 @@ export default function useChannelManager() {
       return createDisplayProducer(sendTransport);
     }
 
-    try {
-      await emitCloseProducer({ producerId: displayProducer.id });
-
-      displayProducer.close();
-
-      localParticipant.streams.screen
-        ?.getTracks()
-        .forEach((track) => track.stop());
-
-      removeProducer("screen");
-      removeStream("screen");
-      updateLocalParticipant({ isStreaming: false });
-    } catch (error) {
-      console.error("Failed to close display producer");
-      if (error instanceof Error) throw new Error(error.message);
-    }
+    await stopStream("screen");
   }
 
   return { connectMediasoup, toogleCamera, toogleScreenShare };
