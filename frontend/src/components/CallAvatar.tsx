@@ -4,8 +4,8 @@ import type { IParticipant } from "../features/channel/types/channel";
 import type { Consumer } from "mediasoup-client/types";
 import classNames from "classnames";
 import { useChannelStore } from "../features/channel/store/channel";
-import { IconBtn } from "./buttons/IconBtn";
-import { Ellipsis } from "lucide-react";
+import UserOptions from "./modals/UserOptions";
+import StreamOptions from "./modals/StreamOptions";
 
 interface Props {
   participant: Omit<IParticipant, "consumers">;
@@ -85,19 +85,30 @@ export default function CallAvatar(props: Props) {
       )}
 
       {isHovering && (
-        <span className="absolute bottom-2 left-2 text-white bg-black/60 font-black rounded-md text-[0.9rem] px-2 py-1 slide-up">
+        <span
+          className={classNames(
+            "absolute bottom-2 left-2 text-white bg-black/60 font-black rounded-md text-[0.9rem] px-2 slide-up",
+            {
+              "py-0": !isDisplayed,
+              "py-1": isDisplayed,
+            }
+          )}
+        >
           {participant.user.userName}
         </span>
       )}
 
-      {isHovering && (
-        <div className="absolute bottom-2 right-2">
-          <IconBtn
-            className="bg-black/60 opacity-[0.7] md:h-max md:w-max px-2 py-1 rounded-md slide-up hover:bg-black/30"
-            icon={<Ellipsis />}
-          />
-        </div>
-      )}
+      <div
+        className={classNames(
+          "absolute bottom-2 right-2 transition-opacity duration-200",
+          {
+            "opacity-0 pointer-events-none": !isHovering,
+            "opacity-100 pointer-events-auto": isHovering,
+          }
+        )}
+      >
+        {isDisplayStream ? <StreamOptions /> : <UserOptions />}
+      </div>
     </div>
   );
 }
