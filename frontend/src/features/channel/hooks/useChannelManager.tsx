@@ -8,6 +8,7 @@ import useProducer from "../../media/hooks/useProducer";
 import useProducerEmitters from "../../media/websocket/emitters/mediasoup/producer";
 import useConsumerEmitters from "../../media/websocket/emitters/mediasoup/consumer";
 import useConsumer from "../../media/hooks/useConsumer";
+import { useChannelStore } from "../store/channel";
 
 export default function useChannelManager() {
   const { emitGetRtpCapabilties, emitCreateTransport } = useTransportEmitters();
@@ -17,7 +18,8 @@ export default function useChannelManager() {
   const { createVideoProducer, createDisplayProducer } = useProducer();
   const { emitCreateConsumers } = useConsumerEmitters();
   const { setupConsumer } = useConsumer();
-  const { removeProducer, removeStream } = useLocalParticipantStore();
+  const { removeProducer, removeStream, updateLocalParticipant } =
+    useLocalParticipantStore();
 
   const connectMediasoup = useCallback(async (channelId: string) => {
     const localParticipant =
@@ -62,8 +64,9 @@ export default function useChannelManager() {
 
   async function stopStream(kind: "video" | "screen") {
     try {
-      const { localParticipant, updateLocalParticipant } =
-        useLocalParticipantStore.getState();
+      const { localParticipant } = useLocalParticipantStore.getState();
+      const { displayedAvatar, setDisplayedAvatar } =
+        useChannelStore.getState();
       const producer = localParticipant?.producers[kind];
       const stream = localParticipant?.streams[kind];
 
@@ -81,6 +84,10 @@ export default function useChannelManager() {
         updateLocalParticipant({ camMuted: true });
       } else if (kind === "screen") {
         updateLocalParticipant({ isStreaming: false });
+      }
+
+      if (displayedAvatar?.stream === stream) {
+        setDisplayedAvatar(null);
       }
     } catch (error) {
       console.error(`Failed to stop ${kind} stream`);
@@ -116,5 +123,5 @@ export default function useChannelManager() {
     await stopStream("screen");
   }
 
-  return { connectMediasoup, toogleCamera, toogleScreenShare };
+  return { connectMediasoup, toogleCamera, toogleScreenShare, stopStream };
 }
