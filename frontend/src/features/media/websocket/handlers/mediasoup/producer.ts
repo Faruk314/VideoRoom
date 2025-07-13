@@ -8,7 +8,8 @@ import { useParticipantStore } from "../../../../channel/store/remoteParticipant
 export default function useProducerHandlers() {
   const { emitCreateConsumer } = useConsumerEmitters();
   const { setupConsumer } = useConsumer();
-  const { getParticipant, removeParticipantConsumer } = useParticipantStore();
+  const { getParticipant, removeParticipantConsumer, updateParticipant } =
+    useParticipantStore();
 
   const onNewProducer = useCallback(
     async (producerData: {
@@ -58,6 +59,14 @@ export default function useProducerHandlers() {
           consumer.track?.stop?.();
 
           removeParticipantConsumer(userId, type);
+
+          if (type === "audio") {
+            updateParticipant(userId, { micMuted: true });
+          } else if (type === "screen") {
+            updateParticipant(userId, { isStreaming: false });
+          } else if (type === "video") {
+            updateParticipant(userId, { camMuted: true });
+          }
         }
       });
     },

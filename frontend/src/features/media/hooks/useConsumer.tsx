@@ -40,6 +40,9 @@ export default function useConsumer() {
       if (consumerType === "screen")
         updateParticipant(consumerData.userId, { isStreaming: true });
 
+      if (consumerType === "audio")
+        updateParticipant(consumerData.userId, { micMuted: false });
+
       updateParticipantConsumers(consumerData.userId, consumerType, consumer);
 
       consumer.on("transportclose", () => {

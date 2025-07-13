@@ -67,6 +67,9 @@ class ProducerListeners {
       if (appData.streamType === "video")
         await updateParticipant(this.socket.userId, { camMuted: false });
 
+      if (appData.streamType === "audio")
+        await updateParticipant(this.socket.userId, { micMuted: false });
+
       this.socket.to(peer.currentChannelId).emit("newProducer", {
         producerId: producer.id,
         userId: this.socket.userId,
@@ -115,6 +118,10 @@ class ProducerListeners {
 
       if (producer.appData.streamType === "video") {
         await updateParticipant(peer.userId, { camMuted: true });
+      }
+
+      if (producer.appData.streamType === "audio") {
+        await updateParticipant(peer.userId, { micMuted: true });
       }
 
       producer.close();
