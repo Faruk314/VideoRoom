@@ -6,7 +6,7 @@ import classNames from "classnames";
 import { useChannelStore } from "../features/channel/store/channel";
 import UserOptions from "./modals/UserOptions";
 import StreamOptions from "./modals/StreamOptions";
-import { MicOff } from "lucide-react";
+import { MicOff, ScreenShare } from "lucide-react";
 
 interface Props {
   participant: Omit<IParticipant, "consumers">;
@@ -98,6 +98,7 @@ export default function CallAvatar(props: Props) {
           {participant.micMuted && !isDisplayStream && (
             <MicOff className="h-4 w-4" />
           )}
+          {isDisplayStream && <ScreenShare className="h-4 w-4" />}
           <span>{participant.user.userName}</span>
         </div>
       )}
