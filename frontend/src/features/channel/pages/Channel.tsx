@@ -19,8 +19,6 @@ export function Channel() {
   const { connectMediasoup } = useParticipant();
   const displayedAvatar = useChannelStore((state) => state.displayedAvatar);
 
-  console.log(participants, "part");
-
   useEffect(() => {
     if (!id || connectingRef.current) return;
 

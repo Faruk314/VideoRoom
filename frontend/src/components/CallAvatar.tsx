@@ -6,6 +6,7 @@ import classNames from "classnames";
 import { useChannelStore } from "../features/channel/store/channel";
 import UserOptions from "./modals/UserOptions";
 import StreamOptions from "./modals/StreamOptions";
+import { MicOff } from "lucide-react";
 
 interface Props {
   participant: Omit<IParticipant, "consumers">;
@@ -85,17 +86,20 @@ export default function CallAvatar(props: Props) {
       )}
 
       {isHovering && (
-        <span
+        <div
           className={classNames(
-            "absolute bottom-2 left-2 text-white bg-black/60 font-black rounded-md text-[0.9rem] px-2 slide-up",
+            "absolute bottom-2 left-2 text-white bg-black/60 font-black rounded-md text-[0.9rem] px-2 slide-up flex items-center space-x-1",
             {
               "py-0": !isDisplayed,
               "py-1": isDisplayed,
             }
           )}
         >
-          {participant.user.userName}
-        </span>
+          {participant.micMuted && !isDisplayStream && (
+            <MicOff className="h-4 w-4" />
+          )}
+          <span>{participant.user.userName}</span>
+        </div>
       )}
 
       <div
