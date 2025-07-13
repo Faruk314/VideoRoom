@@ -9,13 +9,15 @@ import useProducerEmitters from "../../media/websocket/emitters/mediasoup/produc
 import useConsumerEmitters from "../../media/websocket/emitters/mediasoup/consumer";
 import useConsumer from "../../media/hooks/useConsumer";
 import { useChannelStore } from "../store/channel";
+import type { MediaKind } from "../../media/types/media";
 
 export default function useChannelManager() {
   const { emitGetRtpCapabilties, emitCreateTransport } = useTransportEmitters();
   const { emitCloseProducer } = useProducerEmitters();
   const { setDevice, sendTransport } = useMediasoupStore();
   const { setupSendTransport, setupRecvTransport } = useTransport();
-  const { createVideoProducer, createDisplayProducer } = useProducer();
+  const { createVideoProducer, createAudioProducer, createDisplayProducer } =
+    useProducer();
   const { emitCreateConsumers } = useConsumerEmitters();
   const { setupConsumer } = useConsumer();
   const { removeProducer, removeStream, updateLocalParticipant } =
@@ -48,6 +50,9 @@ export default function useChannelManager() {
       if (!localParticipant?.camMuted)
         await createVideoProducer(clientSendTransport);
 
+      if (!localParticipant?.deafened && !localParticipant?.micMuted)
+        await createAudioProducer(clientSendTransport);
+
       const { data: consumersData } = await emitCreateConsumers({
         rtpCapabilities: device.rtpCapabilities,
       });
@@ -62,7 +67,7 @@ export default function useChannelManager() {
     }
   }, []);
 
-  async function stopStream(kind: "video" | "screen") {
+  async function stopStream(kind: MediaKind) {
     try {
       const { localParticipant } = useLocalParticipantStore.getState();
       const { displayedAvatar, setDisplayedAvatar } =
@@ -84,6 +89,8 @@ export default function useChannelManager() {
         updateLocalParticipant({ camMuted: true });
       } else if (kind === "screen") {
         updateLocalParticipant({ isStreaming: false });
+      } else if (kind === "audio") {
+        updateLocalParticipant({ micMuted: true });
       }
 
       if (displayedAvatar?.stream === stream) {
@@ -93,6 +100,20 @@ export default function useChannelManager() {
       console.error(`Failed to stop ${kind} stream`);
       if (error instanceof Error) throw new Error(error.message);
     }
+  }
+
+  async function toogleMicrophone() {
+    const { localParticipant } = useLocalParticipantStore.getState();
+
+    const audioProducer = localParticipant?.producers.audio;
+
+    if (!audioProducer) {
+      if (!sendTransport) throw new Error("Send transport missing");
+
+      return await createAudioProducer(sendTransport);
+    }
+
+    await stopStream("audio");
   }
 
   async function toogleCamera() {
@@ -123,5 +144,11 @@ export default function useChannelManager() {
     await stopStream("screen");
   }
 
-  return { connectMediasoup, toogleCamera, toogleScreenShare, stopStream };
+  return {
+    connectMediasoup,
+    toogleCamera,
+    toogleScreenShare,
+    toogleMicrophone,
+    stopStream,
+  };
 }

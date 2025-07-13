@@ -30,6 +30,25 @@ export default function useProducer() {
     }
   }
 
+  async function createAudioProducer(clientSendTransport: Transport) {
+    try {
+      const { stream, audioTrack } = await getMediaStream();
+
+      const newProducer = await clientSendTransport.produce({
+        track: audioTrack,
+        appData: { streamType: "audio" },
+      });
+
+      addStream("audio", stream);
+      addProducer("audio", newProducer);
+
+      updateLocalParticipant({ micMuted: false });
+    } catch (error) {
+      console.error(error);
+      throw new Error("Error creating video producer");
+    }
+  }
+
   async function createDisplayProducer(clientSendTransport: Transport) {
     try {
       const { stream, screenTrack } = await getDisplayStream();
@@ -48,5 +67,5 @@ export default function useProducer() {
     }
   }
 
-  return { createVideoProducer, createDisplayProducer };
+  return { createVideoProducer, createAudioProducer, createDisplayProducer };
 }
