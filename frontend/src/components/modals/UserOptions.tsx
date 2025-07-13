@@ -14,14 +14,11 @@ import useChannelManager from "../../features/channel/hooks/useChannelManager";
 export default function UserOptions() {
   const [open, setOpen] = useState(false);
 
-  const { localParticipant, updateLocalParticipant } =
-    useLocalParticipantStore();
-  const { toogleCamera } = useChannelManager();
+  const { localParticipant } = useLocalParticipantStore();
+  const { toogleCamera, toogleMicrophone } = useChannelManager();
 
   const camMuted = localParticipant?.camMuted;
   const micMuted = localParticipant?.micMuted;
-
-  const toggleAudio = () => updateLocalParticipant({});
 
   return (
     <>
@@ -41,13 +38,13 @@ export default function UserOptions() {
         >
           {[
             {
-              label: "Mute audio",
+              label: "Mute",
               selected: micMuted,
-              onClick: toggleAudio,
+              onClick: toogleMicrophone,
             },
             {
-              label: "Disable video",
-              selected: camMuted,
+              label: "Enable camera",
+              selected: !camMuted,
               onClick: toogleCamera,
             },
           ].map(({ label, selected, onClick }) => (
