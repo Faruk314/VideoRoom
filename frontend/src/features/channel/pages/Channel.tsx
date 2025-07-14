@@ -61,11 +61,7 @@ export function Channel() {
         {displayedAvatar && <CallAvatar {...displayedAvatar} isDisplayed />}
       </div>
 
-      <div className="relative">
-        {participantsHidden && <Participants />}
-
-        <HideParticipantsBtn />
-      </div>
+      {!participantsHidden && <Participants />}
 
       <ChannelFooter />
     </section>

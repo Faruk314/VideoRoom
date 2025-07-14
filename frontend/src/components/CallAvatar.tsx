@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import Avatar from "./Avatar";
 import type { IParticipant } from "../features/channel/types/channel";
 import type { Consumer } from "mediasoup-client/types";
@@ -60,15 +60,21 @@ export default function CallAvatar(props: Props) {
       className={classNames(
         "relative shadow-md w-55 h-30 flex items-center justify-center overflow-hidden cursor-pointer",
         {
-          "w-full h-full": isDisplayed && !participantsHidden,
-          "w-[70rem] h-full": isDisplayed && participantsHidden,
+          "w-screen h-screen": isDisplayed && participantsHidden,
+          "w-[70rem] h-full": isDisplayed && !participantsHidden,
           "bg-gray-50": hasVideo,
           "bg-white": !hasVideo,
         }
       )}
     >
       {hasVideo ? (
-        <video ref={videoRef} playsInline muted={muteCamera} autoPlay />
+        <video
+          ref={videoRef}
+          playsInline
+          muted={muteCamera}
+          autoPlay
+          className="w-full h-full object-fill"
+        />
       ) : (
         <Avatar
           className={classNames("text-2xl", {
