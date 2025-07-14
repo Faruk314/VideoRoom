@@ -8,9 +8,10 @@ import useParticipant from "../hooks/useChannelManager";
 import ChannelFooter from "../components/ChannelFooter";
 import { useLocalParticipantStore } from "../store/localParticipant";
 import { useChannelStore } from "../store/channel";
+import { ChevronDown, Users } from "lucide-react";
+import classNames from "classnames";
 
 export function Channel() {
-  const [isHover, setIsHover] = useState(false);
   const connectingRef = useRef(false);
   const { id } = useParams<{ id: string }>();
   const { isLoading } = useChannelQuery(id || "");
@@ -18,6 +19,7 @@ export function Channel() {
   const { localParticipant } = useLocalParticipantStore();
   const { connectMediasoup } = useParticipant();
   const displayedAvatar = useChannelStore((state) => state.displayedAvatar);
+  const { isHovering, setIsHovering } = useChannelStore();
 
   useEffect(() => {
     if (!id || connectingRef.current) return;
@@ -33,21 +35,37 @@ export function Channel() {
     })();
   }, [id]);
 
+  useEffect(() => {
+    let timeoutId: any;
+
+    const handleMouseMove = () => {
+      if (!isHovering) setIsHovering(true);
+
+      clearTimeout(timeoutId);
+      timeoutId = setTimeout(() => {
+        setIsHovering(false);
+      }, 2000);
+    };
+
+    window.addEventListener("mousemove", handleMouseMove);
+
+    return () => {
+      window.removeEventListener("mousemove", handleMouseMove);
+      clearTimeout(timeoutId);
+    };
+  }, [isHovering]);
+
   if (isLoading) {
     return <Loader />;
   }
 
   return (
-    <section
-      onMouseOver={() => setIsHover(true)}
-      onMouseLeave={() => setIsHover(false)}
-      className="flex flex-col gap-4 items-center justify-between h-[100vh] w-full overflow-y-hidden bg-gray-100"
-    >
+    <section className="flex flex-col gap-4 items-center justify-between h-[100vh] w-full overflow-y-hidden bg-gray-100">
       <div className="flex-1 flex items-center justify-center w-full pt-4">
         {displayedAvatar && <CallAvatar {...displayedAvatar} isDisplayed />}
       </div>
 
-      <div className="flex space-x-2 mb-24">
+      <div className="relative flex space-x-2 mb-24">
         {localParticipant && (
           <div
             key={localParticipant.user.userId}
@@ -90,9 +108,21 @@ export function Channel() {
             </div>
           );
         })}
+
+        <button
+          className={classNames(
+            "absolute left-1/2 -translate-x-1/2 top-[-1rem] flex items-center space-x-2 text-white hover:bg-gray-400 rounded-full py-1 px-2 bg-gray-500 cursor-pointer",
+            {
+              hidden: !isHovering,
+            }
+          )}
+        >
+          <ChevronDown size={22} />
+          <Users fill="white" size={22} />
+        </button>
       </div>
 
-      {isHover && <ChannelFooter />}
+      <ChannelFooter />
     </section>
   );
 }

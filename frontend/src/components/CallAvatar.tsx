@@ -26,11 +26,11 @@ export default function CallAvatar(props: Props) {
     muteCamera,
     isDisplayed,
   } = props;
-  const [isHovering, setIsHovering] = useState(false);
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const setDisplayedAvatar = useChannelStore(
     (state) => state.setDisplayedAvatar
   );
+  const { isHovering } = useChannelStore();
 
   useEffect(() => {
     const video = videoRef.current;
@@ -56,8 +56,6 @@ export default function CallAvatar(props: Props) {
 
   return (
     <div
-      onMouseOver={() => setIsHovering(true)}
-      onMouseLeave={() => setIsHovering(false)}
       onClick={() => setDisplayedAvatar({ ...props })}
       className={classNames(
         "relative border border-gray-300 w-55 h-30 rounded-md flex items-center justify-center overflow-hidden cursor-pointer",

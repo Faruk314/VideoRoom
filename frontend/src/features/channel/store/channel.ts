@@ -12,11 +12,15 @@ interface IDisplayedAvatar {
 }
 
 interface ChannelState {
+  isHovering: boolean;
   displayedAvatar: IDisplayedAvatar | null;
   setDisplayedAvatar: (avatar: IDisplayedAvatar | null) => void;
+  setIsHovering: (state: boolean) => void;
 }
 
 export const useChannelStore = create<ChannelState>((set) => ({
+  isHovering: false,
   displayedAvatar: null,
   setDisplayedAvatar: (avatar) => set({ displayedAvatar: avatar }),
+  setIsHovering: (state) => set({ isHovering: state }),
 }));

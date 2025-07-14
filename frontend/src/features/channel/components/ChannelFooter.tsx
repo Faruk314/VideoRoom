@@ -6,13 +6,21 @@ import MicrophoneBtn from "../../../components/buttons/MicrophoneBtn";
 import ScreenShareBtn from "../../../components/buttons/ScreenShareBtn";
 import { useLocalParticipantStore } from "../store/localParticipant";
 import { useChannel } from "../hooks/useChannel";
+import { useChannelStore } from "../store/channel";
+import classNames from "classnames";
 
 export default function ChannelFooter() {
   const { localParticipant } = useLocalParticipantStore();
+  const { isHovering } = useChannelStore();
   const { leaveChannel } = useChannel();
 
   return (
-    <div className="fixed bottom-0 w-full mb-4 slide-up z-50">
+    <div
+      className={classNames(
+        "fixed bottom-0 w-full mb-4 slide-up z-50",
+        isHovering ? "slide-up" : "slide-down"
+      )}
+    >
       <div className="flex items-center justify-between w-full mx-auto py-2 px-4">
         <div className="fixed bottom-0 left-1/2 -translate-x-1/2 flex items-center space-x-2 border border-gray-300 rounded-md px-2 py-2 shadow-md bg-white z-50">
           <CameraBtn camMuted={localParticipant?.camMuted || false} />
