@@ -30,7 +30,7 @@ export default function CallAvatar(props: Props) {
   const setDisplayedAvatar = useChannelStore(
     (state) => state.setDisplayedAvatar
   );
-  const { isHovering } = useChannelStore();
+  const { isHovering, participantsHidden } = useChannelStore();
 
   useEffect(() => {
     const video = videoRef.current;
@@ -58,10 +58,11 @@ export default function CallAvatar(props: Props) {
     <div
       onClick={() => setDisplayedAvatar({ ...props })}
       className={classNames(
-        "relative border border-gray-300 w-55 h-30 rounded-md flex items-center justify-center overflow-hidden cursor-pointer",
+        "relative shadow-md w-55 h-30 flex items-center justify-center overflow-hidden cursor-pointer",
         {
-          "w-[70rem] h-full": isDisplayed,
-          "bg-black": hasVideo,
+          "w-full h-full": isDisplayed && !participantsHidden,
+          "w-[70rem] h-full": isDisplayed && participantsHidden,
+          "bg-gray-50": hasVideo,
           "bg-white": !hasVideo,
         }
       )}
@@ -105,6 +106,7 @@ export default function CallAvatar(props: Props) {
         className={classNames(
           "absolute bottom-2 right-2 transition-opacity duration-200",
           {
+            hidden: isDisplayed,
             "opacity-0 pointer-events-none": !isHovering,
             "opacity-100 pointer-events-auto": isHovering,
           }
