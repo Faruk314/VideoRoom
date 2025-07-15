@@ -64,6 +64,8 @@ export default function CallAvatar(props: Props) {
           "w-[70rem] h-full": isDisplayed && !participantsHidden,
           "bg-gray-50": hasVideo,
           "bg-white": !hasVideo,
+          "border-3 border-green-600":
+            participant.isSpeaking && !isDisplayed && !isDisplayStream,
         }
       )}
     >
