@@ -6,6 +6,7 @@ interface ILocalParticipant {
   user: IUser;
   micMuted: boolean;
   camMuted: boolean;
+  isSpeaking: boolean;
   isStreaming: boolean;
   deafened: boolean;
   connected: boolean;
@@ -25,6 +26,7 @@ interface IParticipant {
   user: IUser;
   micMuted: boolean;
   camMuted: boolean;
+  isSpeaking: boolean;
   isStreaming: boolean;
   deafened: boolean;
   connected: boolean;
