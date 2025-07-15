@@ -1,5 +1,11 @@
 import { types } from "mediasoup";
-import { IceParameters, IceCandidate, DtlsParameters } from "mediasoup/types";
+import {
+  IceParameters,
+  IceCandidate,
+  DtlsParameters,
+  Router,
+  AudioLevelObserver,
+} from "mediasoup/types";
 
 declare global {
   namespace Express {
@@ -45,4 +51,10 @@ interface ITransport {
   iceServers: { urls: string }[];
 }
 
-export type { IPeer, IUser, ITransport };
+interface IChannel {
+  router: Router;
+  audioLevelObserver: AudioLevelObserver;
+  lastActiveSpeaker: string | null;
+}
+
+export type { IPeer, IUser, ITransport, IChannel };

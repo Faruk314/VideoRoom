@@ -35,7 +35,7 @@ class TransportListeners {
     }) => void
   ) {
     try {
-      const router = await getOrCreateRouter(channelId);
+      const router = await getOrCreateRouter(channelId, this.io);
 
       createPeer({
         userId: this.socket.userId,

@@ -1,6 +1,7 @@
 import { types } from "mediasoup";
 import { getPeer } from "mediasoup/methods/peer";
 import { producers, setupProducerListeners } from "mediasoup/methods/producer";
+import { mediasoupState } from "mediasoup/methods/state";
 import { updateParticipant } from "redis/methods/participant";
 import { Server, Socket } from "socket.io";
 
@@ -52,7 +53,7 @@ class ProducerListeners {
       const producer = await sendTransport.produce({
         kind,
         rtpParameters,
-        appData,
+        appData: { ...appData, userId: this.socket.userId },
       });
 
       peer.producers?.set(producer.id, producer);
@@ -67,8 +68,15 @@ class ProducerListeners {
       if (appData.streamType === "video")
         await updateParticipant(this.socket.userId, { camMuted: false });
 
-      if (appData.streamType === "audio")
+      if (appData.streamType === "audio") {
         await updateParticipant(this.socket.userId, { micMuted: false });
+
+        const channel = mediasoupState.channelMap.get(peer.currentChannelId);
+
+        await channel?.audioLevelObserver.addProducer({
+          producerId: producer.id,
+        });
+      }
 
       this.socket.to(peer.currentChannelId).emit("newProducer", {
         producerId: producer.id,
@@ -122,6 +130,12 @@ class ProducerListeners {
 
       if (producer.appData.streamType === "audio") {
         await updateParticipant(peer.userId, { micMuted: true });
+
+        const channel = mediasoupState.channelMap.get(peer.currentChannelId);
+
+        await channel?.audioLevelObserver.removeProducer({
+          producerId: producer.id,
+        });
       }
 
       producer.close();

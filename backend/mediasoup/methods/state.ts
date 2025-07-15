@@ -1,11 +1,12 @@
 import { types } from "mediasoup";
+import { IChannel } from "types/types";
 
 export type MediasoupState = {
   worker: types.Worker | null;
-  routerMap: Map<string, types.Router>;
+  channelMap: Map<string, IChannel>;
 };
 
 export const mediasoupState: MediasoupState = {
   worker: null,
-  routerMap: new Map(),
+  channelMap: new Map(),
 };
