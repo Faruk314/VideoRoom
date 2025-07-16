@@ -33,9 +33,9 @@ export default function HideParticipantsBtn() {
         )}
       >
         {participantsHidden ? (
-          <ChevronDown size={22} />
-        ) : (
           <ChevronUp size={22} />
+        ) : (
+          <ChevronDown size={22} />
         )}
         <Users fill="white" size={22} />
       </button>
