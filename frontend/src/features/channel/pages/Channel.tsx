@@ -6,7 +6,6 @@ import Loader from "../../../components/loaders/Loader";
 import useParticipant from "../hooks/useChannelManager";
 import ChannelFooter from "../components/ChannelFooter";
 import { useChannelStore } from "../store/channel";
-import HideParticipantsBtn from "../../../components/buttons/HideParticipantsBtn";
 import Participants from "../components/Participants";
 
 export function Channel() {

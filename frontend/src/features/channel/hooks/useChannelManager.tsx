@@ -140,7 +140,15 @@ export default function useChannelManager() {
     if (!displayProducer) {
       if (!sendTransport) throw new Error("Send transport missing");
 
-      return createDisplayProducer(sendTransport);
+      const screenTrack = await createDisplayProducer(sendTransport);
+
+      if (!screenTrack) return;
+
+      screenTrack.onended = async () => {
+        await stopStream("screen");
+      };
+
+      return;
     }
 
     await stopStream("screen");
@@ -165,6 +173,10 @@ export default function useChannelManager() {
       oldVideoTrack?.stop();
 
       addStream("screen", newStream);
+
+      newScreenTrack.onended = async () => {
+        await stopStream("screen");
+      };
     } catch (error) {
       console.error("Error switching screen share source", error);
     }

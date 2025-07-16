@@ -59,6 +59,8 @@ export default function useProducer() {
       addStream("screen", stream);
       addProducer("screen", newProducer);
       updateLocalParticipant({ isStreaming: true });
+
+      return screenTrack;
     } catch (error) {
       console.error("Error creating display producer", error);
     }
