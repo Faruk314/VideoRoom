@@ -12,7 +12,7 @@ import useChannelManager from "../../features/channel/hooks/useChannelManager";
 
 export default function StreamOptions() {
   const [open, setOpen] = useState(false);
-  const { stopStream, toogleScreenShare } = useChannelManager();
+  const { stopStream, switchScreenShare } = useChannelManager();
 
   return (
     <>
@@ -43,7 +43,7 @@ export default function StreamOptions() {
           <DropdownMenuItem
             onSelect={(e) => {
               e.preventDefault();
-              toogleScreenShare();
+              switchScreenShare();
             }}
             className="flex justify-between px-3 py-2 rounded-md text-sm hover:bg-gray-100 focus:bg-gray-100 cursor-pointer"
           >

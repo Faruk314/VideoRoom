@@ -10,18 +10,20 @@ import useConsumerEmitters from "../../media/websocket/emitters/mediasoup/consum
 import useConsumer from "../../media/hooks/useConsumer";
 import { useChannelStore } from "../store/channel";
 import type { MediaKind } from "../../media/types/media";
+import { useMedia } from "../../media/hooks/useMedia";
 
 export default function useChannelManager() {
   const { emitGetRtpCapabilties, emitCreateTransport } = useTransportEmitters();
   const { emitCloseProducer } = useProducerEmitters();
   const { setDevice, sendTransport } = useMediasoupStore();
   const { setupSendTransport, setupRecvTransport } = useTransport();
-  const { createVideoProducer, createAudioProducer, createDisplayProducer } =
-    useProducer();
   const { emitCreateConsumers } = useConsumerEmitters();
   const { setupConsumer } = useConsumer();
-  const { removeProducer, removeStream, updateLocalParticipant } =
+  const { getDisplayStream } = useMedia();
+  const { removeProducer, removeStream, updateLocalParticipant, addStream } =
     useLocalParticipantStore();
+  const { createVideoProducer, createAudioProducer, createDisplayProducer } =
+    useProducer();
 
   const connectMediasoup = useCallback(async (channelId: string) => {
     const localParticipant =
@@ -144,11 +146,36 @@ export default function useChannelManager() {
     await stopStream("screen");
   }
 
+  async function switchScreenShare() {
+    const { localParticipant } = useLocalParticipantStore.getState();
+
+    if (!localParticipant?.producers.screen) return;
+
+    const currentScreenProducer = localParticipant.producers.screen;
+    const currentScreenStream = localParticipant.streams.screen;
+
+    try {
+      const { stream: newStream, screenTrack: newScreenTrack } =
+        await getDisplayStream();
+
+      await currentScreenProducer.replaceTrack({ track: newScreenTrack });
+
+      const oldVideoTrack = currentScreenStream?.getVideoTracks()[0];
+
+      oldVideoTrack?.stop();
+
+      addStream("screen", newStream);
+    } catch (error) {
+      console.error("Error switching screen share source", error);
+    }
+  }
+
   return {
     connectMediasoup,
     toogleCamera,
     toogleScreenShare,
     toogleMicrophone,
     stopStream,
+    switchScreenShare,
   };
 }
