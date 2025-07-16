@@ -3,7 +3,7 @@ import { useMedia } from "./useMedia";
 import { useLocalParticipantStore } from "../../channel/store/localParticipant";
 
 export default function useProducer() {
-  const { getMediaStream, getDisplayStream } = useMedia();
+  const { getMediaStream, getAudioStream, getDisplayStream } = useMedia();
   const { addProducer, addStream, updateLocalParticipant } =
     useLocalParticipantStore();
 
@@ -25,14 +25,13 @@ export default function useProducer() {
       addProducer("video", newProducer);
       updateLocalParticipant({ camMuted: false });
     } catch (error) {
-      console.error(error);
-      throw new Error("Error creating video producer");
+      console.error("Error creating video producer", error);
     }
   }
 
   async function createAudioProducer(clientSendTransport: Transport) {
     try {
-      const { stream, audioTrack } = await getMediaStream();
+      const { stream, audioTrack } = await getAudioStream();
 
       const newProducer = await clientSendTransport.produce({
         track: audioTrack,
@@ -44,8 +43,7 @@ export default function useProducer() {
 
       updateLocalParticipant({ micMuted: false });
     } catch (error) {
-      console.error(error);
-      throw new Error("Error creating video producer");
+      console.error("Error creating audio producer", error);
     }
   }
 
@@ -62,8 +60,7 @@ export default function useProducer() {
       addProducer("screen", newProducer);
       updateLocalParticipant({ isStreaming: true });
     } catch (error) {
-      console.error(error);
-      throw new Error("Error creating display producer");
+      console.error("Error creating display producer", error);
     }
   }
 
