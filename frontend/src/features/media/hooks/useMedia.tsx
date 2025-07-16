@@ -44,9 +44,13 @@ export function useMedia() {
   }
 
   async function getMediaStream() {
+    const selectedCamera = useMediaStore.getState().selectedCamera;
+
     const stream = await navigator.mediaDevices.getUserMedia({
       audio: true,
-      video: true,
+      video: {
+        deviceId: selectedCamera?.deviceId,
+      },
     });
     const audioTrack = stream.getAudioTracks()[0];
     const videoTrack = stream.getVideoTracks()[0];
@@ -58,7 +62,13 @@ export function useMedia() {
   }
 
   async function getAudioStream() {
-    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    const selectedMic = useMediaStore.getState().selectedMic;
+
+    const stream = await navigator.mediaDevices.getUserMedia({
+      audio: {
+        deviceId: selectedMic?.deviceId,
+      },
+    });
     const audioTrack = stream.getAudioTracks()[0];
 
     if (!audioTrack) throw new Error("No audio track found");
