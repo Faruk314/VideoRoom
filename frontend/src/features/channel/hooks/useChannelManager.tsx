@@ -20,8 +20,8 @@ export default function useChannelManager() {
   const { setupSendTransport, setupRecvTransport } = useTransport();
   const { emitCreateConsumers } = useConsumerEmitters();
   const { setupConsumer } = useConsumer();
-  const { getDisplayStream, getAudioStream } = useMedia();
-  const { setSelectedMic } = useMediaStore();
+  const { getDisplayStream, getAudioStream, getMediaStream } = useMedia();
+  const { setSelectedMic, setSelectedCamera } = useMediaStore();
   const { removeProducer, removeStream, updateLocalParticipant, addStream } =
     useLocalParticipantStore();
   const { createVideoProducer, createAudioProducer, createDisplayProducer } =
@@ -51,8 +51,15 @@ export default function useChannelManager() {
 
       setupRecvTransport(recvTransport, device);
 
-      if (!localParticipant?.camMuted)
-        await createVideoProducer(clientSendTransport);
+      if (!localParticipant?.camMuted) {
+        const videoTrack = await createVideoProducer(clientSendTransport);
+
+        if (videoTrack) {
+          videoTrack.onended = async () => {
+            await stopStream("video");
+          };
+        }
+      }
 
       if (!localParticipant?.deafened && !localParticipant?.micMuted) {
         const audioTrack = await createAudioProducer(clientSendTransport);
@@ -221,6 +228,35 @@ export default function useChannelManager() {
     }
   }
 
+  async function switchCamera(device: MediaDeviceInfo) {
+    const { localParticipant } = useLocalParticipantStore.getState();
+
+    setSelectedCamera(device);
+
+    if (!localParticipant?.producers.video) return;
+
+    const currentVideoProducer = localParticipant.producers.video;
+    const currentVideoStream = localParticipant.streams.video;
+
+    try {
+      const { stream: newStream, videoTrack: newVideoTrack } =
+        await getMediaStream(device.deviceId);
+
+      await currentVideoProducer.replaceTrack({ track: newVideoTrack });
+
+      const oldVideoTrack = currentVideoStream?.getVideoTracks()[0];
+      oldVideoTrack?.stop();
+
+      addStream("video", newStream);
+
+      newVideoTrack.onended = async () => {
+        await stopStream("video");
+      };
+    } catch (error) {
+      console.error("Error switching video producer stream", error);
+    }
+  }
+
   return {
     connectMediasoup,
     toogleCamera,
@@ -229,5 +265,6 @@ export default function useChannelManager() {
     stopStream,
     switchScreenShare,
     switchMicrophone,
+    switchCamera,
   };
 }

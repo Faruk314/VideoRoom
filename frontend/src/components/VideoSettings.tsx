@@ -3,15 +3,20 @@ import { useMediaStore } from "../features/media/store/media";
 import { PrimarySelect } from "./selects/PrimarySelect";
 import { Video } from "lucide-react";
 import { useMedia } from "../features/media/hooks/useMedia";
+import useChannelManager from "../features/channel/hooks/useChannelManager";
 
 export default function VideoSettings() {
   const { hasVideoPermission } = useMediaStore();
-  const { cameras, selectedCamera, setSelectedCamera } = useMediaStore();
+  const { cameras, selectedCamera } = useMediaStore();
   const { getVideoDevices } = useMedia();
+  const { switchCamera } = useChannelManager();
 
-  function handleCameraChange(deviceId: string) {
+  async function handleCameraChange(deviceId: string) {
     const camera = cameras.find((cam) => cam.deviceId === deviceId);
-    if (camera) setSelectedCamera(camera);
+
+    if (!camera) return console.error("Selected camera not found");
+
+    await switchCamera(camera);
   }
 
   useEffect(() => {

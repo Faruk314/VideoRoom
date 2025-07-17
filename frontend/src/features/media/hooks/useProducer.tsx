@@ -29,6 +29,8 @@ export default function useProducer() {
       addStream("video", stream);
       addProducer("video", newProducer);
       updateLocalParticipant({ camMuted: false });
+
+      return videoTrack;
     } catch (error) {
       console.error("Error creating video producer", error);
     }

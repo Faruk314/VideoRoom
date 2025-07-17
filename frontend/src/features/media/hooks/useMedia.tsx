@@ -2,7 +2,7 @@ import { useMediaStore } from "../store/media";
 
 export function useMedia() {
   const { setMicrophones } = useMediaStore();
-  const { setCameras, setSelectedCamera } = useMediaStore();
+  const { setCameras } = useMediaStore();
   const { setSpeakers } = useMediaStore();
 
   async function getAudioDevices() {
@@ -37,7 +37,6 @@ export function useMedia() {
     const cameras = devices.filter((d) => d.kind === "videoinput");
 
     setCameras(cameras);
-    setSelectedCamera(cameras[0]);
   }
 
   async function getMediaStream(deviceId?: string) {
