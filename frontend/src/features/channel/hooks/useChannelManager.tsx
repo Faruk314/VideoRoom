@@ -54,8 +54,15 @@ export default function useChannelManager() {
       if (!localParticipant?.camMuted)
         await createVideoProducer(clientSendTransport);
 
-      if (!localParticipant?.deafened && !localParticipant?.micMuted)
-        await createAudioProducer(clientSendTransport);
+      if (!localParticipant?.deafened && !localParticipant?.micMuted) {
+        const audioTrack = await createAudioProducer(clientSendTransport);
+
+        if (audioTrack) {
+          audioTrack.onended = async () => {
+            await stopStream("audio");
+          };
+        }
+      }
 
       const { data: consumersData } = await emitCreateConsumers({
         rtpCapabilities: device.rtpCapabilities,
@@ -205,6 +212,10 @@ export default function useChannelManager() {
       oldAudioTrack?.stop();
 
       addStream("audio", newStream);
+
+      newAudioTrack.onended = async () => {
+        await stopStream("audio");
+      };
     } catch (error) {
       console.error("Error switching audio producer stream", error);
     }

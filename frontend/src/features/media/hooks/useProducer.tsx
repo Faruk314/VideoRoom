@@ -51,6 +51,8 @@ export default function useProducer() {
       addProducer("audio", newProducer);
 
       updateLocalParticipant({ micMuted: false });
+
+      return audioTrack;
     } catch (error) {
       console.error("Error creating audio producer", error);
     }
