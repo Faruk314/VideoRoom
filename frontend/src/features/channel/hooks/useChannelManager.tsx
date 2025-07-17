@@ -11,6 +11,7 @@ import useConsumer from "../../media/hooks/useConsumer";
 import { useChannelStore } from "../store/channel";
 import type { MediaKind } from "../../media/types/media";
 import { useMedia } from "../../media/hooks/useMedia";
+import { useMediaStore } from "../../media/store/media";
 
 export default function useChannelManager() {
   const { emitGetRtpCapabilties, emitCreateTransport } = useTransportEmitters();
@@ -19,7 +20,8 @@ export default function useChannelManager() {
   const { setupSendTransport, setupRecvTransport } = useTransport();
   const { emitCreateConsumers } = useConsumerEmitters();
   const { setupConsumer } = useConsumer();
-  const { getDisplayStream } = useMedia();
+  const { getDisplayStream, getAudioStream } = useMedia();
+  const { setSelectedMic } = useMediaStore();
   const { removeProducer, removeStream, updateLocalParticipant, addStream } =
     useLocalParticipantStore();
   const { createVideoProducer, createAudioProducer, createDisplayProducer } =
@@ -182,6 +184,32 @@ export default function useChannelManager() {
     }
   }
 
+  async function switchMicrophone(device: MediaDeviceInfo) {
+    const { localParticipant } = useLocalParticipantStore.getState();
+
+    setSelectedMic(device);
+
+    if (!localParticipant?.producers.audio) return;
+
+    const currentAudioProducer = localParticipant.producers.audio;
+    const currentAudioStream = localParticipant.streams.audio;
+
+    try {
+      const { stream: newStream, audioTrack: newAudioTrack } =
+        await getAudioStream(device.deviceId);
+
+      await currentAudioProducer.replaceTrack({ track: newAudioTrack });
+
+      const oldAudioTrack = currentAudioStream?.getAudioTracks()[0];
+
+      oldAudioTrack?.stop();
+
+      addStream("audio", newStream);
+    } catch (error) {
+      console.error("Error switching audio producer stream", error);
+    }
+  }
+
   return {
     connectMediasoup,
     toogleCamera,
@@ -189,5 +217,6 @@ export default function useChannelManager() {
     toogleMicrophone,
     stopStream,
     switchScreenShare,
+    switchMicrophone,
   };
 }
