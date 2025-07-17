@@ -1,9 +1,9 @@
 import { useMediaStore } from "../store/media";
 
 export function useMedia() {
-  const { setMicrophones, setSelectedMic } = useMediaStore();
+  const { setMicrophones } = useMediaStore();
   const { setCameras, setSelectedCamera } = useMediaStore();
-  const { setSpeakers, setSelectedSpeaker } = useMediaStore();
+  const { setSpeakers } = useMediaStore();
 
   async function getAudioDevices() {
     try {
@@ -20,9 +20,6 @@ export function useMedia() {
 
       setMicrophones(microphones);
       setSpeakers(speakers);
-
-      setSelectedMic(microphones[0]);
-      setSelectedSpeaker(speakers[0]);
     } catch (err) {
       console.error("Failed to list audio devices:", err);
     }
@@ -43,13 +40,11 @@ export function useMedia() {
     setSelectedCamera(cameras[0]);
   }
 
-  async function getMediaStream() {
-    const selectedCamera = useMediaStore.getState().selectedCamera;
-
+  async function getMediaStream(deviceId?: string) {
     const stream = await navigator.mediaDevices.getUserMedia({
       audio: true,
       video: {
-        deviceId: selectedCamera?.deviceId,
+        deviceId: deviceId,
       },
     });
     const audioTrack = stream.getAudioTracks()[0];
@@ -61,12 +56,10 @@ export function useMedia() {
     return { stream, audioTrack, videoTrack };
   }
 
-  async function getAudioStream() {
-    const selectedMic = useMediaStore.getState().selectedMic;
-
+  async function getAudioStream(deviceId?: string) {
     const stream = await navigator.mediaDevices.getUserMedia({
       audio: {
-        deviceId: selectedMic?.deviceId,
+        deviceId: deviceId,
       },
     });
     const audioTrack = stream.getAudioTracks()[0];

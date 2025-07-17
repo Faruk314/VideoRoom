@@ -1,6 +1,7 @@
 import type { Transport } from "mediasoup-client/types";
 import { useMedia } from "./useMedia";
 import { useLocalParticipantStore } from "../../channel/store/localParticipant";
+import { useMediaStore } from "../store/media";
 
 export default function useProducer() {
   const { getMediaStream, getAudioStream, getDisplayStream } = useMedia();
@@ -8,8 +9,12 @@ export default function useProducer() {
     useLocalParticipantStore();
 
   async function createVideoProducer(clientSendTransport: Transport) {
+    const { selectedCamera } = useMediaStore.getState();
+
     try {
-      const { stream, videoTrack } = await getMediaStream();
+      const { stream, videoTrack } = await getMediaStream(
+        selectedCamera?.deviceId
+      );
 
       const newProducer = await clientSendTransport.produce({
         track: videoTrack,
@@ -30,8 +35,12 @@ export default function useProducer() {
   }
 
   async function createAudioProducer(clientSendTransport: Transport) {
+    const { selectedMic } = useMediaStore.getState();
+
     try {
-      const { stream, audioTrack } = await getAudioStream();
+      const { stream, audioTrack } = await getAudioStream(
+        selectedMic?.deviceId
+      );
 
       const newProducer = await clientSendTransport.produce({
         track: audioTrack,
