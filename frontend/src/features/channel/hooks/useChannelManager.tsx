@@ -1,89 +1,21 @@
-import { useCallback } from "react";
-import useTransport from "../../media/hooks/useTransport";
 import { useMediasoupStore } from "../../media/store/mediasoup";
-import { useTransportEmitters } from "../../media/websocket/emitters/mediasoup/transport";
-import { Device } from "mediasoup-client";
 import { useLocalParticipantStore } from "../store/localParticipant";
 import useProducer from "../../media/hooks/useProducer";
 import useProducerEmitters from "../../media/websocket/emitters/mediasoup/producer";
-import useConsumerEmitters from "../../media/websocket/emitters/mediasoup/consumer";
-import useConsumer from "../../media/hooks/useConsumer";
 import { useChannelStore } from "../store/channel";
 import type { MediaKind } from "../../media/types/media";
 import { useMedia } from "../../media/hooks/useMedia";
 import { useMediaStore } from "../../media/store/media";
 
 export default function useChannelManager() {
-  const { emitGetRtpCapabilties, emitCreateTransport } = useTransportEmitters();
   const { emitCloseProducer } = useProducerEmitters();
-  const { setDevice, sendTransport } = useMediasoupStore();
-  const { setupSendTransport, setupRecvTransport } = useTransport();
-  const { emitCreateConsumers } = useConsumerEmitters();
-  const { setupConsumer } = useConsumer();
+  const { sendTransport } = useMediasoupStore();
   const { getDisplayStream, getAudioStream, getMediaStream } = useMedia();
   const { setSelectedMic, setSelectedCamera } = useMediaStore();
   const { removeProducer, removeStream, updateLocalParticipant, addStream } =
     useLocalParticipantStore();
   const { createVideoProducer, createAudioProducer, createDisplayProducer } =
     useProducer();
-
-  const connectMediasoup = useCallback(async (channelId: string) => {
-    const localParticipant =
-      useLocalParticipantStore.getState().localParticipant;
-
-    try {
-      const { routerRtpCapabilities } = await emitGetRtpCapabilties({
-        channelId,
-      });
-
-      const device = new Device();
-
-      await device.load({ routerRtpCapabilities });
-
-      setDevice(device);
-
-      const { sendTransport, recvTransport } = await emitCreateTransport();
-
-      const clientSendTransport = await setupSendTransport(
-        sendTransport,
-        device
-      );
-
-      setupRecvTransport(recvTransport, device);
-
-      if (!localParticipant?.camMuted) {
-        const videoTrack = await createVideoProducer(clientSendTransport);
-
-        if (videoTrack) {
-          videoTrack.onended = async () => {
-            await stopStream("video");
-          };
-        }
-      }
-
-      if (!localParticipant?.deafened && !localParticipant?.micMuted) {
-        const audioTrack = await createAudioProducer(clientSendTransport);
-
-        if (audioTrack) {
-          audioTrack.onended = async () => {
-            await stopStream("audio");
-          };
-        }
-      }
-
-      const { data: consumersData } = await emitCreateConsumers({
-        rtpCapabilities: device.rtpCapabilities,
-      });
-
-      await Promise.all(
-        consumersData.map((consumer) => setupConsumer(consumer))
-      );
-    } catch (error) {
-      console.error("Failed to connect with mediasoup server");
-
-      if (error instanceof Error) throw new Error(error.message);
-    }
-  }, []);
 
   async function stopStream(kind: MediaKind) {
     try {
@@ -258,7 +190,6 @@ export default function useChannelManager() {
   }
 
   return {
-    connectMediasoup,
     toogleCamera,
     toogleScreenShare,
     toogleMicrophone,

@@ -3,16 +3,16 @@ import CallAvatar from "../../../components/CallAvatar";
 import { useChannelQuery } from "../queries/channel";
 import { useParams } from "react-router-dom";
 import Loader from "../../../components/loaders/Loader";
-import useParticipant from "../hooks/useChannelManager";
 import ChannelFooter from "../components/ChannelFooter";
 import { useChannelStore } from "../store/channel";
 import Participants from "../components/Participants";
+import useMediasoup from "../../media/hooks/useMediasoup";
 
 export function Channel() {
   const connectingRef = useRef(false);
   const { id } = useParams<{ id: string }>();
   const { isLoading } = useChannelQuery(id || "");
-  const { connectMediasoup } = useParticipant();
+  const { connectMediasoup } = useMediasoup();
   const displayedAvatar = useChannelStore((state) => state.displayedAvatar);
   const { isHovering, setIsHovering, participantsHidden } = useChannelStore();
 

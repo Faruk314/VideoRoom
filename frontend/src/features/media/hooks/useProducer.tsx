@@ -51,7 +51,6 @@ export default function useProducer() {
 
       addStream("audio", stream);
       addProducer("audio", newProducer);
-
       updateLocalParticipant({ micMuted: false });
 
       return audioTrack;
