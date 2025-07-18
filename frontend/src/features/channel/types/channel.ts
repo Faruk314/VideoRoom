@@ -1,4 +1,3 @@
-import type { types } from "mediasoup-client";
 import type { IUser } from "../../user/types/user";
 import { Consumer, Producer } from "mediasoup-client/types";
 

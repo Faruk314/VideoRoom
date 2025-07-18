@@ -1,4 +1,4 @@
-import { Phone, SquareArrowOutUpRight } from "lucide-react";
+import { Maximize, Phone } from "lucide-react";
 import { IconBtn } from "../../../components/buttons/IconBtn";
 import { Settings as SettingsModal } from "../../../components/modals/Settings";
 import CameraBtn from "../../../components/buttons/CameraBtn";
@@ -9,11 +9,28 @@ import { useChannel } from "../hooks/useChannel";
 import { useChannelStore } from "../store/channel";
 import classNames from "classnames";
 import HideParticipantsBtn from "../../../components/buttons/HideParticipantsBtn";
+import type { RefObject } from "react";
 
-export default function ChannelFooter() {
+interface Props {
+  sectionRef: RefObject<HTMLElement | null>;
+}
+
+export default function ChannelFooter({ sectionRef }: Props) {
   const { localParticipant } = useLocalParticipantStore();
   const { isHovering } = useChannelStore();
   const { leaveChannel } = useChannel();
+
+  function handleFullScreen() {
+    const element = sectionRef.current;
+
+    if (!element) return;
+
+    if (!document.fullscreenElement) {
+      element.requestFullscreen();
+    } else {
+      document.exitFullscreen();
+    }
+  }
 
   return (
     <div
@@ -40,9 +57,10 @@ export default function ChannelFooter() {
 
         <div className="fixed bottom-0 right-6 flex space-x-2 z-50">
           <IconBtn
-            description="Pop Out"
+            onClick={handleFullScreen}
+            description="Fullscreen"
             className="bg-transparent text-black hover:bg-gray-200"
-            icon={<SquareArrowOutUpRight size={30} />}
+            icon={<Maximize size={30} />}
           />
         </div>
 
