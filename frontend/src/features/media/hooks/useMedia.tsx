@@ -1,8 +1,8 @@
 import { useMediaStore } from "../store/media";
 
 export function useMedia() {
-  const { setMicrophones } = useMediaStore();
-  const { setCameras } = useMediaStore();
+  const { setMicrophones, setAudioPermission } = useMediaStore();
+  const { setCameras, setVideoPermission } = useMediaStore();
   const { setSpeakers } = useMediaStore();
 
   async function getAudioDevices() {
@@ -81,11 +81,30 @@ export function useMedia() {
     return { stream, screenTrack };
   }
 
+  async function getMediaPermissions(options: {
+    audio?: boolean;
+    video?: boolean;
+  }) {
+    try {
+      await navigator.mediaDevices.getUserMedia({
+        audio: options.audio ?? false,
+        video: options.video ?? false,
+      });
+
+      if (options.audio) setAudioPermission(true);
+
+      if (options.video) setVideoPermission(true);
+    } catch (error) {
+      console.error("Error requesting media permission", error);
+    }
+  }
+
   return {
     getAudioDevices,
     getVideoDevices,
     getMediaStream,
     getAudioStream,
     getDisplayStream,
+    getMediaPermissions,
   };
 }
