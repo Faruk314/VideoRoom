@@ -1,14 +1,17 @@
 import { useState, type ButtonHTMLAttributes, type ReactNode } from "react";
 import { cn } from "../../lib/utils";
+import { AlertCircle } from "lucide-react";
 
 interface IconButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   icon: ReactNode;
   description?: string;
+  showAlert?: boolean;
 }
 
 export function IconBtn({
   icon,
   description,
+  showAlert = false,
   className,
   ...props
 }: IconButtonProps) {
@@ -32,6 +35,12 @@ export function IconBtn({
         <span className="absolute font-black bottom-full left-1/2 mb-2 -translate-x-1/2 bg-black/60 text-white rounded px-2 py-1 whitespace-nowrap">
           {description}
         </span>
+      )}
+
+      {showAlert && (
+        <div className="absolute top-[-0.3rem] right-[-0.1rem] w-4 h-4 text-white rounded-full text-center">
+          <AlertCircle fill="orange" />
+        </div>
       )}
     </div>
   );
