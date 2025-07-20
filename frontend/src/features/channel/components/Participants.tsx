@@ -14,14 +14,16 @@ export default function Participants() {
           className="flex space-x-2 participant-group"
         >
           <CallAvatar
+            isLocal
             muteCamera
-            participant={localParticipant}
+            participantId={localParticipant.user.userId}
             stream={localParticipant.streams.video}
           />
 
           {localParticipant.streams.screen && (
             <CallAvatar
-              participant={localParticipant}
+              isLocal
+              participantId={localParticipant.user.userId}
               stream={localParticipant.streams.screen}
               isDisplayStream
             />
@@ -38,11 +40,14 @@ export default function Participants() {
             key={participant.user.userId}
             className="flex space-x-2 participant-group"
           >
-            <CallAvatar participant={participant} consumer={videoConsumer} />
+            <CallAvatar
+              participantId={participant.user.userId}
+              consumer={videoConsumer}
+            />
 
             {screenConsumer && (
               <CallAvatar
-                participant={participant}
+                participantId={participant.user.userId}
                 consumer={screenConsumer}
                 isDisplayStream
               />

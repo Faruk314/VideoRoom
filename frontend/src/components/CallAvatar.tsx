@@ -1,15 +1,17 @@
 import { useEffect, useRef } from "react";
 import Avatar from "./Avatar";
-import type { IParticipant } from "../features/channel/types/channel";
 import type { Consumer } from "mediasoup-client/types";
 import classNames from "classnames";
 import { useChannelStore } from "../features/channel/store/channel";
 import UserOptions from "./modals/UserOptions";
 import StreamOptions from "./modals/StreamOptions";
 import { MicOff, ScreenShare } from "lucide-react";
+import { useLocalParticipantStore } from "../features/channel/store/localParticipant";
+import { useParticipantStore } from "../features/channel/store/remoteParticipant";
 
 interface Props {
-  participant: Omit<IParticipant, "consumers">;
+  participantId: string;
+  isLocal?: boolean;
   consumer?: Consumer | null;
   stream?: MediaStream | null;
   isDisplayStream?: boolean;
@@ -19,7 +21,8 @@ interface Props {
 
 export default function CallAvatar(props: Props) {
   const {
-    participant,
+    participantId,
+    isLocal,
     consumer,
     stream,
     isDisplayStream,
@@ -27,10 +30,17 @@ export default function CallAvatar(props: Props) {
     isDisplayed,
   } = props;
   const videoRef = useRef<HTMLVideoElement | null>(null);
+  const { localParticipant } = useLocalParticipantStore();
+  const { isHovering, participantsHidden } = useChannelStore();
+  const { getParticipant } = useParticipantStore();
+
+  const participant = isLocal
+    ? localParticipant
+    : getParticipant(participantId);
+
   const setDisplayedAvatar = useChannelStore(
     (state) => state.setDisplayedAvatar
   );
-  const { isHovering, participantsHidden } = useChannelStore();
 
   useEffect(() => {
     const video = videoRef.current;
@@ -53,6 +63,8 @@ export default function CallAvatar(props: Props) {
   }, [consumer, stream]);
 
   const hasVideo = !!stream || !!consumer?.track;
+
+  if (!participant) return null;
 
   return (
     <div
