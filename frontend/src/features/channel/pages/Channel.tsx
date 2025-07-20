@@ -9,7 +9,6 @@ import Participants from "../components/Participants";
 import useMediasoup from "../../media/hooks/useMediasoup";
 
 export function Channel() {
-  const sectionRef = useRef<HTMLElement>(null);
   const connectingRef = useRef(false);
   const { id } = useParams<{ id: string }>();
   const { isLoading } = useChannelQuery(id || "");
@@ -56,17 +55,14 @@ export function Channel() {
   }
 
   return (
-    <section
-      ref={sectionRef}
-      className="flex flex-col items-center justify-between h-[100vh] w-full overflow-y-hidden bg-white"
-    >
+    <section className="flex flex-col items-center justify-between h-[100vh] w-full overflow-y-hidden bg-white">
       <div className="flex-1 flex items-center justify-center w-full">
         {displayedAvatar && <CallAvatar {...displayedAvatar} isDisplayed />}
       </div>
 
       {!participantsHidden && <Participants />}
 
-      <ChannelFooter sectionRef={sectionRef} />
+      <ChannelFooter />
     </section>
   );
 }

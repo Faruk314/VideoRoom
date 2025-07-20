@@ -9,19 +9,14 @@ import { useChannel } from "../hooks/useChannel";
 import { useChannelStore } from "../store/channel";
 import classNames from "classnames";
 import HideParticipantsBtn from "../../../components/buttons/HideParticipantsBtn";
-import type { RefObject } from "react";
 
-interface Props {
-  sectionRef: RefObject<HTMLElement | null>;
-}
-
-export default function ChannelFooter({ sectionRef }: Props) {
+export default function ChannelFooter() {
   const { localParticipant } = useLocalParticipantStore();
   const { isHovering } = useChannelStore();
   const { leaveChannel } = useChannel();
 
   function handleFullScreen() {
-    const element = sectionRef.current;
+    const element = document.getElementById("root");
 
     if (!element) return;
 
