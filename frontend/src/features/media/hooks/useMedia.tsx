@@ -99,6 +99,12 @@ export function useMedia() {
     }
   }
 
+  async function hasAvailableDevice(type: "audio" | "video") {
+    const kind = type === "audio" ? "audioinput" : "videoinput";
+    const devices = await navigator.mediaDevices.enumerateDevices();
+    return devices.some((device) => device.kind === kind);
+  }
+
   return {
     getAudioDevices,
     getVideoDevices,
@@ -106,5 +112,6 @@ export function useMedia() {
     getAudioStream,
     getDisplayStream,
     getMediaPermissions,
+    hasAvailableDevice,
   };
 }
