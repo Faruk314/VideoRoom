@@ -63,7 +63,7 @@ export default function MediaPermissions({ type }: Props) {
           </p>
         </div>
 
-        <div className="flex flex-col items-center gap-6 mt-10">
+        <div className="flex flex-col items-center gap-6 mt-5">
           {type === "audio" ? (
             <PrimaryBtn
               className="w-70"
