@@ -1,16 +1,17 @@
 import classNames from "classnames";
 import { useChannelStore } from "../../features/channel/store/channel";
 import { ChevronDown, ChevronUp, Users } from "lucide-react";
-import { useState } from "react";
+import {
+  Tooltip,
+  TooltipTrigger,
+  TooltipContent,
+} from "../../components/ui/tooltip";
 
 export default function HideParticipantsBtn() {
-  const [isHoveringBtn, setIsHoveringBtn] = useState(false);
-
   const { participantsHidden, setParticipantsVisibility, isHovering } =
     useChannelStore();
 
-  function toogleParticipantsVisibility() {
-    setIsHoveringBtn(false);
+  function toggleParticipantsVisibility() {
     setParticipantsVisibility(!participantsHidden);
   }
 
@@ -21,29 +22,34 @@ export default function HideParticipantsBtn() {
         "top-[-13rem]": !participantsHidden,
       })}
     >
-      <button
-        onMouseOver={() => setIsHoveringBtn(true)}
-        onMouseLeave={() => setIsHoveringBtn(false)}
-        onClick={toogleParticipantsVisibility}
-        className={classNames(
-          "flex items-center space-x-2 text-white rounded-full py-1 px-2 cursor-pointer bg-black/60 hover:bg-black/50",
-          {
-            hidden: !isHovering,
-          }
-        )}
-      >
-        {participantsHidden ? (
-          <ChevronUp size={22} />
-        ) : (
-          <ChevronDown size={22} />
-        )}
-        <Users fill="white" size={22} />
-      </button>
-      {isHoveringBtn && (
-        <span className="absolute font-black bottom-full left-1/2 mb-2 -translate-x-1/2 bg-black/60 text-white rounded px-2 py-1 whitespace-nowrap">
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <button
+            onClick={toggleParticipantsVisibility}
+            className={classNames(
+              "flex items-center space-x-2 text-white rounded-full py-1 px-2 cursor-pointer bg-black/60 hover:bg-black/50",
+              {
+                hidden: !isHovering,
+              }
+            )}
+          >
+            {participantsHidden ? (
+              <ChevronUp size={22} />
+            ) : (
+              <ChevronDown size={22} />
+            )}
+            <Users fill="white" size={22} />
+          </button>
+        </TooltipTrigger>
+
+        <TooltipContent
+          side="top"
+          sideOffset={8}
+          className="px-4 py-1 text-[0.9rem] font-black"
+        >
           {participantsHidden ? "Show Participants" : "Hide Participants"}
-        </span>
-      )}
+        </TooltipContent>
+      </Tooltip>
     </div>
   );
 }
