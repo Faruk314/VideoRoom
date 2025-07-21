@@ -1,4 +1,4 @@
-import { Maximize, Phone } from "lucide-react";
+import { Phone, AlertCircle } from "lucide-react";
 import { IconBtn } from "../../../components/buttons/IconBtn";
 import { Settings as SettingsModal } from "../../../components/modals/Settings";
 import CameraBtn from "../../../components/buttons/CameraBtn";
@@ -9,23 +9,12 @@ import { useChannel } from "../hooks/useChannel";
 import { useChannelStore } from "../store/channel";
 import classNames from "classnames";
 import HideParticipantsBtn from "../../../components/buttons/HideParticipantsBtn";
+import FullScreenBtn from "../../../components/buttons/FullScreenBtn";
 
 export default function ChannelFooter() {
   const { localParticipant } = useLocalParticipantStore();
   const { isHovering } = useChannelStore();
   const { leaveChannel } = useChannel();
-
-  function handleFullScreen() {
-    const element = document.getElementById("root");
-
-    if (!element) return;
-
-    if (!document.fullscreenElement) {
-      element.requestFullscreen();
-    } else {
-      document.exitFullscreen();
-    }
-  }
 
   return (
     <div
@@ -50,13 +39,13 @@ export default function ChannelFooter() {
           />
         </div>
 
-        <div className="fixed bottom-0 right-6 flex space-x-2 z-50">
+        <div className="fixed bottom-0 right-6 flex z-50">
           <IconBtn
-            onClick={handleFullScreen}
-            description="Fullscreen"
+            description="Channel details"
             className="bg-transparent text-black hover:bg-gray-200"
-            icon={<Maximize size={30} />}
+            icon={<AlertCircle size={30} />}
           />
+          <FullScreenBtn />
         </div>
 
         <HideParticipantsBtn />
