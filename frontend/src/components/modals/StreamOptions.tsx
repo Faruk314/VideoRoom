@@ -26,7 +26,7 @@ export default function StreamOptions() {
           />
         </DropdownMenuTrigger>
         <DropdownMenuContent
-          className="w-48 z-50 p-1 rounded-md shadow-lg"
+          className="w-48 z-50 p-1 rounded-md shadow-lg font-black"
           align="end"
           side="top"
         >
@@ -35,17 +35,17 @@ export default function StreamOptions() {
               e.preventDefault();
               stopStream("screen");
             }}
-            className="flex justify-between px-3 py-2 rounded-md text-sm hover:bg-gray-100 focus:bg-gray-100 cursor-pointer"
+            className="flex justify-between px-3 py-2 rounded-md hover:bg-gray-100 focus:bg-gray-100 cursor-pointer"
           >
             Stop Stream
-            <ScreenShareOff className="text-indigo-600" />
+            <ScreenShareOff className="text-indigo-600" size={30} />
           </DropdownMenuItem>
           <DropdownMenuItem
             onSelect={(e) => {
               e.preventDefault();
               switchScreenShare();
             }}
-            className="flex justify-between px-3 py-2 rounded-md text-sm hover:bg-gray-100 focus:bg-gray-100 cursor-pointer"
+            className="flex justify-between px-3 py-2 rounded-md hover:bg-gray-100 focus:bg-gray-100 cursor-pointer"
           >
             Change Stream
             <ScreenShare className="text-indigo-600" />
