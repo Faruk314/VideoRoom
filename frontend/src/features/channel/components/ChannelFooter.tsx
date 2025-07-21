@@ -1,4 +1,4 @@
-import { Phone, AlertCircle } from "lucide-react";
+import { Phone } from "lucide-react";
 import { IconBtn } from "../../../components/buttons/IconBtn";
 import { Settings as SettingsModal } from "../../../components/modals/Settings";
 import CameraBtn from "../../../components/buttons/CameraBtn";
@@ -10,6 +10,7 @@ import { useChannelStore } from "../store/channel";
 import classNames from "classnames";
 import HideParticipantsBtn from "../../../components/buttons/HideParticipantsBtn";
 import FullScreenBtn from "../../../components/buttons/FullScreenBtn";
+import ChannelDetails from "../../../components/modals/ChannelDetails";
 
 export default function ChannelFooter() {
   const { localParticipant } = useLocalParticipantStore();
@@ -40,11 +41,7 @@ export default function ChannelFooter() {
         </div>
 
         <div className="fixed bottom-0 right-6 flex z-50">
-          <IconBtn
-            description="Channel details"
-            className="bg-transparent text-black hover:bg-gray-200"
-            icon={<AlertCircle size={30} />}
-          />
+          <ChannelDetails />
           <FullScreenBtn />
         </div>
 
