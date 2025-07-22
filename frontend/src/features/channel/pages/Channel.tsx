@@ -7,6 +7,7 @@ import ChannelFooter from "../components/ChannelFooter";
 import { useChannelStore } from "../store/channel";
 import Participants from "../components/Participants";
 import useMediasoup from "../../media/hooks/useMediasoup";
+import { useMouseHover } from "../../../hooks/useMouseHover";
 
 export function Channel() {
   const connectingRef = useRef(false);
@@ -14,7 +15,9 @@ export function Channel() {
   const { isLoading } = useChannelQuery(id || "");
   const { connectMediasoup } = useMediasoup();
   const displayedAvatar = useChannelStore((state) => state.displayedAvatar);
-  const { isHovering, setIsHovering, participantsHidden } = useChannelStore();
+  const { participantsHidden } = useChannelStore();
+
+  useEffect(() => {}, []);
 
   useEffect(() => {
     if (!id || connectingRef.current) return;
@@ -30,25 +33,7 @@ export function Channel() {
     })();
   }, [id]);
 
-  useEffect(() => {
-    let timeoutId: any;
-
-    const handleMouseMove = () => {
-      if (!isHovering) setIsHovering(true);
-
-      clearTimeout(timeoutId);
-      timeoutId = setTimeout(() => {
-        setIsHovering(false);
-      }, 2000);
-    };
-
-    window.addEventListener("mousemove", handleMouseMove);
-
-    return () => {
-      window.removeEventListener("mousemove", handleMouseMove);
-      clearTimeout(timeoutId);
-    };
-  }, [isHovering]);
+  useMouseHover(2000);
 
   if (isLoading) {
     return <Loader />;
