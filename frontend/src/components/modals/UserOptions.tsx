@@ -28,7 +28,8 @@ export default function UserOptions() {
         <DropdownMenuTrigger asChild>
           <IconBtn
             className="bg-black/60 opacity-[0.7] md:h-max md:w-max px-2 py-1 rounded-md slide-up hover:bg-black/30"
-            icon={<Ellipsis />}
+            description="Options"
+            icon={<Ellipsis className="pointer-events-none" />}
           />
         </DropdownMenuTrigger>
         <DropdownMenuContent
