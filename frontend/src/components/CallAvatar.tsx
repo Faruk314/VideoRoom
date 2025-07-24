@@ -70,7 +70,7 @@ export default function CallAvatar(props: Props) {
     <div
       onClick={() => setDisplayedAvatar({ ...props })}
       className={classNames(
-        "relative shadow-md w-55 h-30 flex items-center justify-center overflow-hidden cursor-pointer",
+        "relative border shadow-md w-55 h-30 flex items-center justify-center overflow-hidden cursor-pointer",
         {
           "w-screen h-screen": isDisplayed && participantsHidden,
           "w-[70rem] h-full": isDisplayed && !participantsHidden,

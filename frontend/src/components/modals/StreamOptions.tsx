@@ -16,12 +16,12 @@ export default function StreamOptions() {
 
   return (
     <>
-      {open && <div className="fixed inset-0 z-40" />}
+      {open && <div className="fixed inset-0" />}
 
       <DropdownMenu open={open} onOpenChange={setOpen}>
         <DropdownMenuTrigger asChild>
           <IconBtn
-            className="bg-black/60 opacity-[0.7] md:h-max md:w-max px-2 py-1 rounded-md slide-up hover:bg-black/30"
+            className="bg-black/60 opacity-[0.7] md:h-max md:w-max px-2 py-1 rounded-md slide-up hover:bg-black/50"
             icon={<Ellipsis />}
           />
         </DropdownMenuTrigger>

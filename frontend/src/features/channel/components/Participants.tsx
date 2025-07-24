@@ -1,60 +1,90 @@
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Navigation } from "swiper/modules";
 import CallAvatar from "../../../components/CallAvatar";
 import { useLocalParticipantStore } from "../store/localParticipant";
 import { useParticipantStore } from "../store/remoteParticipant";
+import "swiper/css";
+import "swiper/css/navigation";
 
 export default function Participants() {
-  const { participants } = useParticipantStore.getState();
+  return (
+    <div className="relative px-4 mt-4 mb-24 max-w-[25rem] md:max-w-[50rem]">
+      <div className="flex items-center space-x-2">
+        <Swiper
+          modules={[Navigation]}
+          slidesPerView="auto"
+          slidesPerGroup={1}
+          spaceBetween={9}
+        >
+          {renderLocalParticipant()}
+          {renderRemoteParticipants()}
+        </Swiper>
+      </div>
+    </div>
+  );
+}
+
+function renderLocalParticipant() {
   const { localParticipant } = useLocalParticipantStore();
 
   return (
-    <div className="flex space-x-2 mb-24 mt-4">
+    <>
       {localParticipant && (
-        <div
-          key={localParticipant.user.userId}
-          className="flex space-x-2 participant-group"
-        >
-          <CallAvatar
-            isLocal
-            muteCamera
-            participantId={localParticipant.user.userId}
-            stream={localParticipant.streams.video}
-          />
-
-          {localParticipant.streams.screen && (
+        <SwiperSlide className="!w-auto">
+          <div
+            key={localParticipant.user.userId}
+            className="flex space-x-2 participant-group"
+          >
             <CallAvatar
               isLocal
+              muteCamera
               participantId={localParticipant.user.userId}
-              stream={localParticipant.streams.screen}
-              isDisplayStream
+              stream={localParticipant.streams.video}
             />
-          )}
-        </div>
-      )}
 
+            {localParticipant.streams.screen && (
+              <CallAvatar
+                isLocal
+                participantId={localParticipant.user.userId}
+                stream={localParticipant.streams.screen}
+                isDisplayStream
+              />
+            )}
+          </div>
+        </SwiperSlide>
+      )}
+    </>
+  );
+}
+
+function renderRemoteParticipants() {
+  const { participants } = useParticipantStore.getState();
+
+  return (
+    <>
       {[...participants.values()].map((participant) => {
         const videoConsumer = participant.consumers?.video;
         const screenConsumer = participant.consumers?.screen;
 
         return (
-          <div
-            key={participant.user.userId}
-            className="flex space-x-2 participant-group"
-          >
-            <CallAvatar
-              participantId={participant.user.userId}
-              consumer={videoConsumer}
-            />
-
-            {screenConsumer && (
+          <SwiperSlide key={participant.user.userId} className="!w-auto">
+            <div className="flex space-x-2 participant-group">
               <CallAvatar
                 participantId={participant.user.userId}
-                consumer={screenConsumer}
-                isDisplayStream
+                consumer={videoConsumer}
               />
-            )}
-          </div>
+
+              {screenConsumer && (
+                <CallAvatar
+                  participantId={participant.user.userId}
+                  consumer={screenConsumer}
+                  isDisplayStream
+                />
+              )}
+            </div>
+          </SwiperSlide>
         );
       })}
-    </div>
+    </>
   );
 }
