@@ -21,7 +21,7 @@ export default function StreamOptions() {
       <DropdownMenu open={open} onOpenChange={setOpen}>
         <DropdownMenuTrigger asChild>
           <IconBtn
-            className="bg-black/60 opacity-[0.7] md:h-max md:w-max px-2 py-1 rounded-md slide-up hover:bg-black/50"
+            className="bg-black/60 opacity-[0.7] h-7 w-9 md:h-8 md:w-9 rounded-md slide-up hover:bg-black/50"
             icon={<Ellipsis className="pointer-events-none" />}
           />
         </DropdownMenuTrigger>
