@@ -88,7 +88,7 @@ export default function CallAvatar(props: Props) {
           playsInline
           muted={muteCamera}
           autoPlay
-          className="w-full h-full object-contain"
+          className="object-contain"
         />
       ) : (
         <Avatar
