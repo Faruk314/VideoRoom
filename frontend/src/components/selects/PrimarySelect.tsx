@@ -43,7 +43,7 @@ export function PrimarySelect({
         </div>
       </SelectTrigger>
 
-      <SelectContent>
+      <SelectContent className="max-w-[14rem] max-h-[8rem] md:max-h-[10rem]">
         <SelectGroup>
           {label && <SelectLabel>{label}</SelectLabel>}
           {options.map((opt) => (
