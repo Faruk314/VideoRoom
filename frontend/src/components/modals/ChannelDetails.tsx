@@ -25,7 +25,7 @@ export default function ChannelDetails() {
         />
       </DialogTrigger>
 
-      <DialogContent className="">
+      <DialogContent>
         <DialogTitle>Channel details</DialogTitle>
 
         <p className="text-sm">

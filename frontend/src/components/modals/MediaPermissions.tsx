@@ -51,14 +51,14 @@ export default function MediaPermissions({ type }: Props) {
       </DialogTrigger>
 
       <DialogContent className="max-w-2xl">
-        <img className="h-55 w-80 mx-auto" src="/images/audioVideo.png" />
+        <img className="md:h-55 md:w-80 mx-auto" src="/images/audioVideo.png" />
 
         <div className="flex flex-col items-center gap-2">
           <DialogTitle className="text-xl font-semibold text-center">
             You want others to hear you during the meeting?
           </DialogTitle>
 
-          <p className="text-[0.9rem]">
+          <p className="text-[0.9rem] text-center md:text-left">
             you can turn on the microphone at any time during the meeting
           </p>
         </div>

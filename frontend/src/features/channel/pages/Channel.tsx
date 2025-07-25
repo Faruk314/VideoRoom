@@ -40,7 +40,7 @@ export function Channel() {
   }
 
   return (
-    <section className="flex flex-col items-center justify-between h-[100vh] w-full overflow-hidden bg-white">
+    <section className="flex flex-col items-center justify-between h-[100vh] w-full overflow-hidden bg-gray-100">
       <div className="flex-1 flex items-center justify-center w-full">
         {displayedAvatar && <CallAvatar {...displayedAvatar} isDisplayed />}
       </div>

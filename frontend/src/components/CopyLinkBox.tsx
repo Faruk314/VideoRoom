@@ -27,7 +27,7 @@ export function CopyLinkBox({ link }: { link: string }) {
       <input
         value={link}
         readOnly
-        className="cursor-text h-full w-[20rem] outline-none bg-gray-100"
+        className="cursor-text h-full w-[14rem] md:w-[20rem] outline-none bg-gray-100"
       />
       <TooltipProvider>
         <Tooltip open={tooltipOpen} onOpenChange={setTooltipOpen}>

@@ -72,7 +72,7 @@ export default function CallAvatar(props: Props) {
       className={classNames(
         "relative border bg-gray-100 w-55 h-30 flex items-center justify-center overflow-hidden cursor-pointer",
         {
-          "object-contain w-full h-[20vh] px-4 lg:px-0 lg:w-[75vw] lg:h-[85vh] border-none":
+          "object-contain w-full h-[30vh] px-4 lg:px-0 lg:w-[75vw] lg:h-[85vh] border-none":
             isDisplayed && participantsHidden,
           "w-[70rem] h-full border-none": isDisplayed && !participantsHidden,
           "bg-gray-50": hasVideo,
