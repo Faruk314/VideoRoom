@@ -70,9 +70,10 @@ export default function CallAvatar(props: Props) {
     <div
       onClick={() => setDisplayedAvatar({ ...props })}
       className={classNames(
-        "relative border shadow-md w-55 h-30 flex items-center justify-center overflow-hidden cursor-pointer",
+        "relative border bg-gray-100 w-55 h-30 flex items-center justify-center overflow-hidden cursor-pointer",
         {
-          "w-screen h-screen": isDisplayed && participantsHidden,
+          "w-full h-[20vh] px-4 lg:px-0 lg:w-[75vw] lg:h-[85vh] object-contain":
+            isDisplayed && participantsHidden,
           "w-[70rem] h-full": isDisplayed && !participantsHidden,
           "bg-gray-50": hasVideo,
           "bg-white": !hasVideo,
@@ -87,7 +88,7 @@ export default function CallAvatar(props: Props) {
           playsInline
           muted={muteCamera}
           autoPlay
-          className="w-full h-full object-fill"
+          className="w-full h-full object-contain"
         />
       ) : (
         <Avatar
