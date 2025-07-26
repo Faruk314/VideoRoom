@@ -4,10 +4,25 @@ import { PrimaryBtn } from "../../../components/buttons/PrimaryBtn";
 import { useChannel } from "../hooks/useChannel";
 import Separator from "../../../components/Separator";
 import { useState } from "react";
+import { extractChannelId } from "../utils/channel";
+import { useToast } from "../../../hooks/useToast";
+import { useNavigate } from "react-router-dom";
 
 export default function ChannelForm() {
-  const { createChannel, joinChannel } = useChannel();
+  const { createChannel } = useChannel();
+  const navigate = useNavigate();
+  const { toastError } = useToast();
   const [input, setInput] = useState("");
+
+  async function handleJoin() {
+    const channelId = extractChannelId(input);
+
+    if (!channelId) {
+      return toastError("Invalid url or code");
+    }
+
+    navigate(`/channel/${channelId}`);
+  }
 
   return (
     <div className="flex flex-col items-center space-y-10">
@@ -20,7 +35,7 @@ export default function ChannelForm() {
 
         <PrimaryBtn
           disabled={input.length === 0}
-          onClick={() => joinChannel(input)}
+          onClick={handleJoin}
           icon={<UserPlus size={20} />}
         >
           Join Meeting

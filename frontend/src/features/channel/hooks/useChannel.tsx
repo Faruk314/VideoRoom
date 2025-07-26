@@ -24,17 +24,14 @@ export function useChannel() {
     }
   }
 
-  async function joinChannel(input: string) {
+  async function joinChannel(channelId: string) {
     try {
-      const { channelId, message } = await emitJoinChannel({
-        channelId: input,
+      await emitJoinChannel({
+        channelId,
       });
-
-      toastSuccess(message);
-
-      navigate(`/channel/${channelId}`);
     } catch (error: unknown) {
       if (error instanceof Error) toastError(error.message);
+      navigate("/home");
     }
   }
 
@@ -64,9 +61,7 @@ export function useChannel() {
     try {
       if (!id) throw new Error("Channel id missing. Failed to leave channel");
 
-      const { message } = await emitLeaveChannel({ channelId: id });
-
-      console.log(message);
+      await emitLeaveChannel({ channelId: id });
     } catch (error: unknown) {
       console.error(error);
       if (error instanceof Error) throw new Error(error.message);

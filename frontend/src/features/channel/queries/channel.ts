@@ -6,14 +6,14 @@ import { useUserStore } from "../../user/store/user";
 import type { IParticipant } from "../types/channel";
 import { useLocalParticipantStore } from "../store/localParticipant";
 
-export function useChannelQuery(channelId: string) {
+export function useChannelQuery(channelId: string, isJoined: boolean) {
   const { setParticipants } = useParticipantStore();
   const { setLocalParticipant } = useLocalParticipantStore();
   const { user: localUser } = useUserStore();
 
   return useQuery({
     queryKey: ["channel", channelId],
-    enabled: !!channelId,
+    enabled: isJoined,
     queryFn: async () => {
       try {
         const { participants }: { participants: IParticipant[] } =
