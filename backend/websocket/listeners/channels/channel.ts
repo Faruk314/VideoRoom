@@ -1,12 +1,16 @@
 import { Server, Socket } from "socket.io";
 import { nanoid } from "nanoid";
-import { joinChannel, leaveChannel } from "redis/methods/channel";
+import {
+  channelExists,
+  joinChannel,
+  leaveChannel,
+} from "redis/methods/channel";
 import {
   createParticipant,
   deleteParticipant,
 } from "redis/methods/participant";
 import { ChannelIdSchema } from "validation/channel";
-import { cleanupPeerResources, createPeer } from "mediasoup/methods/peer";
+import { cleanupPeerResources } from "mediasoup/methods/peer";
 
 class ChannelListeners {
   io: Server;
@@ -62,6 +66,11 @@ class ChannelListeners {
 
     if (!success)
       return callback({ error: true, message: "Invalid channel ID" });
+
+    const exists = await channelExists(channelId);
+
+    if (!exists)
+      return callback({ error: true, message: "Channel does not exist" });
 
     const response = await createParticipant({
       userId: this.socket.userId,

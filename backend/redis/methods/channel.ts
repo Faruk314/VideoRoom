@@ -22,4 +22,10 @@ async function leaveChannel(channelId: string, userId: string) {
   }
 }
 
-export { joinChannel, leaveChannel };
+async function channelExists(channelId: string): Promise<boolean> {
+  const key = `${CHANNEL_PARTICIPANTS_KEY}:${channelId}`;
+  const count = await redis.scard(key);
+  return count > 0;
+}
+
+export { joinChannel, leaveChannel, channelExists };
