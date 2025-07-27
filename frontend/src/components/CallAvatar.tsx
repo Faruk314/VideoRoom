@@ -5,7 +5,7 @@ import classNames from "classnames";
 import { useChannelStore } from "../features/channel/store/channel";
 import UserOptions from "./modals/UserOptions";
 import StreamOptions from "./modals/StreamOptions";
-import { MicOff, ScreenShare } from "lucide-react";
+import { MicOff, ScreenShare, User } from "lucide-react";
 import { useLocalParticipantStore } from "../features/channel/store/localParticipant";
 import { useParticipantStore } from "../features/channel/store/remoteParticipant";
 
@@ -133,7 +133,8 @@ export default function CallAvatar(props: Props) {
           }
         )}
       >
-        {isDisplayStream ? <StreamOptions /> : <UserOptions />}
+        {isDisplayStream && isLocal && <StreamOptions />}
+        {!isDisplayStream && isLocal && <UserOptions />}
       </div>
     </div>
   );
