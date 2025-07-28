@@ -59,6 +59,9 @@ export function useMedia() {
     const stream = await navigator.mediaDevices.getUserMedia({
       audio: {
         deviceId: deviceId,
+        noiseSuppression: true,
+        echoCancellation: true,
+        autoGainControl: true,
       },
     });
     const audioTrack = stream.getAudioTracks()[0];
