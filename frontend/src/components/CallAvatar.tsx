@@ -5,7 +5,7 @@ import classNames from "classnames";
 import { useChannelStore } from "../features/channel/store/channel";
 import UserOptions from "./modals/UserOptions";
 import StreamOptions from "./modals/StreamOptions";
-import { MicOff, ScreenShare, User } from "lucide-react";
+import { MicOff, ScreenShare } from "lucide-react";
 import { useLocalParticipantStore } from "../features/channel/store/localParticipant";
 import { useParticipantStore } from "../features/channel/store/remoteParticipant";
 
@@ -13,7 +13,9 @@ interface Props {
   participantId: string;
   isLocal?: boolean;
   consumer?: Consumer | null;
+  audioConsumer?: Consumer | null;
   stream?: MediaStream | null;
+  audioStream?: MediaStream | null;
   isDisplayStream?: boolean;
   muteCamera?: boolean;
   isDisplayed?: boolean;
@@ -25,11 +27,14 @@ export default function CallAvatar(props: Props) {
     isLocal,
     consumer,
     stream,
+    audioConsumer,
+    audioStream,
     isDisplayStream,
     muteCamera,
     isDisplayed,
   } = props;
   const videoRef = useRef<HTMLVideoElement | null>(null);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
   const { localParticipant } = useLocalParticipantStore();
   const { isHovering, participantsHidden } = useChannelStore();
   const { getParticipant } = useParticipantStore();
@@ -62,7 +67,29 @@ export default function CallAvatar(props: Props) {
     };
   }, [consumer, stream]);
 
+  useEffect(() => {
+    const audio = audioRef.current;
+
+    if (!audio) return;
+
+    if (audioStream) {
+      audio.srcObject = audioStream;
+      audio.play().catch(() => {});
+    } else if (audioConsumer?.track) {
+      const audioConsumerStream = new MediaStream([audioConsumer.track]);
+      audio.srcObject = audioConsumerStream;
+      audio.play().catch(() => {});
+    } else {
+      audio.srcObject = null;
+    }
+
+    return () => {
+      if (audio) audio.srcObject = null;
+    };
+  }, [audioConsumer, audioStream]);
+
   const hasVideo = !!stream || !!consumer?.track;
+  const hasAudio = !!audioStream || !!audioConsumer?.track;
 
   if (!participant) return null;
 
@@ -82,6 +109,7 @@ export default function CallAvatar(props: Props) {
         }
       )}
     >
+      {hasAudio && <audio ref={audioRef} playsInline muted={isLocal} />}
       {hasVideo ? (
         <video
           ref={videoRef}

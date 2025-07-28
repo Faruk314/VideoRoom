@@ -40,6 +40,7 @@ function renderLocalParticipant() {
               muteCamera
               participantId={localParticipant.user.userId}
               stream={localParticipant.streams.video}
+              audioStream={localParticipant.streams.audio}
             />
 
             {localParticipant.streams.screen && (
@@ -64,6 +65,7 @@ function renderRemoteParticipants() {
     <>
       {[...participants.values()].map((participant) => {
         const videoConsumer = participant.consumers?.video;
+        const audioConsumer = participant.consumers?.audio;
         const screenConsumer = participant.consumers?.screen;
 
         return (
@@ -72,6 +74,7 @@ function renderRemoteParticipants() {
               <CallAvatar
                 participantId={participant.user.userId}
                 consumer={videoConsumer}
+                audioConsumer={audioConsumer}
               />
 
               {screenConsumer && (
