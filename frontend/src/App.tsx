@@ -10,6 +10,8 @@ import Loader from "./components/loaders/Loader";
 import { useChannelEvents } from "./features/channel/websocket/listeners/channel";
 import useMediasoupEvents from "./features/media/websocket/listeners/mediasoup";
 import usePermissionWatcher from "./hooks/usePermissionWatcher";
+import PrivateRoute from "./components/PrivateRoute";
+import Redirect from "./components/Redirect";
 
 function App() {
   const { isLoading } = useLoginStatusQuery();
@@ -27,11 +29,15 @@ function App() {
   return (
     <>
       <Routes>
-        <Route path="/home" element={<CreateChannel />} />
-        <Route path="/channel/:id" element={<Channel />} />
+        <Route element={<PrivateRoute />}>
+          <Route path="/home" element={<CreateChannel />} />
+          <Route path="/channel/:id" element={<Channel />} />
+        </Route>
 
-        <Route path="/" element={<Login />} />
-        <Route path="/register" element={<Register />} />
+        <Route element={<Redirect />}>
+          <Route path="/" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+        </Route>
       </Routes>
       <ToastContainer />
     </>
