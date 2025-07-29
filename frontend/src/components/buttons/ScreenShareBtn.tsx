@@ -1,4 +1,4 @@
-import useChannelManager from "../../features/channel/hooks/useChannelManager";
+import useScreenShareManager from "../../features/channel/hooks/useScreenShareManager";
 import { IconBtn } from "./IconBtn";
 import { ScreenShare, ScreenShareOff } from "lucide-react";
 
@@ -7,7 +7,7 @@ interface Props {
 }
 
 export default function ScreenShareBtn({ isStreaming = false }: Props) {
-  const { toogleScreenShare } = useChannelManager();
+  const { toogleScreenShare } = useScreenShareManager();
 
   return (
     <IconBtn

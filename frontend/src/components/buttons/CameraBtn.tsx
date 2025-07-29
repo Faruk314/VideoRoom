@@ -1,18 +1,18 @@
 import { useEffect, useState } from "react";
-import useChannelManager from "../../features/channel/hooks/useChannelManager";
 import { useMediaStore } from "../../features/media/store/media";
 import MediaPermissions from "../modals/MediaPermissions";
 import MissingMediaDevice from "../modals/MissingMediaDevice";
 import { IconBtn } from "./IconBtn";
 import { Video, VideoOff } from "lucide-react";
 import { useMedia } from "../../features/media/hooks/useMedia";
+import useVideoManager from "../../features/channel/hooks/useVideoManager";
 
 interface Props {
   camMuted: boolean;
 }
 
 export default function CameraBtn({ camMuted = false }: Props) {
-  const { toogleCamera } = useChannelManager();
+  const { toogleCamera } = useVideoManager();
   const { hasVideoPermission } = useMediaStore();
   const { hasAvailableDevice } = useMedia();
   const [hasCamDevice, setHasCamDevice] = useState(true);

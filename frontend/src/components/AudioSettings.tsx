@@ -3,14 +3,14 @@ import { useMediaStore } from "../features/media/store/media";
 import { PrimarySelect } from "./selects/PrimarySelect";
 import { useEffect } from "react";
 import { useMedia } from "../features/media/hooks/useMedia";
-import useChannelManager from "../features/channel/hooks/useChannelManager";
+import useAudioManager from "../features/channel/hooks/useAudioManager";
 
 export default function AudioSettings() {
   const { hasAudioPermission } = useMediaStore();
   const { microphones, selectedMic } = useMediaStore();
   const { speakers, selectedSpeaker, setSelectedSpeaker } = useMediaStore();
   const { getAudioDevices } = useMedia();
-  const { switchMicrophone } = useChannelManager();
+  const { switchMicrophone } = useAudioManager();
 
   async function handleMicChange(deviceId: string) {
     const mic = microphones.find((mic) => mic.deviceId === deviceId);

@@ -9,10 +9,12 @@ import { IconBtn } from "../buttons/IconBtn";
 import { ScreenShare, ScreenShareOff } from "lucide-react";
 import { useState } from "react";
 import useChannelManager from "../../features/channel/hooks/useChannelManager";
+import useScreenShareManager from "../../features/channel/hooks/useScreenShareManager";
 
 export default function StreamOptions() {
   const [open, setOpen] = useState(false);
-  const { stopStream, switchScreenShare } = useChannelManager();
+  const { stopStream } = useChannelManager();
+  const { switchScreenShare } = useScreenShareManager();
 
   return (
     <>

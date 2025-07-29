@@ -9,14 +9,14 @@ import { IconBtn } from "../buttons/IconBtn";
 import { useState } from "react";
 import classNames from "classnames";
 import { useLocalParticipantStore } from "../../features/channel/store/localParticipant";
-import useChannelManager from "../../features/channel/hooks/useChannelManager";
+import useAudioManager from "../../features/channel/hooks/useAudioManager";
+import useVideoManager from "../../features/channel/hooks/useVideoManager";
 
 export default function UserOptions() {
   const [open, setOpen] = useState(false);
-
   const { localParticipant } = useLocalParticipantStore();
-  const { toogleCamera, toogleMicrophone } = useChannelManager();
-
+  const { toogleMicrophone } = useAudioManager();
+  const { toogleCamera } = useVideoManager();
   const camMuted = localParticipant?.camMuted;
   const micMuted = localParticipant?.micMuted;
 
