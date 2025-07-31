@@ -28,8 +28,8 @@ interface IPeer {
   currentChannelId: string;
   sendTransport?: types.WebRtcTransport;
   recvTransport?: types.WebRtcTransport;
-  producers?: Map<string, types.Producer>;
-  consumers?: Map<string, types.Consumer>;
+  producers: Map<string, types.Producer>;
+  consumers: Map<string, types.Consumer>;
 }
 
 interface IUser {

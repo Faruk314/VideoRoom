@@ -40,6 +40,17 @@ class ProducerListeners {
       return callback({ error: true, message: "Peer state not found" });
     }
 
+    const existingProducer = Array.from(peer.producers.values()).find(
+      (p) => p.kind === kind && p.appData?.streamType === appData.streamType
+    );
+
+    if (existingProducer) {
+      return callback({
+        error: true,
+        message: `Producer for kind '${kind}' and streamType '${appData.streamType}' already exists.`,
+      });
+    }
+
     const sendTransport = peer.sendTransport;
 
     if (!sendTransport || sendTransport.id !== transportId) {
