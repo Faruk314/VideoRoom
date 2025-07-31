@@ -3,7 +3,11 @@ import { producers } from "./producer";
 
 const peers: Map<string, IPeer> = new Map();
 
-function createPeer(peerData: IPeer) {
+function createPeer(peerData: {
+  userId: string;
+  socketId: string;
+  currentChannelId: string;
+}) {
   const newPeer: IPeer = {
     ...peerData,
     recvTransport: undefined,
