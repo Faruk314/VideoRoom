@@ -32,7 +32,12 @@ export default function RegisterForm() {
   }
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="grid gap-8">
+    <form
+      onSubmit={handleSubmit(onSubmit)}
+      className="grid gap-8 shadow-md px-6 py-8 rounded-xl border border-gray-200"
+    >
+      <img src="/images/logo.png" className="w-40 mx-auto" />
+
       <div className="grid gap-4">
         <PrimaryInput
           placeholder="Enter you username"
