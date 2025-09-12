@@ -37,25 +37,22 @@ export default function LoginForm() {
     >
       <img src="/images/logo.png" className="w-50 mx-auto" />
 
-      <div className="grid gap-4">
+      <div className="grid gap-6">
         <PrimaryInput
-          placeholder="Enter you email"
+          placeholder="Enter your email"
           icon={<Mail />}
           {...register("email")}
           type="text"
+          error={errors.email?.message}
         />
-        {errors.email && <p className="text-red-600">{errors.email.message}</p>}
 
         <PrimaryInput
           placeholder="Enter your password"
           icon={<Lock />}
           {...register("password")}
           type="password"
+          error={errors.password?.message}
         />
-
-        {errors.password && (
-          <p className="text-red-600">{errors.password.message}</p>
-        )}
       </div>
 
       <PrimaryBtn
