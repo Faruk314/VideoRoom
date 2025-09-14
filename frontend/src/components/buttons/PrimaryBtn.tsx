@@ -9,7 +9,7 @@ export function PrimaryBtn({ icon, className, children, ...props }: Props) {
   return (
     <button
       className={cn(
-        "bg-indigo-600 w-max font-semibold hover:bg-indigo-500 duration-200 text-white rounded-full px-7 py-[10px] md:py-3 flex items-center justify-center space-x-4 cursor-pointer",
+        "bg-indigo-600 w-max font-semibold hover:bg-indigo-500 duration-200 text-white rounded-full px-7 py-3 flex items-center justify-center space-x-4 cursor-pointer",
         className
       )}
       {...props}
