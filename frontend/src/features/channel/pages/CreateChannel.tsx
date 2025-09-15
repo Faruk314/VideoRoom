@@ -10,19 +10,25 @@ export function CreateChannel() {
 
   return (
     <section className="flex flex-col items-center justify-center w-full h-[100vh]">
-      <div className="fixed top-0 p-4 flex items-center justify-between w-full">
-        <div className="flex items-center space-x-2 text-xl md:text-3xl">
-          <img src="/images/logo.png" className="w-30" />
+      <div className="fixed top-0 w-full shadow-sm">
+        <div className="flex items-center justify-between mx-auto container px-4 md:px-0 py-4">
+          <div className="flex items-center space-x-2 text-xl md:text-3xl">
+            <img src="/images/logo.png" className="w-30" />
 
-          <div className="flex items-baseline space-x-2 hidden md:block">
-            <span className="font-semibold text-2xl md:text-3xl">Welcome</span>
-            <span className="text-gray-500 md:text-2xl">{user?.userName}</span>
+            <div className="flex items-baseline space-x-2 hidden md:block">
+              <span className="font-semibold text-2xl md:text-3xl">
+                Welcome
+              </span>
+              <span className="text-gray-500 md:text-2xl">
+                {user?.userName}
+              </span>
+            </div>
           </div>
-        </div>
 
-        <PrimaryBtn onClick={() => logoutUser()} icon={<LogOut size={20} />}>
-          Log Out
-        </PrimaryBtn>
+          <PrimaryBtn onClick={() => logoutUser()} icon={<LogOut size={20} />}>
+            Log Out
+          </PrimaryBtn>
+        </div>
       </div>
       <div className="flex flex-col justify-center items-center space-y-10">
         <div className="flex flex-col text-center px-4 md:px-0 items-center space-y-2">
