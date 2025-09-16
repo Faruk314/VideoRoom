@@ -13,6 +13,16 @@ const mediaCodecs: types.RtpCodecCapability[] = [
     clockRate: 90000,
     parameters: {},
   },
+  {
+    kind: "video",
+    mimeType: "video/H264",
+    clockRate: 90000,
+    parameters: {
+      "packetization-mode": 1,
+      "level-asymmetry-allowed": 1,
+      "profile-level-id": "42e01f",
+    },
+  },
 ];
 
 export { mediaCodecs };
