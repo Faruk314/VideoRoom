@@ -1,8 +1,8 @@
-import { getOrCreateRouter } from "mediasoup/methods/router";
+import { getOrCreateRouter } from "msoup/methods/router";
 import { Server, Socket } from "socket.io";
 import { types } from "mediasoup";
-import { createWebRtcTransport } from "mediasoup/methods/transport";
-import { createPeer, getPeer } from "mediasoup/methods/peer";
+import { createWebRtcTransport } from "msoup/methods/transport";
+import { createPeer, getPeer } from "msoup/methods/peer";
 import { ITransport } from "types/types";
 
 class TransportListeners {

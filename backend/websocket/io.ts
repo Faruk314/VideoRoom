@@ -5,7 +5,7 @@ import { getUserSessionById } from "redis/methods/session";
 import TransportListeners from "./listeners/mediasoup/transport";
 import ProducerListeners from "./listeners/mediasoup/producer";
 import ConsumerListeners from "./listeners/mediasoup/consumer";
-import { cleanupPeerResources } from "mediasoup/methods/peer";
+import { cleanupPeerResources } from "msoup/methods/peer";
 import { updateParticipant } from "redis/methods/participant";
 import ParticipantListeners from "./listeners/channels/participant";
 

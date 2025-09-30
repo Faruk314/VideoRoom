@@ -1,8 +1,8 @@
 import { types } from "mediasoup";
-import { setupConsumerListeners } from "mediasoup/methods/consumer";
-import { getPeer } from "mediasoup/methods/peer";
-import { producers } from "mediasoup/methods/producer";
-import { getOrCreateRouter } from "mediasoup/methods/router";
+import { setupConsumerListeners } from "msoup/methods/consumer";
+import { getPeer } from "msoup/methods/peer";
+import { producers } from "msoup/methods/producer";
+import { getOrCreateRouter } from "msoup/methods/router";
 import redis from "redis/client";
 import { Server, Socket } from "socket.io";
 

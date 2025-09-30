@@ -1,7 +1,7 @@
 import { types } from "mediasoup";
-import { getPeer } from "mediasoup/methods/peer";
-import { producers, setupProducerListeners } from "mediasoup/methods/producer";
-import { mediasoupState } from "mediasoup/methods/state";
+import { getPeer } from "msoup/methods/peer";
+import { producers, setupProducerListeners } from "msoup/methods/producer";
+import { mediasoupState } from "msoup/methods/state";
 import { updateParticipant } from "redis/methods/participant";
 import { Server, Socket } from "socket.io";
 

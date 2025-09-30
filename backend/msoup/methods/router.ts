@@ -1,7 +1,7 @@
 import { IChannel } from "types/types";
 import { setupAudioLevelObserver } from "./observer";
 import { mediasoupState } from "./state";
-import { mediaCodecs } from "mediasoup/config";
+import { mediaCodecs } from "msoup/config";
 import { Server } from "socket.io";
 
 async function getOrCreateRouter(channelId: string, io?: Server) {

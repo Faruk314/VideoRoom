@@ -10,7 +10,7 @@ import {
   deleteParticipant,
 } from "redis/methods/participant";
 import { ChannelIdSchema } from "validation/channel";
-import { cleanupPeerResources } from "mediasoup/methods/peer";
+import { cleanupPeerResources } from "msoup/methods/peer";
 
 class ChannelListeners {
   io: Server;

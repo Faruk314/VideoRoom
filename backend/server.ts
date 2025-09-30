@@ -2,7 +2,7 @@ import { env } from "env";
 import * as http from "http";
 import authRoutes from "./routes/auth";
 import channelRoutes from "./routes/channel";
-import { initMediasoupWorker } from "mediasoup/methods/worker";
+import { initMediasoupWorker } from "msoup/methods/worker";
 import { createSocketServer } from "websocket/io";
 import express from "express";
 import cookieParser from "cookie-parser";
