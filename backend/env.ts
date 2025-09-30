@@ -18,6 +18,14 @@ export const env = createEnv({
     REDIS_HOST: z.string().min(1),
     REDIS_PORT: z.string().min(1).transform(Number),
     REDIS_PASSWORD: z.string().min(1),
+
+    MEDIASOUP_ANNOUNCED_IP: z.string().min(1),
+    MEDIASOUP_LISTEN_IP: z.string().min(1),
+    MEDIASOUP_PORT: z.string().transform(Number),
+    MEDIASOUP_PORT_MIN: z.string().transform(Number),
+    MEDIASOUP_PORT_MAX: z.string().transform(Number),
+    MEDIASOUP_INITIAL_BITRATE: z.string().transform(Number),
+    MEDIASOUP_MAX_SCTP_MESSAGE_SIZE: z.string().transform(Number),
   },
   runtimeEnv: process.env,
 });

@@ -1,14 +1,11 @@
 import { createWorker } from "mediasoup";
 import { mediasoupState } from "./state";
+import { webRtcServerOptions } from "msoup/config";
 
 async function initMediasoupWorker() {
   if (mediasoupState.worker) return mediasoupState;
 
-  const worker = await createWorker({
-    rtcMinPort: 40000,
-    rtcMaxPort: 49999,
-    logLevel: "warn",
-  });
+  const worker = await createWorker(webRtcServerOptions);
 
   worker.on("died", () => {
     console.error("❌ Mediasoup worker died. Restarting is required.");

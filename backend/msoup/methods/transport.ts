@@ -1,4 +1,5 @@
 import { Router } from "mediasoup/types";
+import { webRtcTransportOptions } from "msoup/config";
 import { IPeer } from "types/types";
 
 async function createWebRtcTransport(
@@ -7,10 +8,8 @@ async function createWebRtcTransport(
   type: "send" | "recv"
 ) {
   const transport = await router.createWebRtcTransport({
-    listenIps: [{ ip: "127.0.0.1", announcedIp: undefined }],
-    enableUdp: true,
-    enableTcp: true,
-    preferUdp: true,
+    ...webRtcTransportOptions,
+    iceConsentTimeout: 20,
   });
 
   if (type === "send") {
