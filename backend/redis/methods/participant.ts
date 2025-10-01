@@ -1,6 +1,6 @@
 import { types } from "mediasoup";
-import { getPeer } from "mediasoup/methods/peer";
-import { producers } from "mediasoup/methods/producer";
+import { getPeer } from "msoup/methods/peer";
+import { producers } from "msoup/methods/producer";
 import redis from "redis/client";
 import { IUser } from "types/types";
 
