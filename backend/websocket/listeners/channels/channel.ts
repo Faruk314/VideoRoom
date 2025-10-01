@@ -87,7 +87,7 @@ class ChannelListeners {
       return callback({ error: true, message: "Error joining channel" });
     }
 
-    this.io
+    this.socket
       .to(channelId)
       .emit("participantJoined", { participant: response.user });
 
