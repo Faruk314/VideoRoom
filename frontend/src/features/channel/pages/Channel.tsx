@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import CallAvatar from "../../../components/CallAvatar";
 import { useParams } from "react-router-dom";
 import Loader from "../../../components/loaders/Loader";
@@ -11,7 +11,7 @@ import { useChannel } from "../hooks/useChannel";
 import { useChannelQuery } from "../queries/channel";
 
 export function Channel() {
-  const hasJoinedRef = useRef(false);
+  const [hasJoined, setHasJoined] = useState(false);
   const connectingRef = useRef(false);
   const { id } = useParams<{ id: string }>();
   const { connectMediasoup } = useMediasoup();
@@ -20,20 +20,21 @@ export function Channel() {
   const { participantsHidden } = useChannelStore();
 
   useEffect(() => {
-    if (!id || hasJoinedRef.current) return;
-
-    hasJoinedRef.current = true;
+    if (!id || hasJoined) return;
 
     async function handleJoin() {
-      if (!id) return;
-
-      await joinChannel(id);
+      try {
+        await joinChannel(id!);
+        setHasJoined(true);
+      } catch (e) {
+        console.error("Join failed", e);
+      }
     }
 
     handleJoin();
-  }, [id]);
+  }, [id, hasJoined]);
 
-  const { isLoading } = useChannelQuery(id || "", hasJoinedRef.current);
+  const { isLoading } = useChannelQuery(id || "", hasJoined);
 
   useEffect(() => {
     if (!id || connectingRef.current) return;
