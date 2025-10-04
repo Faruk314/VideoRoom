@@ -1,26 +1,25 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { useChannelStore } from "../features/channel/store/channel";
 
 export function useMouseHover(delay = 2000) {
-  const { isHovering, setIsHovering } = useChannelStore();
+  const setIsHovering = useChannelStore((s) => s.setIsHovering);
+  const timeoutRef = useRef<number | null>(null);
 
   useEffect(() => {
-    let timeoutId: any;
-
     const handleMouseMove = () => {
-      if (!isHovering) setIsHovering(true);
+      useChannelStore.getState().isHovering || setIsHovering(true);
 
-      clearTimeout(timeoutId);
-      timeoutId = setTimeout(() => {
+      if (timeoutRef.current) clearTimeout(timeoutRef.current);
+
+      timeoutRef.current = window.setTimeout(() => {
         setIsHovering(false);
       }, delay);
     };
 
     window.addEventListener("mousemove", handleMouseMove);
-
     return () => {
       window.removeEventListener("mousemove", handleMouseMove);
-      clearTimeout(timeoutId);
+      if (timeoutRef.current) clearTimeout(timeoutRef.current);
     };
-  }, [isHovering, setIsHovering, delay]);
+  }, [delay, setIsHovering]);
 }
