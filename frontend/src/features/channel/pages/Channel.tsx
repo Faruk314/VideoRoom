@@ -4,11 +4,10 @@ import { useParams } from "react-router-dom";
 import Loader from "../../../components/loaders/Loader";
 import ChannelFooter from "../components/ChannelFooter";
 import { useChannelStore } from "../store/channel";
-import Participants from "../components/Participants";
 import useMediasoup from "../../media/hooks/useMediasoup";
-import { useMouseHover } from "../../../hooks/useMouseHover";
 import { useChannel } from "../hooks/useChannel";
 import { useChannelQuery } from "../queries/channel";
+import Participants from "../components/Participants";
 
 export function Channel() {
   const [hasJoined, setHasJoined] = useState(false);
@@ -49,8 +48,6 @@ export function Channel() {
       }
     })();
   }, [id]);
-
-  useMouseHover(2000);
 
   if (isLoading) {
     return <Loader />;

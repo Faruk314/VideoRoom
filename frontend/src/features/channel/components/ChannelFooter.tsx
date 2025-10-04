@@ -11,11 +11,14 @@ import classNames from "classnames";
 import HideParticipantsBtn from "../../../components/buttons/HideParticipantsBtn";
 import FullScreenBtn from "../../../components/buttons/FullScreenBtn";
 import ChannelDetails from "../../../components/modals/ChannelDetails";
+import { useMouseHover } from "../../../hooks/useMouseHover";
 
 export default function ChannelFooter() {
-  const { localParticipant } = useLocalParticipantStore();
-  const { isHovering } = useChannelStore();
+  const localParticipant = useLocalParticipantStore().localParticipant;
+  const isHovering = useChannelStore().isHovering;
   const { leaveChannel } = useChannel();
+
+  useMouseHover(2000);
 
   return (
     <>
