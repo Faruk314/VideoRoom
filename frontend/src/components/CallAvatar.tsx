@@ -1,97 +1,67 @@
 import { useEffect, useRef } from "react";
 import Avatar from "./Avatar";
-import type { Consumer } from "mediasoup-client/types";
 import classNames from "classnames";
 import { useChannelStore } from "../features/channel/store/channel";
-import UserOptions from "./modals/UserOptions";
-import StreamOptions from "./modals/StreamOptions";
-import { MicOff, ScreenShare } from "lucide-react";
 import { useLocalParticipantStore } from "../features/channel/store/localParticipant";
 import { useParticipantStore } from "../features/channel/store/remoteParticipant";
+import {
+  getAudioStream,
+  getVideoStream,
+  isLocalParticipant,
+} from "../features/channel/utils/channel";
+import CallAvatarOverlay from "./CallAvatarOverlay";
+import SpeakingIndicator from "./SpeakingIndicator";
 
 interface Props {
   participantId: string;
-  isLocal?: boolean;
-  consumer?: Consumer | null;
-  audioConsumer?: Consumer | null;
-  stream?: MediaStream | null;
-  audioStream?: MediaStream | null;
-  isDisplayStream?: boolean;
-  muteCamera?: boolean;
   isDisplayed?: boolean;
+  isDisplayStream?: boolean;
 }
 
-export default function CallAvatar(props: Props) {
-  const {
-    participantId,
-    isLocal,
-    consumer,
-    stream,
-    audioConsumer,
-    audioStream,
-    isDisplayStream,
-    muteCamera,
-    isDisplayed,
-  } = props;
+function CallAvatar(props: Props) {
+  const { participantId, isDisplayed, isDisplayStream } = props;
+
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const audioRef = useRef<HTMLAudioElement | null>(null);
-  const { localParticipant } = useLocalParticipantStore();
-  const { isHovering, participantsHidden } = useChannelStore();
-  const { getParticipant } = useParticipantStore();
 
-  const participant = isLocal
-    ? localParticipant
-    : getParticipant(participantId);
-
+  const localParticipant = useLocalParticipantStore(
+    (state) => state.localParticipant
+  );
+  const participantsHidden = useChannelStore(
+    (state) => state.participantsHidden
+  );
   const setDisplayedAvatar = useChannelStore(
     (state) => state.setDisplayedAvatar
   );
+  const getParticipant = useParticipantStore((state) => state.getParticipant);
 
-  useEffect(() => {
-    const video = videoRef.current;
-    if (!video) return;
-
-    if (stream) {
-      video.srcObject = stream;
-      video.play().catch(() => {});
-    } else if (consumer?.track) {
-      const consumerStream = new MediaStream([consumer.track]);
-      video.srcObject = consumerStream;
-      video.play().catch(() => {});
-    } else {
-      video.srcObject = null;
-    }
-
-    return () => {
-      if (video) video.srcObject = null;
-    };
-  }, [consumer, stream]);
-
-  useEffect(() => {
-    const audio = audioRef.current;
-
-    if (!audio) return;
-
-    if (audioStream) {
-      audio.srcObject = audioStream;
-      audio.play().catch(() => {});
-    } else if (audioConsumer?.track) {
-      const audioConsumerStream = new MediaStream([audioConsumer.track]);
-      audio.srcObject = audioConsumerStream;
-      audio.play().catch(() => {});
-    } else {
-      audio.srcObject = null;
-    }
-
-    return () => {
-      if (audio) audio.srcObject = null;
-    };
-  }, [audioConsumer, audioStream]);
-
-  const hasVideo = !!stream || !!consumer?.track;
-  const hasAudio = !!audioStream || !!audioConsumer?.track;
+  const participant =
+    participantId === localParticipant?.user.userId
+      ? localParticipant
+      : getParticipant(participantId);
 
   if (!participant) return null;
+
+  const isLocal = isLocalParticipant(participant);
+
+  const videoStream = getVideoStream(participant, isDisplayStream);
+  const audioStream = getAudioStream(participant);
+
+  useEffect(() => {
+    const videoEl = videoRef.current;
+    if (!videoEl) return;
+
+    videoEl.srcObject = videoStream || null;
+    videoEl.play().catch(() => {});
+  }, [videoStream]);
+
+  useEffect(() => {
+    const audioEl = audioRef.current;
+    if (!audioEl) return;
+
+    audioEl.srcObject = audioStream || null;
+    audioEl.play().catch(() => {});
+  }, [audioStream]);
 
   return (
     <div
@@ -102,19 +72,22 @@ export default function CallAvatar(props: Props) {
           "object-contain w-full h-[30vh] px-4 lg:px-0 lg:w-[75vw] lg:h-[85vh] border-none":
             isDisplayed && participantsHidden,
           "w-[70rem] h-full border-none": isDisplayed && !participantsHidden,
-          "bg-gray-50": hasVideo,
-          "bg-white": !hasVideo,
-          "border-3 border-green-600":
-            participant.isSpeaking && !isDisplayed && !isDisplayStream,
+          "bg-gray-50": !participant.camMuted,
+          "bg-white": participant.camMuted,
         }
       )}
     >
-      {hasAudio && <audio ref={audioRef} playsInline muted={isLocal} />}
-      {hasVideo ? (
+      <SpeakingIndicator
+        participantId={participantId}
+        isDisplayed={isDisplayed}
+        isDisplayStream={isDisplayStream}
+      />
+      <audio ref={audioRef} playsInline muted={isLocal} />
+      {videoStream ? (
         <video
           ref={videoRef}
           playsInline
-          muted={muteCamera}
+          muted={isLocal}
           autoPlay
           className="object-contain"
         />
@@ -133,37 +106,15 @@ export default function CallAvatar(props: Props) {
         </div>
       )}
 
-      {isHovering && (
-        <div
-          className={classNames(
-            "absolute bottom-2 left-2 text-white bg-black/60 font-black rounded-md text-[0.9rem] px-2 slide-up flex items-center space-x-1",
-            {
-              "py-0": !isDisplayed,
-              "py-1": isDisplayed,
-            }
-          )}
-        >
-          {participant.micMuted && !isDisplayStream && (
-            <MicOff className="h-4 w-4" />
-          )}
-          {isDisplayStream && <ScreenShare className="h-4 w-4" />}
-          <span>{participant.user.userName}</span>
-        </div>
-      )}
-
-      <div
-        className={classNames(
-          "absolute bottom-2 right-2 transition-opacity duration-200",
-          {
-            hidden: isDisplayed,
-            "opacity-0 pointer-events-none": !isHovering,
-            "opacity-100 pointer-events-auto": isHovering,
-          }
-        )}
-      >
-        {isDisplayStream && isLocal && <StreamOptions />}
-        {!isDisplayStream && isLocal && <UserOptions />}
-      </div>
+      <CallAvatarOverlay
+        isLocal={isLocal}
+        userName={participant.user.userName}
+        isMuted={participant.micMuted}
+        isDisplayed={isDisplayed}
+        isDisplayStream={isDisplayStream}
+      />
     </div>
   );
 }
+
+export default CallAvatar;
