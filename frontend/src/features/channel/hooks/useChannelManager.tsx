@@ -1,6 +1,5 @@
 import { useLocalParticipantStore } from "../store/localParticipant";
 import useProducerEmitters from "../../media/websocket/emitters/mediasoup/producer";
-import { useChannelStore } from "../store/channel";
 import type { MediaKind } from "../../media/types/media";
 
 export default function useChannelManager() {
@@ -11,8 +10,6 @@ export default function useChannelManager() {
   async function stopStream(kind: MediaKind) {
     try {
       const { localParticipant } = useLocalParticipantStore.getState();
-      const { displayedAvatar, setDisplayedAvatar } =
-        useChannelStore.getState();
       const producer = localParticipant?.producers[kind];
       const stream = localParticipant?.streams[kind];
 
@@ -32,10 +29,6 @@ export default function useChannelManager() {
         updateLocalParticipant({ isStreaming: false });
       } else if (kind === "audio") {
         updateLocalParticipant({ micMuted: true });
-      }
-
-      if (displayedAvatar?.stream === stream) {
-        setDisplayedAvatar(null);
       }
     } catch (error) {
       console.error(`Failed to stop ${kind} stream`);
