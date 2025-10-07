@@ -16,7 +16,6 @@ export function Channel() {
   const { connectMediasoup } = useMediasoup();
   const { joinChannel } = useChannel();
   const displayedAvatar = useChannelStore((state) => state.displayedAvatar);
-  const { participantsHidden } = useChannelStore();
 
   useEffect(() => {
     if (!id || hasJoined) return;
@@ -59,7 +58,7 @@ export function Channel() {
         {displayedAvatar && <CallAvatar {...displayedAvatar} isDisplayed />}
       </div>
 
-      {!participantsHidden && <Participants />}
+      <Participants />
 
       <ChannelFooter />
     </section>
