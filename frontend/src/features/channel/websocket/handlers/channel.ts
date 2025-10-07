@@ -1,17 +1,11 @@
 import { useCallback } from "react";
 import type { IParticipant } from "../../types/channel";
 import { useParticipantStore } from "../../store/remoteParticipant";
-import { useLocalParticipantStore } from "../../store/localParticipant";
+import { useChannelStore } from "../../store/channel";
 
 export function useChannelHandlers() {
-  const {
-    addParticipant,
-    getParticipant,
-    removeParticipant,
-    updateParticipant,
-  } = useParticipantStore();
-
-  const { updateLocalParticipant } = useLocalParticipantStore();
+  const { addParticipant, getParticipant, removeParticipant } =
+    useParticipantStore();
 
   const onParticipantJoin = useCallback(
     async (data: { participant: IParticipant }) => {
@@ -38,24 +32,12 @@ export function useChannelHandlers() {
 
   const onParticipantSpeak = useCallback((data: { userId: string }) => {
     const { userId } = data;
-    const { localParticipant } = useLocalParticipantStore.getState();
-
-    if (localParticipant?.user.userId === userId) {
-      return updateLocalParticipant({ isSpeaking: true });
-    }
-
-    updateParticipant(userId, { isSpeaking: true });
+    useChannelStore.getState().setSpeaking(userId, true);
   }, []);
 
   const onParticipantSilence = useCallback((data: { userId: string }) => {
     const { userId } = data;
-    const { localParticipant } = useLocalParticipantStore.getState();
-
-    if (localParticipant?.user.userId === userId) {
-      return updateLocalParticipant({ isSpeaking: false });
-    }
-
-    updateParticipant(userId, { isSpeaking: false });
+    useChannelStore.getState().setSpeaking(userId, false);
   }, []);
 
   return {
