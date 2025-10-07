@@ -14,6 +14,7 @@ export function useChannelQuery(channelId: string, isJoined: boolean) {
   return useQuery({
     queryKey: ["channel", channelId],
     enabled: isJoined,
+    refetchOnWindowFocus: false,
     queryFn: async () => {
       try {
         const { participants }: { participants: IParticipant[] } =
