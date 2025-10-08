@@ -40,12 +40,11 @@ function CallAvatar(props: Props) {
       ? localParticipant
       : getParticipant(participantId);
 
-  if (!participant) return null;
-
-  const isLocal = isLocalParticipant(participant);
-
-  const videoStream = getVideoStream(participant, isDisplayStream);
-  const audioStream = getAudioStream(participant);
+  const isLocal = participant ? isLocalParticipant(participant) : false;
+  const videoStream = participant
+    ? getVideoStream(participant, isDisplayStream)
+    : null;
+  const audioStream = participant ? getAudioStream(participant) : null;
 
   useEffect(() => {
     const videoEl = videoRef.current;
@@ -62,6 +61,8 @@ function CallAvatar(props: Props) {
     audioEl.srcObject = audioStream || null;
     audioEl.play().catch(() => {});
   }, [audioStream]);
+
+  if (!participant) return null;
 
   return (
     <div
