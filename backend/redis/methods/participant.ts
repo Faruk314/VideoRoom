@@ -13,7 +13,7 @@ async function createParticipant(data: {
 }) {
   const { userId, userName, channelId } = data;
 
-  const user = {
+  const participant = {
     user: {
       userId,
       userName,
@@ -27,61 +27,85 @@ async function createParticipant(data: {
   };
 
   try {
-    await redis.hset(CHANNEL_PARTICIPANT_KEY, userId, JSON.stringify(user));
+    await redis.hset(
+      CHANNEL_PARTICIPANT_KEY,
+      userId,
+      JSON.stringify(participant)
+    );
 
-    return { error: false, message: "User created successfully", user };
+    return {
+      error: false,
+      message: "Participant created successfully",
+      participant,
+    };
   } catch {
-    return { error: true, message: "Failed to create user" };
+    return { error: true, message: "Failed to create participant" };
   }
 }
 
 async function updateParticipant(userId: string, updates: Partial<IUser>) {
   try {
-    const { user, error, message } = await getParticipant(userId);
+    const { participant, error, message } = await getParticipant(userId);
 
-    if (error || !user) {
+    if (error || !participant) {
       return { error, message };
     }
 
-    Object.assign(user, updates);
+    Object.assign(participant, updates);
 
-    await redis.hset(CHANNEL_PARTICIPANT_KEY, userId, JSON.stringify(user));
+    await redis.hset(
+      CHANNEL_PARTICIPANT_KEY,
+      userId,
+      JSON.stringify(participant)
+    );
 
-    return { error: false, message: "User updated successfully", user };
+    return {
+      error: false,
+      message: "Participant updated successfully",
+      participant,
+    };
   } catch {
-    return { error: true, message: "Failed to update user" };
+    return { error: true, message: "Failed to update participant" };
   }
 }
 
-async function deleteParticipant(userId: string) {
+async function deleteParticipant(participantId: string) {
   try {
-    const exists = await redis.hexists(CHANNEL_PARTICIPANT_KEY, userId);
+    const exists = await redis.hexists(CHANNEL_PARTICIPANT_KEY, participantId);
 
     if (!exists) {
-      return { error: true, message: "User not found" };
+      return { error: true, message: "Participant not found" };
     }
 
-    await redis.hdel(CHANNEL_PARTICIPANT_KEY, userId);
+    await redis.hdel(CHANNEL_PARTICIPANT_KEY, participantId);
 
-    return { error: false, message: "User deleted successfully" };
+    return { error: false, message: "Participant deleted successfully" };
   } catch {
-    return { error: true, message: "Failed to delete user" };
+    return { error: true, message: "Failed to delete participant" };
   }
 }
 
-async function getParticipant(userId: string) {
+async function getParticipant(participantId: string) {
   try {
-    const userJSON = await redis.hget(CHANNEL_PARTICIPANT_KEY, userId);
+    const userJSON = await redis.hget(CHANNEL_PARTICIPANT_KEY, participantId);
 
     if (!userJSON) {
-      return { error: true, message: "User not found", user: null };
+      return {
+        error: true,
+        message: "Participant not found",
+        participant: null,
+      };
     }
 
-    const user = JSON.parse(userJSON);
+    const participant = JSON.parse(userJSON);
 
-    return { error: false, user };
+    return { error: false, participant };
   } catch {
-    return { error: true, message: "Failed to retrieve user", user: null };
+    return {
+      error: true,
+      message: "Failed to retrieve participant",
+      participant: null,
+    };
   }
 }
 
@@ -95,13 +119,13 @@ async function getParticipants(channelId: string) {
       participantIds.map(async (userId) => {
         const data = await getParticipant(userId);
 
-        return data.user;
+        return data.participant;
       })
     );
 
     return participants;
   } catch {
-    throw new Error("Coult not fetch participants");
+    throw new Error("Failed to fetch participants");
   }
 }
 
