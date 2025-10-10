@@ -9,6 +9,8 @@ export function useChannelEvents() {
     onParticipantLeave,
     onParticipantSpeak,
     onParticipantSilence,
+    onParticipantReconnect,
+    onParticipantDisconnect,
   } = useChannelHandlers();
 
   useSocketEvent(socket, "participantJoined", onParticipantJoin);
@@ -18,4 +20,8 @@ export function useChannelEvents() {
   useSocketEvent(socket, "participantSpeaking", onParticipantSpeak);
 
   useSocketEvent(socket, "participantSilence", onParticipantSilence);
+
+  useSocketEvent(socket, "participantReconnected", onParticipantReconnect);
+
+  useSocketEvent(socket, "participantDisconnected", onParticipantDisconnect);
 }
