@@ -107,6 +107,12 @@ function CallAvatar(props: Props) {
         </div>
       )}
 
+      {!participant.connected && (
+        <div className="absolute top-2 left-2 text-white bg-red-500 font-black rounded-full text-[0.9rem] px-2">
+          Offline
+        </div>
+      )}
+
       <CallAvatarOverlay
         isLocal={isLocal}
         userName={participant.user.userName}
