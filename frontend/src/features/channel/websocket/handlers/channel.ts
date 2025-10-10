@@ -4,8 +4,12 @@ import { useParticipantStore } from "../../store/remoteParticipant";
 import { useChannelStore } from "../../store/channel";
 
 export function useChannelHandlers() {
-  const { addParticipant, getParticipant, removeParticipant } =
-    useParticipantStore();
+  const {
+    addParticipant,
+    getParticipant,
+    removeParticipant,
+    updateParticipant,
+  } = useParticipantStore();
 
   const onParticipantJoin = useCallback(
     async (data: { participant: IParticipant }) => {
@@ -40,10 +44,24 @@ export function useChannelHandlers() {
     useChannelStore.getState().setSpeaking(userId, false);
   }, []);
 
+  const onParticipantReconnect = useCallback((data: { userId: string }) => {
+    const { userId } = data;
+
+    updateParticipant(userId, { connected: true });
+  }, []);
+
+  const onParticipantDisconnect = useCallback((data: { userId: string }) => {
+    const { userId } = data;
+
+    updateParticipant(userId, { connected: false });
+  }, []);
+
   return {
     onParticipantJoin,
     onParticipantLeave,
     onParticipantSpeak,
     onParticipantSilence,
+    onParticipantReconnect,
+    onParticipantDisconnect,
   };
 }
