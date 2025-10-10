@@ -8,9 +8,12 @@ import {
 import {
   createParticipant,
   deleteParticipant,
+  getParticipant,
+  updateParticipant,
 } from "redis/methods/participant";
 import { ChannelIdSchema } from "validation/channel";
 import { cleanupPeerResources } from "msoup/methods/peer";
+import { channelReconnectQueue } from "redis/queues/channelReconnect";
 
 class ChannelListeners {
   io: Server;
@@ -41,14 +44,6 @@ class ChannelListeners {
     if (response.error)
       return callback({ error: true, message: response.message });
 
-    await createParticipant({
-      userId: this.socket.userId,
-      userName: this.socket.userName,
-      channelId,
-    });
-
-    this.socket.join(channelId);
-
     callback({ error: false, message: response.message, data: { channelId } });
   }
 
@@ -72,6 +67,30 @@ class ChannelListeners {
     if (!exists)
       return callback({ error: true, message: "Channel does not exist" });
 
+    const participant = (await getParticipant(this.socket.userId)).participant;
+
+    if (participant && participant.currentChannel === channelId) {
+      const reconnectTimer = await channelReconnectQueue.getJob(
+        `reconnectTimer-${participant.user.userId + channelId}`
+      );
+
+      if (reconnectTimer) await reconnectTimer.remove();
+
+      await updateParticipant(participant.user.userId, { connected: true });
+
+      this.socket.join(channelId);
+
+      this.socket.to(channelId).emit("participantReconnected", {
+        userId: participant.user.userId,
+      });
+
+      return callback({
+        error: false,
+        message: "Reconnected succesfully",
+        data: { channelId },
+      });
+    }
+
     const response = await createParticipant({
       userId: this.socket.userId,
       userName: this.socket.userName,
@@ -89,7 +108,7 @@ class ChannelListeners {
 
     this.socket
       .to(channelId)
-      .emit("participantJoined", { participant: response.user });
+      .emit("participantJoined", { participant: response.participant });
 
     this.socket.join(channelId);
 

@@ -8,9 +8,12 @@ import ConsumerListeners from "./listeners/mediasoup/consumer";
 import { cleanupPeerResources } from "msoup/methods/peer";
 import { updateParticipant } from "redis/methods/participant";
 import ParticipantListeners from "./listeners/channels/participant";
+import { channelReconnectQueue } from "redis/queues/channelReconnect";
+
+let io: ServerIO;
 
 function createSocketServer(httpServer: import("http").Server) {
-  const io = new ServerIO(httpServer, {
+  io = new ServerIO(httpServer, {
     path: "/ws",
     cors: {
       origin: env.FRONTEND_URL,
@@ -44,8 +47,6 @@ function createSocketServer(httpServer: import("http").Server) {
   });
 
   io.on("connection", (socket: Socket) => {
-    console.log(`user connected with id ${socket.userId}`);
-
     new ChannelListeners(io, socket).registerListeners();
     new ParticipantListeners(io, socket).registerListeners();
     new TransportListeners(io, socket).registerListeners();
@@ -53,14 +54,60 @@ function createSocketServer(httpServer: import("http").Server) {
     new ConsumerListeners(io, socket).registerListeners();
 
     socket.on("disconnect", async () => {
-      cleanupPeerResources(socket.userId);
+      const reconnectDelay = 20_000;
 
-      await updateParticipant(socket.userId, {
+      const response = await updateParticipant(socket.userId, {
         connected: false,
         isStreaming: false,
       });
+
+      if (!response.participant)
+        return console.error("participant not found in disconnect");
+
+      cleanupPeerResources(socket.userId);
+
+      const currentChannel = response.participant.currentChannel;
+
+      const existingJob = await channelReconnectQueue.getJob(
+        `reconnectTimer-${socket.userId + currentChannel}`
+      );
+
+      if (existingJob) {
+        console.log(`Reconnect job already exists for user ${socket.userId}`);
+        return;
+      }
+
+      try {
+        await channelReconnectQueue.add(
+          "channel-reconnect",
+          {
+            channelId: currentChannel,
+            disconnectedUserId: socket.userId,
+          },
+          {
+            delay: reconnectDelay,
+            jobId: `reconnectTimer-${socket.userId + currentChannel}`,
+            removeOnComplete: true,
+            removeOnFail: true,
+          }
+        );
+
+        socket
+          .to(currentChannel)
+          .emit("participantDisconnected", { userId: socket.userId });
+      } catch (err) {
+        console.error("Error adding reconnect job:", err);
+      }
     });
   });
 }
 
-export { createSocketServer };
+function getIO() {
+  if (!io) {
+    throw new Error("Socket.io not initialized");
+  }
+
+  return io;
+}
+
+export { createSocketServer, getIO };
