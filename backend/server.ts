@@ -8,6 +8,7 @@ import express from "express";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import errorHandler from "middlewares/error";
+import { channelReconnectWorker } from "redis/workers/channelReconnect";
 
 async function main() {
   await initMediasoupWorker();
@@ -17,6 +18,8 @@ async function main() {
   const server = http.createServer(app);
 
   createSocketServer(server);
+
+  channelReconnectWorker;
 
   app.use(
     cors({
