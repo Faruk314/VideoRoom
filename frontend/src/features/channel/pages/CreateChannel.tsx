@@ -9,11 +9,11 @@ export function CreateChannel() {
   const { mutate: logoutUser } = useLogoutMutation();
 
   return (
-    <section className="flex flex-col items-center justify-center w-full h-[100vh]">
-      <div className="fixed top-0 w-full shadow-sm">
+    <section className="w-full">
+      <div className="w-full shadow-sm h-max">
         <div className="flex items-center justify-between mx-auto container px-4 md:px-0 py-4">
           <div className="flex items-center space-x-2 text-xl md:text-3xl">
-            <img src="/images/logo.png" className="w-30" />
+            <img src="/images/logo.png" className="w-25 md:w-30" />
 
             <div className="flex items-baseline space-x-2 hidden md:block">
               <span className="font-semibold text-2xl md:text-3xl">
@@ -30,7 +30,7 @@ export function CreateChannel() {
           </PrimaryBtn>
         </div>
       </div>
-      <div className="flex flex-col justify-center items-center space-y-10">
+      <div className="flex flex-col justify-center items-center space-y-10 pt-20 md:pt-40">
         <div className="flex flex-col text-center px-4 md:px-0 items-center space-y-2">
           <h1 className="text-3xl md:text-4xl font-semibold">
             Video Calls and Meetings for anyone!
