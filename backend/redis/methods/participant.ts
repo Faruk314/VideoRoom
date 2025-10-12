@@ -1,6 +1,3 @@
-import { types } from "mediasoup";
-import { getPeer } from "msoup/methods/peer";
-import { producers } from "msoup/methods/producer";
 import redis from "redis/client";
 import { IUser } from "types/types";
 
@@ -23,7 +20,7 @@ async function createParticipant(data: {
     deafened: false,
     isStreaming: false,
     currentChannel: channelId,
-    connected: false,
+    connected: true,
   };
 
   try {
