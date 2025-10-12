@@ -30,8 +30,11 @@ export function useChannel() {
         channelId,
       });
     } catch (error: unknown) {
-      if (error instanceof Error) toastError(error.message);
-      navigate("/home");
+      if (error instanceof Error) {
+        toastError(error.message);
+        navigate("/home");
+      }
+      throw new Error("Channel join failed");
     }
   }
 

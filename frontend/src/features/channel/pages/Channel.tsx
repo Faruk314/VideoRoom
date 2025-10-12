@@ -1,51 +1,44 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import CallAvatar from "../../../components/CallAvatar";
 import { useParams } from "react-router-dom";
 import Loader from "../../../components/loaders/Loader";
 import ChannelFooter from "../components/ChannelFooter";
 import { useChannelStore } from "../store/channel";
 import useMediasoup from "../../media/hooks/useMediasoup";
-import { useChannel } from "../hooks/useChannel";
 import { useChannelQuery } from "../queries/channel";
 import Participants from "../components/Participants";
+import { useChannel } from "../hooks/useChannel";
 
 export function Channel() {
-  const [hasJoined, setHasJoined] = useState(false);
-  const connectingRef = useRef(false);
   const { id } = useParams<{ id: string }>();
   const { connectMediasoup } = useMediasoup();
   const { joinChannel } = useChannel();
   const displayedAvatar = useChannelStore((state) => state.displayedAvatar);
+  const hasInitializedRef = useRef(false);
+
+  const { isLoading, refetch: fetchChannelData } = useChannelQuery(
+    id || "",
+    false
+  );
 
   useEffect(() => {
-    if (!id || hasJoined) return;
+    if (!id || hasInitializedRef.current) return;
 
-    async function handleJoin() {
+    hasInitializedRef.current = true;
+
+    const initializeChannel = async () => {
       try {
-        await joinChannel(id!);
-        setHasJoined(true);
-      } catch (e) {
-        console.error("Join failed", e);
-      }
-    }
+        await joinChannel(id);
 
-    handleJoin();
-  }, [id, hasJoined]);
+        await fetchChannelData();
 
-  const { isLoading } = useChannelQuery(id || "", hasJoined);
-
-  useEffect(() => {
-    if (!id || connectingRef.current) return;
-
-    connectingRef.current = true;
-
-    (async () => {
-      try {
         await connectMediasoup(id);
-      } finally {
-        connectingRef.current = false;
+      } catch (err) {
+        console.error("Channel initialization failed:", err);
       }
-    })();
+    };
+
+    initializeChannel();
   }, [id]);
 
   if (isLoading) {
