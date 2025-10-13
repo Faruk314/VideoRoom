@@ -13,7 +13,7 @@ export function CreateChannel() {
       <div className="w-full shadow-sm h-max">
         <div className="flex items-center justify-between mx-auto container px-4 md:px-0 py-4">
           <div className="flex items-center space-x-2 text-xl md:text-3xl">
-            <img src="/images/logo.png" className="w-25 md:w-30" />
+            <img src="/images/logo.webp" className="w-25 md:w-30" />
 
             <div className="flex items-baseline space-x-2 hidden md:block">
               <span className="font-semibold text-2xl md:text-3xl">

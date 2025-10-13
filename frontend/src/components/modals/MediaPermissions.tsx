@@ -51,7 +51,10 @@ export default function MediaPermissions({ type }: Props) {
       </DialogTrigger>
 
       <DialogContent className="max-w-2xl">
-        <img className="md:h-55 md:w-80 mx-auto" src="/images/audioVideo.png" />
+        <img
+          className="md:h-55 md:w-80 mx-auto"
+          src="/images/audioVideo.webp"
+        />
 
         <div className="flex flex-col items-center gap-2">
           <DialogTitle className="text-xl font-semibold text-center">
