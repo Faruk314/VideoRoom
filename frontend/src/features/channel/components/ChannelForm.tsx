@@ -1,15 +1,16 @@
 import { PrimaryInput } from "../../../components/buttons/PrimaryInput";
 import { Keyboard, UserPlus, Video } from "lucide-react";
 import { PrimaryBtn } from "../../../components/buttons/PrimaryBtn";
-import { useChannel } from "../hooks/useChannel";
 import Separator from "../../../components/Separator";
 import { useState } from "react";
 import { extractChannelId } from "../utils/channel";
 import { useToast } from "../../../hooks/useToast";
 import { useNavigate } from "react-router-dom";
+import { useCreateChannelMutation } from "../queries/channel";
+import { Spinner } from "../../../components/loaders/Spinner";
 
 export default function ChannelForm() {
-  const { createChannel } = useChannel();
+  const createChannelMutation = useCreateChannelMutation();
   const navigate = useNavigate();
   const { toastError } = useToast();
   const [input, setInput] = useState("");
@@ -44,8 +45,16 @@ export default function ChannelForm() {
 
       <Separator />
 
-      <PrimaryBtn onClick={createChannel} icon={<Video />}>
-        New Meeting
+      <PrimaryBtn
+        onClick={() => createChannelMutation.mutate()}
+        icon={<Video />}
+        disabled={createChannelMutation.isPending}
+      >
+        {createChannelMutation.isPending ? (
+          <Spinner className="h-6 w-6" />
+        ) : (
+          "New Meeting"
+        )}
       </PrimaryBtn>
     </div>
   );

@@ -1,12 +1,16 @@
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { getErrorMessage } from "../../../lib/error";
-import { getChannel } from "../api/channel";
+import { createChannel, getChannel } from "../api/channel";
 import { useParticipantStore } from "../store/remoteParticipant";
 import { useUserStore } from "../../user/store/user";
 import type { IParticipant } from "../types/channel";
 import { useLocalParticipantStore } from "../store/localParticipant";
+import { useChannelStore } from "../store/channel";
+import { useToast } from "../../../hooks/useToast";
+import { useNavigate } from "react-router-dom";
 
-export function useChannelQuery(channelId: string, isJoined: boolean) {
+function useChannelQuery(channelId: string, isJoined: boolean) {
+  const { setChannel } = useChannelStore();
   const { setParticipants } = useParticipantStore();
   const { setLocalParticipant } = useLocalParticipantStore();
   const { user: localUser } = useUserStore();
@@ -33,6 +37,8 @@ export function useChannelQuery(channelId: string, isJoined: boolean) {
           setLocalParticipant({ ...self, producers: {}, streams: {} });
         }
 
+        setChannel({ id: channelId });
+
         return participants;
       } catch (error) {
         console.error(getErrorMessage(error));
@@ -41,3 +47,23 @@ export function useChannelQuery(channelId: string, isJoined: boolean) {
     },
   });
 }
+
+function useCreateChannelMutation() {
+  const { toastError, toastSuccess } = useToast();
+  const navigate = useNavigate();
+
+  return useMutation({
+    mutationFn: createChannel,
+    onSuccess: (response) => {
+      toastSuccess(response.message);
+      navigate(`/channel/${response.data.channelId}`);
+
+      return response.data;
+    },
+    onError: (error) => {
+      toastError(getErrorMessage(error));
+    },
+  });
+}
+
+export { useChannelQuery, useCreateChannelMutation };
