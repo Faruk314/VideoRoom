@@ -1,0 +1,1 @@
+ALTER TABLE "channel_messages" ALTER COLUMN "channelId" SET DATA TYPE text;
