@@ -1,6 +1,10 @@
 import type { IUser } from "../../user/types/user";
 import { Consumer, Producer } from "mediasoup-client/types";
 
+interface IChannelInfo {
+  id: string;
+}
+
 interface ILocalParticipant {
   user: IUser;
   micMuted: boolean;
@@ -34,4 +38,4 @@ interface IParticipant {
   };
 }
 
-export type { ILocalParticipant, IParticipant };
+export type { IChannelInfo, ILocalParticipant, IParticipant };
