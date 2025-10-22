@@ -1,8 +1,12 @@
 import { Worker } from "bullmq";
 import redis from "redis/client";
-import { leaveChannel } from "redis/methods/channel";
 import { deleteParticipant } from "redis/methods/participant";
+import { deleteChannel as deleteChannelDb } from "db/channel";
 import { getIO } from "websocket/io";
+import {
+  leaveChannel,
+  channelExists as channelExistsRedis,
+} from "redis/methods/channel";
 
 export const channelReconnectWorker = new Worker(
   "channel-reconnect",
@@ -21,6 +25,10 @@ export const channelReconnectWorker = new Worker(
     if (data.error) {
       return console.error("Reconnect worker fail", data.message);
     }
+
+    const exist = await channelExistsRedis(channelId);
+
+    if (!exist) return await deleteChannelDb(channelId);
 
     io.to(channelId).emit("participantLeft", {
       userId: disconnectedUserId,

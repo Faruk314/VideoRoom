@@ -1,7 +1,6 @@
 import { Server, Socket } from "socket.io";
-import { nanoid } from "nanoid";
 import {
-  channelExists,
+  channelExists as channelExistsRedis,
   joinChannel,
   leaveChannel,
 } from "redis/methods/channel";
@@ -14,6 +13,7 @@ import {
 import { ChannelIdSchema } from "validation/channel";
 import { cleanupPeerResources } from "msoup/methods/peer";
 import { channelReconnectQueue } from "redis/queues/channelReconnect";
+import { deleteChannel as deleteChannelDb } from "db/channel";
 
 class ChannelListeners {
   io: Server;
@@ -25,26 +25,8 @@ class ChannelListeners {
   }
 
   registerListeners() {
-    this.socket.on("createChannel", this.onCreateChannel.bind(this));
     this.socket.on("joinChannel", this.onJoinChannel.bind(this));
     this.socket.on("leaveChannel", this.onLeaveChannel.bind(this));
-  }
-
-  async onCreateChannel(
-    callback: (response: {
-      error: boolean;
-      message?: string;
-      data?: { channelId: string };
-    }) => void
-  ) {
-    const channelId = nanoid(8);
-
-    const response = await joinChannel(channelId, this.socket.userId);
-
-    if (response.error)
-      return callback({ error: true, message: response.message });
-
-    callback({ error: false, message: response.message, data: { channelId } });
   }
 
   async onJoinChannel(
@@ -62,7 +44,7 @@ class ChannelListeners {
     if (!success)
       return callback({ error: true, message: "Invalid channel ID" });
 
-    const exists = await channelExists(channelId);
+    const exists = await channelExistsRedis(channelId);
 
     if (!exists)
       return callback({ error: true, message: "Channel does not exist" });
@@ -136,22 +118,21 @@ class ChannelListeners {
 
     const response = await leaveChannel(channelId, this.socket.userId);
 
-    if (response.error) {
-      return callback({
-        error: true,
-        message: "Failed to remove participant from channel",
-      });
-    }
+    if (response.error) console.error(response.message);
 
     const res = await deleteParticipant(this.socket.userId);
 
-    if (res.error) {
-      return callback({ error: true, message: "Failed to delete participant" });
-    }
+    if (res.error) console.error(res.message);
 
-    this.io.to(channelId).emit("participantLeft", {
-      userId: this.socket.userId,
-    });
+    const exist = await channelExistsRedis(channelId);
+
+    if (!exist) {
+      await deleteChannelDb(channelId);
+    } else {
+      this.io.to(channelId).emit("participantLeft", {
+        userId: this.socket.userId,
+      });
+    }
 
     callback({ error: false, message: "Channel left" });
   }
