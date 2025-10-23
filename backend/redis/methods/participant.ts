@@ -126,10 +126,20 @@ async function getParticipants(channelId: string) {
   }
 }
 
+async function isParticipant(channelId: string, userId: string) {
+  const result = await redis.sismember(
+    `channel:participants:${channelId}`,
+    userId
+  );
+
+  return result === 1;
+}
+
 export {
   createParticipant,
   updateParticipant,
   deleteParticipant,
   getParticipant,
   getParticipants,
+  isParticipant,
 };
