@@ -10,7 +10,7 @@ import {
 declare global {
   namespace Express {
     interface Request {
-      user?: { userId: string };
+      user?: { userId: string; userName: string };
     }
   }
 }
@@ -57,4 +57,14 @@ interface IChannel {
   lastActiveSpeaker: string | null;
 }
 
-export type { IPeer, IUser, ITransport, IChannel };
+interface IChannelMessage {
+  id: string;
+  content: string;
+  createdAt: Date;
+  sender: {
+    userId: string;
+    userName: string;
+  };
+}
+
+export type { IPeer, IUser, ITransport, IChannel, IChannelMessage };
