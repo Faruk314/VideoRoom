@@ -9,6 +9,7 @@ import { cleanupPeerResources } from "msoup/methods/peer";
 import { updateParticipant } from "redis/methods/participant";
 import ParticipantListeners from "./listeners/channels/participant";
 import { channelReconnectQueue } from "redis/queues/channelReconnect";
+import ChannelMessageListeners from "./listeners/channels/channelMessage";
 
 let io: ServerIO;
 
@@ -48,6 +49,7 @@ function createSocketServer(httpServer: import("http").Server) {
 
   io.on("connection", (socket: Socket) => {
     new ChannelListeners(io, socket).registerListeners();
+    new ChannelMessageListeners(io, socket).registerListeners();
     new ParticipantListeners(io, socket).registerListeners();
     new TransportListeners(io, socket).registerListeners();
     new ProducerListeners(io, socket).registerListeners();
