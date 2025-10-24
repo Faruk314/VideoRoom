@@ -12,6 +12,7 @@ import HideParticipantsBtn from "../../../components/buttons/HideParticipantsBtn
 import FullScreenBtn from "../../../components/buttons/FullScreenBtn";
 import ChannelDetails from "../../../components/modals/ChannelDetails";
 import { useMouseHover } from "../../../hooks/useMouseHover";
+import ChannelChatSidebar from "./ChannelSidebar";
 
 export default function ChannelFooter() {
   const localParticipant = useLocalParticipantStore().localParticipant;
@@ -46,6 +47,7 @@ export default function ChannelFooter() {
 
           <div className="hidden md:flex fixed bottom-0 right-6 z-50">
             <ChannelDetails />
+            <ChannelChatSidebar />
             <FullScreenBtn />
           </div>
 
@@ -60,6 +62,15 @@ export default function ChannelFooter() {
       >
         <ChannelDetails />
         <FullScreenBtn />
+      </div>
+
+      <div
+        className={classNames(
+          "fixed top-2 right-2 z-50 md:hidden",
+          isHovering ? "flex" : "hidden"
+        )}
+      >
+        <ChannelChatSidebar />
       </div>
     </>
   );
