@@ -12,11 +12,14 @@ import useMediasoupEvents from "./features/media/websocket/listeners/mediasoup";
 import usePermissionWatcher from "./hooks/usePermissionWatcher";
 import PrivateRoute from "./components/PrivateRoute";
 import Redirect from "./components/Redirect";
+import { useChannelMessageEvents } from "./features/channel/websocket/listeners/channelMessage";
 
 function App() {
   const { isLoading } = useLoginStatusQuery();
 
   useChannelEvents();
+
+  useChannelMessageEvents();
 
   useMediasoupEvents();
 
