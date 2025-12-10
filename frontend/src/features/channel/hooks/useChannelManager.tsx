@@ -1,16 +1,17 @@
 import { useLocalParticipantStore } from "../store/localParticipant";
 import useProducerEmitters from "../../media/websocket/emitters/mediasoup/producer";
 import type { MediaKind } from "../../media/types/media";
+import { useProducerStore } from "../../media/store/producers";
 
 export default function useChannelManager() {
   const { emitCloseProducer } = useProducerEmitters();
-  const { removeProducer, removeStream, updateLocalParticipant } =
-    useLocalParticipantStore();
+  const { removeStream, updateLocalParticipant } = useLocalParticipantStore();
+  const { removeProducer, producers } = useProducerStore();
 
   async function stopStream(kind: MediaKind) {
     try {
       const { localParticipant } = useLocalParticipantStore.getState();
-      const producer = localParticipant?.producers[kind];
+      const producer = producers[kind];
       const stream = localParticipant?.streams[kind];
 
       if (!producer) return;

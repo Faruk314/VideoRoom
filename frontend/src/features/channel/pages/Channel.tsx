@@ -1,13 +1,13 @@
 import { useEffect, useRef } from "react";
-import CallAvatar from "../../../components/CallAvatar";
 import { useParams } from "react-router-dom";
 import Loader from "../../../components/loaders/Loader";
 import ChannelFooter from "../components/ChannelFooter";
 import { useChannelStore } from "../store/channel";
 import useMediasoup from "../../media/hooks/useMediasoup";
 import { useChannelQuery } from "../queries/channel";
-import Participants from "../components/Participants";
 import { useChannel } from "../hooks/useChannel";
+import ChannelParticipants from "../components/ChannelParticipants";
+import ChannelAvatar from "../components/ChannelAvatar";
 
 export function Channel() {
   const { id } = useParams<{ id: string }>();
@@ -48,10 +48,10 @@ export function Channel() {
   return (
     <section className="flex flex-col items-center justify-between h-[100vh] w-full overflow-hidden bg-gray-100">
       <div className="flex-1 flex items-center justify-center w-full">
-        {displayedAvatar && <CallAvatar {...displayedAvatar} isDisplayed />}
+        {displayedAvatar && <ChannelAvatar {...displayedAvatar} isDisplayed />}
       </div>
 
-      <Participants />
+      <ChannelParticipants />
 
       <ChannelFooter />
     </section>

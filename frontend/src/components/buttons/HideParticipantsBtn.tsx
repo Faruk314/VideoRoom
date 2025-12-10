@@ -6,10 +6,11 @@ import {
   TooltipTrigger,
   TooltipContent,
 } from "../../components/ui/tooltip";
+import { useChannelHoverStore } from "../../features/channel/store/channelHover";
 
 export default function HideParticipantsBtn() {
-  const { participantsHidden, setParticipantsVisibility, isHovering } =
-    useChannelStore();
+  const { participantsHidden, setParticipantsVisibility } = useChannelStore();
+  const isHovering = useChannelHoverStore((state) => state.isHovering);
 
   function toggleParticipantsVisibility() {
     setParticipantsVisibility(!participantsHidden);

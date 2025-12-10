@@ -1,6 +1,6 @@
 import { memo } from "react";
 import classNames from "classnames";
-import { useChannelStore } from "../features/channel/store/channel";
+import { useChannelVoiceStore } from "../features/channel/store/channelVoice";
 
 interface Props {
   participantId: string;
@@ -13,7 +13,7 @@ function SpeakingIndicator({
   isDisplayed,
   isDisplayStream,
 }: Props) {
-  const isSpeaking = useChannelStore(
+  const isSpeaking = useChannelVoiceStore(
     (state) => state.speakingMap[participantId] ?? false
   );
 

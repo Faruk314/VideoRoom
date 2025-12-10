@@ -6,17 +6,19 @@ import MicrophoneBtn from "../../../components/buttons/MicrophoneBtn";
 import ScreenShareBtn from "../../../components/buttons/ScreenShareBtn";
 import { useLocalParticipantStore } from "../store/localParticipant";
 import { useChannel } from "../hooks/useChannel";
-import { useChannelStore } from "../store/channel";
 import classNames from "classnames";
 import HideParticipantsBtn from "../../../components/buttons/HideParticipantsBtn";
 import FullScreenBtn from "../../../components/buttons/FullScreenBtn";
 import ChannelDetails from "../../../components/modals/ChannelDetails";
 import { useMouseHover } from "../../../hooks/useMouseHover";
 import ChannelChatSidebar from "./ChannelSidebar";
+import { useChannelHoverStore } from "../store/channelHover";
 
 export default function ChannelFooter() {
-  const localParticipant = useLocalParticipantStore().localParticipant;
-  const isHovering = useChannelStore().isHovering;
+  const localParticipant = useLocalParticipantStore(
+    (state) => state.localParticipant
+  );
+  const isHovering = useChannelHoverStore((state) => state.isHovering);
   const { leaveChannel } = useChannel();
 
   useMouseHover(2000);

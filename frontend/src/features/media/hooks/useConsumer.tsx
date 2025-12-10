@@ -2,13 +2,12 @@ import type { types } from "mediasoup-client";
 import { useParticipantStore } from "../../channel/store/remoteParticipant";
 import { useMediasoupStore } from "../store/mediasoup";
 import type { MediaKind } from "../types/media";
+import { useConsumerStore } from "../store/consumers";
+import { createStreamFromTracks } from "../../channel/utils/channel";
 
 export default function useConsumer() {
-  const {
-    updateParticipantConsumers,
-    removeParticipantConsumer,
-    updateParticipant,
-  } = useParticipantStore();
+  const { updateParticipant, addStream, removeStream } = useParticipantStore();
+  const { addConsumer, removeConsumer } = useConsumerStore();
 
   async function setupConsumer(consumerData: {
     id: string;
@@ -43,19 +42,22 @@ export default function useConsumer() {
       if (consumerType === "audio")
         updateParticipant(consumerData.userId, { micMuted: false });
 
-      updateParticipantConsumers(consumerData.userId, consumerType, consumer);
+      addConsumer(consumerData.userId, consumerType, consumer);
 
-      consumer.on("transportclose", () => {
-        removeParticipantConsumer(consumerData.userId, consumerType);
-      });
+      const stream = createStreamFromTracks(consumer.track);
 
-      consumer.on("@close", () => {
-        removeParticipantConsumer(consumerData.userId, consumerType);
-      });
+      addStream(consumerData.userId, consumerType, stream);
 
-      consumer.on("trackended", () => {
-        removeParticipantConsumer(consumerData.userId, consumerType);
-      });
+      const callback = () => {
+        removeConsumer(consumerData.userId, consumerType);
+        removeStream(consumerData.userId, consumerType);
+      };
+
+      consumer.on("transportclose", callback);
+
+      consumer.on("@close", callback);
+
+      consumer.on("trackended", callback);
 
       consumer.on("@resume", () => consumer.resume());
 

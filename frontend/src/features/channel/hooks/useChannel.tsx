@@ -3,14 +3,15 @@ import { useToast } from "../../../hooks/useToast";
 import { useChannelEmitters } from "../websocket/emitters/channel";
 import { useLocalParticipantStore } from "../store/localParticipant";
 import type { MediaKind } from "../../media/types/media";
+import { useProducerStore } from "../../media/store/producers";
 
 export function useChannel() {
   const { id } = useParams<{ id: string }>();
   const { toastError } = useToast();
   const navigate = useNavigate();
   const { emitJoinChannel, emitLeaveChannel } = useChannelEmitters();
-  const { removeStream, removeProducer } = useLocalParticipantStore();
-  const { removeLocalParticipant } = useLocalParticipantStore();
+  const { removeLocalParticipant, removeStream } = useLocalParticipantStore();
+  const { producers, removeProducer } = useProducerStore();
 
   async function joinChannel(channelId: string) {
     try {
@@ -40,12 +41,10 @@ export function useChannel() {
       removeStream(kind as MediaKind);
     });
 
-    Object.entries(localParticipant.producers ?? {}).forEach(
-      ([kind, producer]) => {
-        producer?.close();
-        removeProducer(kind as MediaKind);
-      }
-    );
+    Object.entries(producers ?? {}).forEach(([kind, producer]) => {
+      producer?.close();
+      removeProducer(kind as MediaKind);
+    });
 
     removeLocalParticipant();
 

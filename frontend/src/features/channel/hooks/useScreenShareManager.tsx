@@ -3,18 +3,18 @@ import { useMediasoupStore } from "../../media/store/mediasoup";
 import useChannelManager from "./useChannelManager";
 import { useMedia } from "../../media/hooks/useMedia";
 import { useLocalParticipantStore } from "../store/localParticipant";
+import { useProducerStore } from "../../media/store/producers";
 
 export default function useScreenShareManager() {
   const { addStream } = useLocalParticipantStore.getState();
+  const { producers } = useProducerStore();
   const { createDisplayProducer } = useProducer();
   const { sendTransport } = useMediasoupStore();
   const { stopStream } = useChannelManager();
   const { getDisplayStream } = useMedia();
 
   async function toogleScreenShare() {
-    const { localParticipant } = useLocalParticipantStore.getState();
-
-    const displayProducer = localParticipant?.producers.screen;
+    const displayProducer = producers.screen;
 
     if (!displayProducer) {
       if (!sendTransport) throw new Error("Send transport missing");
@@ -36,10 +36,12 @@ export default function useScreenShareManager() {
   async function switchScreenShare() {
     const { localParticipant } = useLocalParticipantStore.getState();
 
-    if (!localParticipant?.producers.screen) return;
+    const currentScreenProducer = producers.screen;
 
-    const currentScreenProducer = localParticipant.producers.screen;
-    const currentScreenStream = localParticipant.streams.screen;
+    if (!currentScreenProducer)
+      return console.error("Screen producer does not exist");
+
+    const currentScreenStream = localParticipant?.streams.screen;
 
     try {
       const { stream: newStream, screenTrack: newScreenTrack } =

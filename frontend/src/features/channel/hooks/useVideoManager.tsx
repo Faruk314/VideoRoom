@@ -4,17 +4,19 @@ import useProducer from "../../media/hooks/useProducer";
 import { useMediasoupStore } from "../../media/store/mediasoup";
 import useChannelManager from "./useChannelManager";
 import { useMedia } from "../../media/hooks/useMedia";
+import { useProducerStore } from "../../media/store/producers";
 
 export default function useVideoManager() {
   const { localParticipant, addStream } = useLocalParticipantStore.getState();
   const { setSelectedCamera } = useMediaStore();
   const { createVideoProducer } = useProducer();
+  const { producers } = useProducerStore();
   const { sendTransport } = useMediasoupStore();
   const { stopStream } = useChannelManager();
   const { getMediaStream } = useMedia();
 
   async function toogleCamera() {
-    const videoProducer = localParticipant?.producers.video;
+    const videoProducer = producers.video;
 
     if (!videoProducer) {
       if (!sendTransport) throw new Error("Send transport missing");
@@ -28,10 +30,12 @@ export default function useVideoManager() {
   async function switchCamera(device: MediaDeviceInfo) {
     setSelectedCamera(device);
 
-    if (!localParticipant?.producers.video) return;
+    const currentVideoProducer = producers.video;
 
-    const currentVideoProducer = localParticipant.producers.video;
-    const currentVideoStream = localParticipant.streams.video;
+    if (!currentVideoProducer)
+      return console.error("Video producer does not exist");
+
+    const currentVideoStream = localParticipant?.streams.video;
 
     try {
       const { stream: newStream, videoTrack: newVideoTrack } =

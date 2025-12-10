@@ -1,13 +1,13 @@
 import { useEffect, useRef } from "react";
-import { useChannelStore } from "../features/channel/store/channel";
+import { useChannelHoverStore } from "../features/channel/store/channelHover";
 
 export function useMouseHover(delay = 2000) {
-  const setIsHovering = useChannelStore((s) => s.setIsHovering);
+  const setIsHovering = useChannelHoverStore((s) => s.setIsHovering);
   const timeoutRef = useRef<number | null>(null);
 
   useEffect(() => {
     const handleMouseMove = () => {
-      useChannelStore.getState().isHovering || setIsHovering(true);
+      useChannelHoverStore.getState().isHovering || setIsHovering(true);
 
       if (timeoutRef.current) clearTimeout(timeoutRef.current);
 

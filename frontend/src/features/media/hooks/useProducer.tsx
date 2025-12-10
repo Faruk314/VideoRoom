@@ -1,12 +1,13 @@
 import type { Transport } from "mediasoup-client/types";
 import { useMedia } from "./useMedia";
-import { useLocalParticipantStore } from "../../channel/store/localParticipant";
 import { useMediaStore } from "../store/media";
+import { useProducerStore } from "../store/producers";
+import { useLocalParticipantStore } from "../../channel/store/localParticipant";
 
 export default function useProducer() {
   const { getMediaStream, getAudioStream, getDisplayStream } = useMedia();
-  const { addProducer, addStream, updateLocalParticipant } =
-    useLocalParticipantStore();
+  const { updateLocalParticipant, addStream } = useLocalParticipantStore();
+  const { setProducer } = useProducerStore();
 
   async function createVideoProducer(clientSendTransport: Transport) {
     const { selectedCamera } = useMediaStore.getState();
@@ -27,7 +28,7 @@ export default function useProducer() {
       });
 
       addStream("video", stream);
-      addProducer("video", newProducer);
+      setProducer("video", newProducer);
       updateLocalParticipant({ camMuted: false });
 
       return videoTrack;
@@ -50,7 +51,7 @@ export default function useProducer() {
       });
 
       addStream("audio", stream);
-      addProducer("audio", newProducer);
+      setProducer("audio", newProducer);
       updateLocalParticipant({ micMuted: false });
 
       return audioTrack;
@@ -69,7 +70,7 @@ export default function useProducer() {
       });
 
       addStream("screen", stream);
-      addProducer("screen", newProducer);
+      setProducer("screen", newProducer);
       updateLocalParticipant({ isStreaming: true });
 
       return screenTrack;

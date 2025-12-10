@@ -1,26 +1,25 @@
-import { memo } from "react";
-import { useChannelStore } from "../features/channel/store/channel";
 import { MicOff, ScreenShare } from "lucide-react";
 import classNames from "classnames";
-import StreamOptions from "./modals/StreamOptions";
-import UserOptions from "./modals/UserOptions";
+import StreamOptions from "../../../components/modals/StreamOptions";
+import UserOptions from "../../../components/modals/UserOptions";
+import { useChannelHoverStore } from "../store/channelHover";
 
 interface Props {
   userName: string;
   isMuted: boolean;
-  isLocal: boolean;
+  isLocal?: boolean;
   isDisplayed?: boolean;
   isDisplayStream?: boolean;
 }
 
-function CallAvatarOverlay({
+function ChannelAvatarOverlay({
   userName,
   isMuted,
   isLocal,
   isDisplayed,
   isDisplayStream,
 }: Props) {
-  const isHovering = useChannelStore((s) => s.isHovering);
+  const isHovering = useChannelHoverStore((s) => s.isHovering);
 
   return (
     <>
@@ -49,4 +48,4 @@ function CallAvatarOverlay({
   );
 }
 
-export default memo(CallAvatarOverlay);
+export default ChannelAvatarOverlay;

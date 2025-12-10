@@ -1,7 +1,8 @@
 import { useCallback } from "react";
 import type { IParticipant } from "../../types/channel";
 import { useParticipantStore } from "../../store/remoteParticipant";
-import { useChannelStore } from "../../store/channel";
+import { useChannelVoiceStore } from "../../store/channelVoice";
+import { useConsumerStore } from "../../../media/store/consumers";
 
 export function useChannelHandlers() {
   const {
@@ -10,6 +11,8 @@ export function useChannelHandlers() {
     removeParticipant,
     updateParticipant,
   } = useParticipantStore();
+
+  const { consumers } = useConsumerStore();
 
   const onParticipantJoin = useCallback(
     async (data: { participant: IParticipant }) => {
@@ -27,7 +30,7 @@ export function useChannelHandlers() {
 
     if (!participant) return console.error("Participant does not exist");
 
-    Object.values(participant.consumers ?? {}).forEach((consumer) => {
+    Object.values(consumers ?? {}).forEach((consumer) => {
       consumer?.close();
     });
 
@@ -36,12 +39,12 @@ export function useChannelHandlers() {
 
   const onParticipantSpeak = useCallback((data: { userId: string }) => {
     const { userId } = data;
-    useChannelStore.getState().setSpeaking(userId, true);
+    useChannelVoiceStore.getState().setSpeaking(userId, true);
   }, []);
 
   const onParticipantSilence = useCallback((data: { userId: string }) => {
     const { userId } = data;
-    useChannelStore.getState().setSpeaking(userId, false);
+    useChannelVoiceStore.getState().setSpeaking(userId, false);
   }, []);
 
   const onParticipantReconnect = useCallback((data: { userId: string }) => {

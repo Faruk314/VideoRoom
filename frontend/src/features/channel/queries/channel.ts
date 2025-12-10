@@ -34,7 +34,7 @@ function useChannelQuery(channelId: string, isJoined: boolean) {
         );
 
         if (self) {
-          setLocalParticipant({ ...self, producers: {}, streams: {} });
+          setLocalParticipant({ ...self, streams: {} });
         }
 
         setChannel({ id: channelId });

@@ -4,12 +4,14 @@ import useConsumer from "../../../hooks/useConsumer";
 import useConsumerEmitters from "../../emitters/mediasoup/consumer";
 import { useMediasoupStore } from "../../../store/mediasoup";
 import { useParticipantStore } from "../../../../channel/store/remoteParticipant";
+import { useConsumerStore } from "../../../store/consumers";
 
 export default function useProducerHandlers() {
   const { emitCreateConsumer } = useConsumerEmitters();
   const { setupConsumer } = useConsumer();
-  const { getParticipant, removeParticipantConsumer, updateParticipant } =
+  const { getParticipant, updateParticipant, removeStream } =
     useParticipantStore();
+  const { consumers, removeConsumer } = useConsumerStore();
 
   const onNewProducer = useCallback(
     async (producerData: {
@@ -49,16 +51,19 @@ export default function useProducerHandlers() {
 
       if (!participant) return console.error("Participant not found");
 
-      const consumers = participant.consumers;
+      const userConsumers = consumers.get(userId);
+
+      if (!userConsumers) return console.error("User consumers not found");
 
       (["audio", "video", "screen"] as const).forEach((type) => {
-        const consumer = consumers[type];
+        const consumer = userConsumers[type];
 
         if (consumer?.producerId === producerId) {
           consumer.close?.();
           consumer.track?.stop?.();
 
-          removeParticipantConsumer(userId, type);
+          removeConsumer(userId, type);
+          removeStream(userId, type);
 
           if (type === "audio") {
             updateParticipant(userId, { micMuted: true });
@@ -70,7 +75,7 @@ export default function useProducerHandlers() {
         }
       });
     },
-    [getParticipant, removeParticipantConsumer]
+    [getParticipant, removeConsumer]
   );
 
   return { onNewProducer, onProducerClosed };
