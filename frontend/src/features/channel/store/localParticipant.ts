@@ -1,18 +1,12 @@
 import { create } from "zustand";
-import type { ILocalParticipant } from "../types/channel";
-import type { Producer } from "mediasoup-client/types";
+import type { IParticipant } from "../types/channel";
 import type { MediaKind } from "../../media/types/media";
 
 interface LocalParticipantState {
-  localParticipant: ILocalParticipant | null;
-
-  setLocalParticipant: (participant: ILocalParticipant) => void;
-  updateLocalParticipant: (fields: Partial<ILocalParticipant>) => void;
+  localParticipant: IParticipant | null;
+  setLocalParticipant: (participant: IParticipant) => void;
+  updateLocalParticipant: (fields: Partial<IParticipant>) => void;
   removeLocalParticipant: () => void;
-
-  addProducer: (kind: MediaKind, producer: Producer) => void;
-  removeProducer: (kind: MediaKind) => void;
-
   addStream: (kind: MediaKind, stream: MediaStream) => void;
   removeStream: (kind: MediaKind) => void;
 }
@@ -43,37 +37,6 @@ export const useLocalParticipantStore = create<LocalParticipantState>(
       set(() => ({
         localParticipant: null,
       })),
-
-    addProducer: (kind, producer) =>
-      set((state) => {
-        if (!state.localParticipant) {
-          return state;
-        }
-        return {
-          localParticipant: {
-            ...state.localParticipant,
-            producers: {
-              ...state.localParticipant.producers,
-              [kind]: producer,
-            },
-          },
-        };
-      }),
-
-    removeProducer: (kind) =>
-      set((state) => {
-        if (!state.localParticipant) {
-          return state;
-        }
-        const newProducers = { ...state.localParticipant.producers };
-        delete newProducers[kind];
-        return {
-          localParticipant: {
-            ...state.localParticipant,
-            producers: newProducers,
-          },
-        };
-      }),
 
     addStream: (kind, stream) =>
       set((state) => {

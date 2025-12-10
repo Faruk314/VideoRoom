@@ -1,7 +1,6 @@
 import { create } from "zustand";
 import type { IParticipant } from "../types/channel";
 import type { MediaKind } from "../../media/types/media";
-import type { Consumer } from "mediasoup-client/types";
 
 interface ParticipantState {
   participants: Map<string, IParticipant>;
@@ -11,14 +10,12 @@ interface ParticipantState {
   getParticipant: (userId: string) => IParticipant | undefined;
   removeParticipant: (userId: string) => void;
   updateParticipant: (userId: string, fields: Partial<IParticipant>) => void;
-
-  updateParticipantConsumers: (
+  addStream: (
     userId: string,
-    consumerType: MediaKind,
-    consumer: Consumer
+    type: MediaKind,
+    stream: MediaStream | undefined
   ) => void;
-
-  removeParticipantConsumer: (userId: string, consumerType: MediaKind) => void;
+  removeStream: (userId: string, type: MediaKind) => void;
 }
 
 export const useParticipantStore = create<ParticipantState>((set, get) => ({
@@ -60,45 +57,28 @@ export const useParticipantStore = create<ParticipantState>((set, get) => ({
       return { participants: updated };
     }),
 
-  updateParticipantConsumers: (userId, consumerType, consumer) =>
+  addStream: (userId, type, stream) =>
     set((state) => {
       const updated = new Map(state.participants);
       const participant = updated.get(userId);
-
-      if (!participant) {
-        return { participants: updated };
+      if (participant) {
+        updated.set(userId, {
+          ...participant,
+          streams: { ...participant.streams, [type]: stream },
+        });
       }
-
-      const newConsumers = {
-        ...participant.consumers,
-        [consumerType]: consumer,
-      };
-
-      updated.set(userId, {
-        ...participant,
-        consumers: newConsumers,
-      });
-
       return { participants: updated };
     }),
 
-  removeParticipantConsumer: (userId, consumerType) =>
+  removeStream: (userId, type) =>
     set((state) => {
       const updated = new Map(state.participants);
       const participant = updated.get(userId);
-
-      if (!participant) {
-        return { participants: updated };
+      if (participant && participant.streams && participant.streams[type]) {
+        const newStreams = { ...participant.streams };
+        delete newStreams[type];
+        updated.set(userId, { ...participant, streams: newStreams });
       }
-
-      const newConsumers = { ...participant.consumers };
-      delete newConsumers[consumerType];
-
-      updated.set(userId, {
-        ...participant,
-        consumers: newConsumers,
-      });
-
       return { participants: updated };
     }),
 }));

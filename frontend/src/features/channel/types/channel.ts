@@ -1,27 +1,7 @@
 import type { IUser } from "../../user/types/user";
-import { Consumer, Producer } from "mediasoup-client/types";
 
 interface IChannelInfo {
   id: string;
-}
-
-interface ILocalParticipant {
-  user: IUser;
-  micMuted: boolean;
-  camMuted: boolean;
-  isStreaming: boolean;
-  deafened: boolean;
-  connected: boolean;
-  producers: {
-    audio?: Producer;
-    video?: Producer;
-    screen?: Producer;
-  };
-  streams: {
-    audio?: MediaStream;
-    video?: MediaStream;
-    screen?: MediaStream;
-  };
 }
 
 interface IParticipant {
@@ -31,11 +11,11 @@ interface IParticipant {
   isStreaming: boolean;
   deafened: boolean;
   connected: boolean;
-  consumers: {
-    audio?: Consumer;
-    video?: Consumer;
-    screen?: Consumer;
+  streams: {
+    audio?: MediaStream;
+    video?: MediaStream;
+    screen?: MediaStream;
   };
 }
 
-export type { IChannelInfo, ILocalParticipant, IParticipant };
+export type { IChannelInfo, IParticipant };
