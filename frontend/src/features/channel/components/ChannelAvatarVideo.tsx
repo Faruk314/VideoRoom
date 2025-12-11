@@ -5,22 +5,23 @@ import classNames from "classnames";
 export interface Props {
   userName: string;
   videoStream?: MediaStream;
-  isLocal?: boolean;
   isDisplayed?: boolean;
 }
 
 export default function ChannelAvatarVideo({
   userName,
   videoStream,
-  isLocal,
   isDisplayed,
 }: Props) {
   const videoRef = useRef<HTMLVideoElement | null>(null);
 
   useEffect(() => {
     if (!videoRef.current || !videoStream) return;
+
     videoRef.current.srcObject = videoStream;
-    videoRef.current.play().catch(() => {});
+    videoRef.current.play().catch((error) => {
+      console.error("Video failed to play", error);
+    });
   }, [videoStream]);
 
   if (!videoStream) {
@@ -38,9 +39,9 @@ export default function ChannelAvatarVideo({
     <video
       ref={videoRef}
       playsInline
-      muted={isLocal}
+      muted={true}
       autoPlay
-      className="h-full w-full"
+      className="object-cover"
     />
   );
 }

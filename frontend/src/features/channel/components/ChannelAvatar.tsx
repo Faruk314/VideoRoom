@@ -76,7 +76,6 @@ function ChannelAvatar({ participantId, isDisplayed, isDisplayStream }: Props) {
       <ChannelAvatarVideo
         userName={participant?.user.userName}
         videoStream={videoStream}
-        isLocal={isLocal}
         isDisplayed={isDisplayed}
       />
 
