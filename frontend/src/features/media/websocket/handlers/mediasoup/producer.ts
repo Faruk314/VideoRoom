@@ -5,6 +5,7 @@ import useConsumerEmitters from "../../emitters/mediasoup/consumer";
 import { useMediasoupStore } from "../../../store/mediasoup";
 import { useParticipantStore } from "../../../../channel/store/remoteParticipant";
 import { useConsumerStore } from "../../../store/consumers";
+import { useChannelStore } from "../../../../channel/store/channel";
 
 export default function useProducerHandlers() {
   const { emitCreateConsumer } = useConsumerEmitters();
@@ -12,6 +13,9 @@ export default function useProducerHandlers() {
   const { getParticipant, updateParticipant, removeStream } =
     useParticipantStore();
   const { consumers, removeConsumer } = useConsumerStore();
+  const setDisplayedAvatar = useChannelStore(
+    (state) => state.setDisplayedAvatar
+  );
 
   const onNewProducer = useCallback(
     async (producerData: {
@@ -54,6 +58,15 @@ export default function useProducerHandlers() {
       const userConsumers = consumers.get(userId);
 
       if (!userConsumers) return console.error("User consumers not found");
+
+      const { displayedAvatar } = useChannelStore.getState();
+
+      if (
+        displayedAvatar?.participantId === userId &&
+        displayedAvatar.isDisplayStream
+      ) {
+        setDisplayedAvatar(null);
+      }
 
       (["audio", "video", "screen"] as const).forEach((type) => {
         const consumer = userConsumers[type];

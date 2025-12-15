@@ -2,11 +2,16 @@ import { useLocalParticipantStore } from "../store/localParticipant";
 import useProducerEmitters from "../../media/websocket/emitters/mediasoup/producer";
 import type { MediaKind } from "../../media/types/media";
 import { useProducerStore } from "../../media/store/producers";
+import { useChannelStore } from "../store/channel";
 
 export default function useChannelManager() {
   const { emitCloseProducer } = useProducerEmitters();
   const { removeStream, updateLocalParticipant } = useLocalParticipantStore();
   const { removeProducer, producers } = useProducerStore();
+  const displayedAvatar = useChannelStore((state) => state.displayedAvatar);
+  const setDisplayedAvatar = useChannelStore(
+    (state) => state.setDisplayedAvatar
+  );
 
   async function stopStream(kind: MediaKind) {
     try {
@@ -23,6 +28,13 @@ export default function useChannelManager() {
 
       removeProducer(kind);
       removeStream(kind);
+
+      if (
+        displayedAvatar?.participantId === localParticipant?.user.userId &&
+        displayedAvatar?.isDisplayStream
+      ) {
+        setDisplayedAvatar(null);
+      }
 
       if (kind === "video") {
         updateLocalParticipant({ camMuted: true });
