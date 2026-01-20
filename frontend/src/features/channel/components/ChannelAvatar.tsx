@@ -20,9 +20,6 @@ function ChannelAvatar({ participantId, isDisplayed, isDisplayStream }: Props) {
   const localParticipant = useLocalParticipantStore(
     (state) => state.localParticipant
   );
-  const participantsHidden = useChannelStore(
-    (state) => state.participantsHidden
-  );
 
   const isLocal = participantId === localParticipant?.user.userId;
 
@@ -55,13 +52,11 @@ function ChannelAvatar({ participantId, isDisplayed, isDisplayStream }: Props) {
     <div
       onClick={handleClick}
       className={classNames(
-        "relative border bg-gray-100 w-55 h-30 flex items-center justify-center overflow-hidden cursor-pointer",
+        "relative border border-white/10 w-55 h-30 flex items-center justify-center overflow-hidden cursor-pointer rounded-xl transition-all duration-300",
         {
-          "w-full h-[30vh] px-4 lg:px-0 lg:w-[100rem] lg:h-[85vh] border-none":
-            isDisplayed && participantsHidden,
-          "w-[90rem] h-full border-none": isDisplayed && !participantsHidden,
-          "bg-gray-50": !participant.camMuted,
-          "bg-white": participant.camMuted,
+          "!w-full !h-full border-none rounded-2xl": isDisplayed,
+          "bg-[#0f1219]": !participant.camMuted,
+          "bg-[#0f1219]/50 backdrop-blur-sm": participant.camMuted,
         }
       )}
     >
@@ -80,13 +75,13 @@ function ChannelAvatar({ participantId, isDisplayed, isDisplayStream }: Props) {
       />
 
       {isDisplayStream && (
-        <div className="absolute top-2 right-2 text-white bg-red-500 font-black rounded-full text-[0.9rem] px-2">
+        <div className="absolute top-2 right-2 text-white bg-red-500 font-bold rounded-full text-[0.8rem] px-2 py-0.5 shadow-lg">
           Live
         </div>
       )}
 
       {!participant?.connected && (
-        <div className="absolute top-2 left-2 text-white bg-red-500 font-black rounded-full text-[0.9rem] px-2">
+        <div className="absolute top-2 left-2 text-white bg-red-500 font-bold rounded-full text-[0.8rem] px-2 py-0.5 shadow-lg">
           Offline
         </div>
       )}

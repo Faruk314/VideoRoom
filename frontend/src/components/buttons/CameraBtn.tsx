@@ -33,7 +33,8 @@ export default function CameraBtn({ camMuted = false }: Props) {
     <IconBtn
       onClick={toogleCamera}
       description={camMuted ? "Turn On Camera" : "Turn Off Camera"}
-      icon={camMuted ? <VideoOff /> : <Video />}
+      icon={camMuted ? <VideoOff size={20} /> : <Video size={20} />}
+      className={"shadow-lg border border-white/10"}
     />
   );
 }

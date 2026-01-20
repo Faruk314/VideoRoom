@@ -12,7 +12,7 @@ export default function ChannelChat() {
   return (
     <div
       id="chat-scroll"
-      className="flex flex-col-reverse overflow-y-auto py-4 bg-muted relative h-full mx-2 rounded-xl mb-2"
+      className="flex flex-col-reverse overflow-y-auto py-2 relative h-full mx-2 mb-2 scrollbar-thin scrollbar-thumb-white/10 scrollbar-track-transparent"
     >
       <InfiniteScroll
         dataLength={data?.pages.flatMap((p) => p.messages).length ?? 0}
@@ -48,7 +48,7 @@ export default function ChannelChat() {
 
       {isFetchingNextPage && (
         <div className="p-4 self-center">
-          <Spinner />
+          <Spinner className="text-blue-400" />
         </div>
       )}
     </div>

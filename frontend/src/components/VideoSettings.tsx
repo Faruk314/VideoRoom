@@ -28,26 +28,31 @@ export default function VideoSettings() {
   }, [hasVideoPermission]);
 
   return (
-    <div className="grid gap-1">
-      <span className="text-[0.9rem] font-semibold">Cameras</span>
-      <PrimarySelect
-        placeholder={
-          hasVideoPermission ? "Select a device" : "Permission needed"
-        }
-        disabled={!hasVideoPermission}
-        icon={<Video className="text-black" />}
-        label="Cameras"
-        options={
-          hasVideoPermission
-            ? cameras.map((cam) => ({
-                label: cam.label || "Unnamed Camera",
-                value: cam.deviceId || `unknown-${Math.random()}`,
+    <div className="space-y-6">
+      <div className="space-y-3">
+        <label className="text-sm font-medium text-blue-200/60 uppercase tracking-wider ml-1">Camera</label>
+        <PrimarySelect
+          placeholder={
+            hasVideoPermission ? "Select a camera" : "Permission needed"
+          }
+          disabled={!hasVideoPermission}
+          icon={<Video size={18} />}
+          label="Available Cameras"
+          options={
+            hasVideoPermission
+              ? cameras.map((cam) => ({
+                  label: cam.label || "Unnamed Camera",
+                  value: cam.deviceId || `unknown-${Math.random()}`,
               }))
             : []
-        }
-        value={selectedCamera?.deviceId}
-        onChange={handleCameraChange}
-      />
+          }
+          value={selectedCamera?.deviceId}
+          onChange={handleCameraChange}
+        />
+        <p className="text-xs text-blue-200/30 ml-1">
+            Select the camera device for your video feed.
+        </p>
+      </div>
     </div>
   );
 }

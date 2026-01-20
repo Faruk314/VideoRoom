@@ -22,9 +22,10 @@ export default function ChannelParticipants() {
   return (
     <div
       className={classNames(
-        "relative px-4 mt-4 mb-24 max-w-[25rem] md:max-w-[50rem]",
+        "relative px-4 mt-4 max-w-[25rem] md:max-w-[50rem] transition-opacity duration-300",
         {
           "opacity-0 pointer-events-none": participantsHidden,
+          "opacity-100": !participantsHidden,
         }
       )}
     >

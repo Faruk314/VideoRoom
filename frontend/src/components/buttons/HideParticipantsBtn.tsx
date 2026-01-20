@@ -18,9 +18,9 @@ export default function HideParticipantsBtn() {
 
   return (
     <div
-      className={classNames("absolute left-1/2 -translate-x-1/2", {
-        "top-[-6rem]": participantsHidden,
-        "top-[-13rem]": !participantsHidden,
+      className={classNames("absolute left-1/2 -translate-x-1/2 z-100", {
+        "top-[-6.5rem]": participantsHidden,
+        "top-[-14rem]": !participantsHidden,
       })}
     >
       <Tooltip>

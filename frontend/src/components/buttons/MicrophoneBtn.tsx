@@ -33,7 +33,12 @@ export default function MicrophoneBtn({ micMuted }: Props) {
     <IconBtn
       onClick={toogleMicrophone}
       description={micMuted ? "Unmute" : "Mute"}
-      icon={micMuted ? <MicOff /> : <Mic />}
+      icon={micMuted ? <MicOff size={20} /> : <Mic size={20} />}
+      className={`shadow-lg border border-white/10 ${
+        micMuted
+          ? "bg-red-500 hover:bg-red-600 text-white shadow-red-500/20"
+          : "bg-blue-600 hover:bg-blue-500 text-white shadow-blue-500/20"
+      }`}
     />
   );
 }

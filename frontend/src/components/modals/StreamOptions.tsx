@@ -18,17 +18,17 @@ export default function StreamOptions() {
 
   return (
     <>
-      {open && <div className="fixed inset-0" />}
+      {open && <div className="fixed inset-0 z-40" />}
 
       <DropdownMenu open={open} onOpenChange={setOpen}>
         <DropdownMenuTrigger asChild>
           <IconBtn
-            className="bg-black/60 opacity-[0.7] h-7 w-9 md:h-8 md:w-9 rounded-md slide-up hover:bg-black/50"
-            icon={<Ellipsis className="pointer-events-none" />}
+            className="bg-black/60 opacity-[0.7] h-7 w-9 md:h-8 md:w-9 rounded-md slide-up hover:bg-black/50 border-none shadow-none"
+            icon={<Ellipsis className="pointer-events-none" size={18} />}
           />
         </DropdownMenuTrigger>
         <DropdownMenuContent
-          className="w-48 z-50 p-1 rounded-md shadow-lg font-black"
+          className="w-48 z-50 p-1 rounded-xl shadow-2xl font-bold bg-[#0f1219]/95 backdrop-blur-xl border border-white/10 text-white"
           align="end"
           side="top"
         >
@@ -37,20 +37,20 @@ export default function StreamOptions() {
               e.preventDefault();
               stopStream("screen");
             }}
-            className="flex justify-between px-3 py-2 rounded-md hover:bg-gray-100 focus:bg-gray-100 cursor-pointer"
+            className="flex justify-between px-3 py-2.5 rounded-lg cursor-pointer transition-colors"
           >
-            Stop Stream
-            <ScreenShareOff className="text-indigo-600" size={30} />
+            <span>Stop Stream</span>
+            <ScreenShareOff className="text-red-400" size={18} />
           </DropdownMenuItem>
           <DropdownMenuItem
             onSelect={(e) => {
               e.preventDefault();
               switchScreenShare();
             }}
-            className="flex justify-between px-3 py-2 rounded-md hover:bg-gray-100 focus:bg-gray-100 cursor-pointer"
+            className="flex justify-between px-3 py-2.5 rounded-lg cursor-pointer transition-colors"
           >
-            Change Stream
-            <ScreenShare className="text-indigo-600" />
+            <span>Change Stream</span>
+            <ScreenShare className="text-blue-400" size={18} />
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>

@@ -27,13 +27,13 @@ export default function UserOptions() {
       <DropdownMenu open={open} onOpenChange={setOpen}>
         <DropdownMenuTrigger asChild>
           <IconBtn
-            className="bg-black/60 opacity-[0.7] h-7 w-9 md:h-8 md:w-9 rounded-md slide-up hover:bg-black/30"
+            className="bg-black/60 opacity-[0.7] h-7 w-9 md:h-8 md:w-9 rounded-md slide-up hover:bg-black/30 border-none shadow-none"
             description="Options"
-            icon={<Ellipsis className="pointer-events-none" />}
+            icon={<Ellipsis className="pointer-events-none" size={18} />}
           />
         </DropdownMenuTrigger>
         <DropdownMenuContent
-          className="w-48 z-50 p-1 rounded-md shadow-lg"
+          className="w-48 z-50 p-1 rounded-xl shadow-2xl bg-[#0f1219]/95 backdrop-blur-xl border border-white/10 text-white"
           align="end"
           side="top"
         >
@@ -55,18 +55,19 @@ export default function UserOptions() {
                 e.preventDefault();
                 onClick();
               }}
-              className="relative flex items-center justify-between px-3 py-2 rounded-md cursor-pointer text-sm hover:bg-gray-100 focus:bg-gray-100"
+              className="relative flex items-center justify-between px-3 py-2.5 rounded-lg cursor-pointer text-sm font-medium transition-colors"
             >
-              <p className="font-black">{label}</p>
+              <p className="font-bold">{label}</p>
               <div
                 className={classNames(
-                  "w-5 h-5 flex items-center justify-center rounded-sm border border-gray-400 transition-all duration-200",
+                  "w-5 h-5 flex items-center justify-center rounded-md border transition-all duration-200",
                   {
-                    "bg-indigo-600 border-indigo-600": selected,
+                    "bg-blue-600 border-blue-600": selected,
+                    "border-white/30": !selected,
                   }
                 )}
               >
-                {selected && <Check className="w-4 h-4 text-white" />}
+                {selected && <Check className="w-3.5 h-3.5 text-white" />}
               </div>
             </DropdownMenuItem>
           ))}

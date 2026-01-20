@@ -41,7 +41,7 @@ export default function ChannelAvatarVideo({
       playsInline
       muted={true}
       autoPlay
-      className="object-cover"
+      className="w-full h-full object-contain"
     />
   );
 }

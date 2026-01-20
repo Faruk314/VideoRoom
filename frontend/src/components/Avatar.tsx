@@ -11,7 +11,7 @@ export default function Avatar({ imageSrc, className, name }: AvatarProps) {
     <span
       className={cn(
         "relative w-14 h-14 rounded-full overflow-hidden",
-        "text-white text-2xl font-black uppercase bg-indigo-600 shadow-md",
+        "text-white text-2xl font-black uppercase bg-blue-600 shadow-lg shadow-blue-900/40 border border-white/10",
         "flex items-center justify-center",
         className
       )}

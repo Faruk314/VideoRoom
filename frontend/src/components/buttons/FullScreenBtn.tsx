@@ -18,8 +18,8 @@ export default function FullScreenBtn() {
     <IconBtn
       onClick={handleFullScreen}
       description="Fullscreen"
-      className="bg-transparent text-black hover:bg-gray-200"
-      icon={<Maximize size={30} />}
+      icon={<Maximize size={20} />}
+      className="bg-[#0f1219]/80 backdrop-blur-xl border border-white/10 text-blue-200/70 hover:text-white hover:bg-white/5 shadow-lg"
     />
   );
 }

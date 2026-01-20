@@ -20,19 +20,21 @@ export default function ChannelDetails() {
       <DialogTrigger asChild>
         <IconBtn
           description="Channel details"
-          className="bg-transparent text-black hover:bg-gray-200"
-          icon={<AlertCircle size={30} />}
+          icon={<AlertCircle size={20} />}
+          className="bg-[#0f1219]/80 backdrop-blur-xl border border-white/10 text-blue-200/70 hover:text-white hover:bg-white/5 shadow-lg"
         />
       </DialogTrigger>
 
-      <DialogContent>
-        <DialogTitle>Channel details</DialogTitle>
+      <DialogContent className="bg-[#0f1219]/95 backdrop-blur-2xl border border-white/10 text-white">
+        <DialogTitle className="text-xl font-bold tracking-tight">Channel details</DialogTitle>
 
-        <p className="text-sm">
+        <p className="text-sm text-blue-200/60">
           Share this channel link with the people you want to invite
         </p>
 
-        <CopyLinkBox link={link} />
+        <div className="pt-2">
+            <CopyLinkBox link={link} />
+        </div>
       </DialogContent>
     </Dialog>
   );

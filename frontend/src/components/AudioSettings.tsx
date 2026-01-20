@@ -35,16 +35,16 @@ export default function AudioSettings() {
   }, [hasAudioPermission]);
 
   return (
-    <>
-      <div className="grid gap-1">
-        <span className="text-[0.9rem] font-semibold">Microphones</span>
+    <div className="space-y-6">
+      <div className="space-y-3">
+        <label className="text-sm font-medium text-blue-200/60 uppercase tracking-wider ml-1">Microphone</label>
         <PrimarySelect
           placeholder={
-            hasAudioPermission ? "Select a device" : "Permission needed"
+            hasAudioPermission ? "Select a microphone" : "Permission needed"
           }
           disabled={!hasAudioPermission}
-          icon={<Mic className="text-black" />}
-          label="Microphones"
+          icon={<Mic size={18} />}
+          label="Available Microphones"
           options={
             hasAudioPermission
               ? microphones.map((m) => ({
@@ -56,17 +56,20 @@ export default function AudioSettings() {
           value={selectedMic?.deviceId}
           onChange={handleMicChange}
         />
+        <p className="text-xs text-blue-200/30 ml-1">
+            Select the input device you want to use for speaking.
+        </p>
       </div>
 
-      <div className="grid gap-1">
-        <span className="text-[0.9rem] font-semibold">Speakers</span>
+      <div className="space-y-3">
+        <label className="text-sm font-medium text-blue-200/60 uppercase tracking-wider ml-1">Speaker</label>
         <PrimarySelect
           placeholder={
-            hasAudioPermission ? "Select a device" : "Permission needed"
+            hasAudioPermission ? "Select a speaker" : "Permission needed"
           }
           disabled={!hasAudioPermission}
-          icon={<Volume2 className="text-black" />}
-          label="Speakers"
+          icon={<Volume2 size={18} />}
+          label="Available Speakers"
           options={
             hasAudioPermission
               ? speakers.map((s) => ({
@@ -78,7 +81,10 @@ export default function AudioSettings() {
           value={selectedSpeaker?.deviceId}
           onChange={handleSpeakerChange}
         />
+        <p className="text-xs text-blue-200/30 ml-1">
+            Select the output device for hearing other participants.
+        </p>
       </div>
-    </>
+    </div>
   );
 }

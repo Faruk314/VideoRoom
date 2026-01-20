@@ -3,6 +3,7 @@ import { Routes, Route } from "react-router-dom";
 import { CreateChannel } from "./features/channel/pages/CreateChannel";
 import { Channel } from "./features/channel/pages/Channel";
 import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import Login from "./features/auth/pages/Login";
 import Register from "./features/auth/pages/Register";
 import { useLoginStatusQuery } from "./features/auth/queries/auth";
@@ -42,7 +43,19 @@ function App() {
           <Route path="/register" element={<Register />} />
         </Route>
       </Routes>
-      <ToastContainer />
+      <ToastContainer
+        position="top-right"
+        autoClose={3000}
+        hideProgressBar
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="dark"
+        toastClassName="!bg-[#0f1219]/95 !backdrop-blur-xl !border !border-white/10 !text-white !rounded-xl !shadow-2xl !mb-3 !p-4 !text-sm !font-medium"
+      />
     </>
   );
 }

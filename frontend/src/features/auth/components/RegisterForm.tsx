@@ -6,7 +6,6 @@ import { PrimaryInput } from "../../../components/buttons/PrimaryInput";
 import { Mail, Lock, User } from "lucide-react";
 import { PrimaryBtn } from "../../../components/buttons/PrimaryBtn";
 import { useRegisterMutation } from "../queries/auth";
-import Separator from "../../../components/Separator";
 import { useNavigate } from "react-router-dom";
 import { Spinner } from "../../../components/loaders/Spinner";
 
@@ -34,49 +33,72 @@ export default function RegisterForm() {
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
-      className="grid gap-8 shadow-md px-6 py-8 rounded-xl border border-gray-200"
+      className="space-y-8"
     >
-      <img src="/images/logo.webp" className="w-50 mx-auto" />
-
-      <div className="grid gap-6">
-        <PrimaryInput
-          placeholder="Enter your username"
-          icon={<User />}
-          {...register("userName")}
-          type="text"
-          error={errors.userName?.message}
-        />
-
-        <PrimaryInput
-          placeholder="Enter your email"
-          icon={<Mail />}
-          {...register("email")}
-          type="text"
-          error={errors.email?.message}
-        />
-
-        <PrimaryInput
-          placeholder="Enter your password"
-          icon={<Lock />}
-          {...register("password")}
-          type="password"
-          error={errors.password?.message}
-        />
+      <div className="flex flex-col items-center justify-center mb-8 text-center space-y-4">
+        <div className="inline-flex items-center justify-center p-3 rounded-3xl bg-white/5 border border-white/5 shadow-2xl backdrop-blur-xl ring-1 ring-white/10">
+            <img src="/images/logo.webp" alt="Logo" className="w-20 h-20 object-contain drop-shadow-[0_0_20px_rgba(255,255,255,0.3)]" />
+        </div>
+        <div className="space-y-2">
+            <h1 className="text-2xl sm:text-3xl font-bold tracking-tight bg-clip-text text-transparent bg-gradient-to-br from-white via-blue-100 to-blue-300">
+                Create Account
+            </h1>
+            <p className="text-blue-200/50 text-sm sm:text-base font-medium leading-relaxed">
+                Start your journey with us today
+            </p>
+        </div>
       </div>
 
-      <PrimaryBtn className="w-full" disabled={isPending} type="submit">
-        {isPending ? <Spinner className="h-6 w-6" /> : "Sign up"}
-      </PrimaryBtn>
+      <div className="space-y-6">
+        <div className="space-y-3">
+            <label className="text-sm font-semibold text-blue-200/80 ml-1 uppercase tracking-wider">Username</label>
+            <PrimaryInput
+                {...register("userName")}
+                placeholder="Choose a username"
+                type="text"
+                error={errors.userName?.message}
+                icon={<User size={20} className="text-blue-300/50" />}
+            />
+        </div>
 
-      <Separator />
+        <div className="space-y-3">
+            <label className="text-sm font-semibold text-blue-200/80 ml-1 uppercase tracking-wider">Email Address</label>
+            <PrimaryInput
+                {...register("email")}
+                placeholder="name@company.com"
+                type="text"
+                error={errors.email?.message}
+                icon={<Mail size={20} className="text-blue-300/50" />}
+            />
+        </div>
 
-      <PrimaryBtn
-        onClick={() => navigate("/")}
-        type="button"
-        className="w-full"
-      >
-        Sign In
-      </PrimaryBtn>
+        <div className="space-y-3">
+            <label className="text-sm font-semibold text-blue-200/80 ml-1 uppercase tracking-wider">Password</label>
+            <PrimaryInput
+                {...register("password")}
+                placeholder="••••••••"
+                type="password"
+                error={errors.password?.message}
+                icon={<Lock size={20} className="text-blue-300/50" />}
+            />
+        </div>
+      </div>
+
+      <div className="pt-4">
+        <PrimaryBtn
+            className="w-full text-lg font-bold shadow-blue-900/20 py-3"
+            disabled={isPending}
+            type="submit"
+        >
+            {isPending ? <Spinner className="h-6 w-6 text-white/90" /> : "Sign Up"}
+        </PrimaryBtn>
+      </div>
+      
+      <div className="text-center pt-2">
+        <p className="text-base text-blue-200/40 font-medium">
+            Already have an account? <span className="text-blue-400 hover:text-blue-300 cursor-pointer transition-colors ml-1 font-semibold" onClick={() => navigate("/")}>Sign In</span>
+        </p>
+      </div>
     </form>
   );
 }

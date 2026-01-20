@@ -26,7 +26,8 @@ export function IconBtn({
         <div className="relative">
           <button
             className={cn(
-              "flex items-center justify-center bg-indigo-600 hover:bg-indigo-500 text-white rounded-sm h-11 w-11 md:h-12 md:w-12 cursor-pointer duration-200",
+              "flex items-center justify-center rounded-xl h-11 w-11 md:h-12 md:w-12 cursor-pointer duration-200",
+              "bg-blue-600 hover:bg-blue-500 text-white shadow-lg shadow-blue-500/20 border border-white/10",
               className
             )}
             {...props}

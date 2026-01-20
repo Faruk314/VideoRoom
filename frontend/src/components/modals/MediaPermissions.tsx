@@ -40,43 +40,41 @@ export default function MediaPermissions({ type }: Props) {
             showAlert
             description="Video permission needed"
             icon={<VideoOff />}
+            className="bg-[#0f1219]/80 backdrop-blur-xl border border-white/10 text-blue-200/70 hover:text-white hover:bg-white/5 shadow-lg"
           />
         ) : (
           <IconBtn
             showAlert
             description="Audio permission needed"
             icon={<MicOff />}
+            className="bg-[#0f1219]/80 backdrop-blur-xl border border-white/10 text-blue-200/70 hover:text-white hover:bg-white/5 shadow-lg"
           />
         )}
       </DialogTrigger>
 
-      <DialogContent className="max-w-2xl">
-        <img
-          className="md:h-55 md:w-80 mx-auto"
-          src="/images/audioVideo.webp"
-        />
-
-        <div className="flex flex-col items-center gap-2">
-          <DialogTitle className="text-xl font-semibold text-center">
-            You want others to hear you during the meeting?
+      <DialogContent className="max-w-xl bg-[#0f1219]/95 backdrop-blur-2xl border border-white/10 text-white">
+        <div className="flex flex-col items-center gap-2 pt-4">
+          <DialogTitle className="text-xl font-bold text-center tracking-tight">
+            Allow {type === "video" ? "Camera" : "Microphone"} Access
           </DialogTitle>
 
-          <p className="text-[0.9rem] text-center md:text-left">
-            you can turn on the microphone at any time during the meeting
+          <p className="text-[0.95rem] text-center text-blue-200/70 font-medium">
+            We need your permission to use your {type === "video" ? "camera" : "microphone"} for the meeting.
+            You can turn it off at any time.
           </p>
         </div>
 
-        <div className="flex flex-col items-center gap-6 mt-5">
+        <div className="flex flex-col items-center gap-4 mt-6 w-full">
           {type === "audio" ? (
             <PrimaryBtn
-              className="w-70"
+              className="w-full shadow-lg"
               onClick={() => handlePermissions("audio")}
             >
               Enable Microphone
             </PrimaryBtn>
           ) : (
             <PrimaryBtn
-              className="w-70"
+              className="w-full shadow-lg"
               onClick={() => handlePermissions("video")}
             >
               Enable Camera
@@ -84,10 +82,10 @@ export default function MediaPermissions({ type }: Props) {
           )}
 
           <PrimaryBtn
-            className="w-70"
+            className="w-full bg-white/5 hover:bg-white/10 border border-white/10 text-blue-200 shadow-none hover:shadow-lg"
             onClick={() => handlePermissions("combined")}
           >
-            Enable mic and camera
+            Enable both mic and camera
           </PrimaryBtn>
         </div>
       </DialogContent>

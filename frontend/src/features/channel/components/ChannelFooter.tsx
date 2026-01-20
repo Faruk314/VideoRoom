@@ -27,27 +27,29 @@ export default function ChannelFooter() {
     <>
       <div
         className={classNames(
-          "fixed bottom-0 w-full mb-4 slide-up z-50",
+          "fixed bottom-0 w-full slide-up z-50",
           isHovering ? "slide-up" : "slide-down"
         )}
       >
         <div className="relative flex items-center justify-between w-full mx-auto py-2 px-4">
-          <div className="fixed bottom-0 left-1/2 -translate-x-1/2 flex items-center space-x-2 border border-gray-300 rounded-md px-2 py-2 shadow-md bg-white z-50">
+          {/* Main Controls */}
+          <div className="fixed bottom-6 left-1/2 -translate-x-1/2 flex items-center space-x-3 px-4 py-3 rounded-2xl bg-[#0f1219]/80 backdrop-blur-xl border border-white/10 shadow-2xl ring-1 ring-white/5 z-50">
             <CameraBtn camMuted={localParticipant?.camMuted || false} />
             <MicrophoneBtn micMuted={localParticipant?.micMuted || false} />
             <ScreenShareBtn
               isStreaming={localParticipant?.isStreaming || false}
             />
             <SettingsModal />
+            <div className="w-px h-8 bg-white/10 mx-2" />
             <IconBtn
               onClick={leaveChannel}
               description="Leave Call"
               icon={<Phone size={20} />}
-              className="text-white bg-red-500 hover:bg-red-400"
+              className="text-white bg-red-500 hover:bg-red-600 shadow-lg shadow-red-500/20"
             />
           </div>
 
-          <div className="hidden md:flex fixed bottom-0 right-6 z-50">
+          <div className="hidden md:flex fixed bottom-6 right-6 z-50 space-x-2">
             <ChannelDetails />
             <ChannelChatSidebar />
             <FullScreenBtn />
@@ -58,7 +60,7 @@ export default function ChannelFooter() {
       </div>
       <div
         className={classNames(
-          "fixed top-2 left-2 z-50 md:hidden",
+          "fixed top-4 left-4 z-50 md:hidden flex space-x-2",
           isHovering ? "flex" : "hidden"
         )}
       >
@@ -68,7 +70,7 @@ export default function ChannelFooter() {
 
       <div
         className={classNames(
-          "fixed top-2 right-2 z-50 md:hidden",
+          "fixed top-4 right-4 z-50 md:hidden",
           isHovering ? "flex" : "hidden"
         )}
       >

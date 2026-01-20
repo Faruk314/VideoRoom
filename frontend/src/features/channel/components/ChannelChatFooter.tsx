@@ -27,11 +27,11 @@ export default function ChannelChatInput() {
   }
 
   return (
-    <div className="flex space-x-2 pb-2 px-2">
-      <div className="rounded-md border border-gray-300 p-3 bg-white w-full">
+    <div className="flex space-x-2 pb-4 px-4 pt-2">
+      <div className="rounded-2xl border border-white/10 p-3 bg-white/5 w-full focus-within:ring-1 focus-within:ring-blue-500/50 transition-all">
         <ChatInput
-          placeholder={`Send message`}
-          className="flex-1 resize-none border-none self-center p-0"
+          placeholder={`Type a message...`}
+          className="flex-1 resize-none border-none self-center p-0 bg-transparent text-white placeholder-blue-200/30 focus:outline-none focus:ring-0 max-h-32 overflow-y-auto"
           value={message}
           onChange={(e) => setMessage(e.target.value)}
           onKeyDown={(e) => {
@@ -46,7 +46,7 @@ export default function ChannelChatInput() {
       <IconBtn
         onClick={handleSubmit}
         icon={<Send size={20} />}
-        className="h-12 w-12 md:h-12 md:w-12 rounded-xl"
+        className="h-12 w-12 md:h-12 md:w-12 rounded-2xl bg-blue-600 hover:bg-blue-500 text-white shadow-lg shadow-blue-900/20 border border-blue-400/20"
       />
     </div>
   );
