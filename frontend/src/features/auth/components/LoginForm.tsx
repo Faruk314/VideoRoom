@@ -32,13 +32,12 @@ export default function LoginForm() {
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
       <div className="flex flex-col items-center justify-center mb-8 text-center space-y-4">
-        <div className="inline-flex items-center justify-center p-3 rounded-3xl bg-white/5 border border-white/5 shadow-2xl backdrop-blur-xl ring-1 ring-white/10">
-          <img
-            src="/images/logo.webp"
-            alt="Logo"
-            className="w-20 h-20 object-contain drop-shadow-[0_0_20px_rgba(255,255,255,0.3)]"
-          />
-        </div>
+        <img
+          src="/images/logo.webp"
+          alt="Logo"
+          className="w-40 h-40 object-contain drop-shadow-[0_0_20px_rgba(255,255,255,0.3)]"
+        />
+
         <div className="space-y-2">
           <h1 className="text-2xl sm:text-3xl font-bold tracking-tight bg-clip-text text-transparent bg-gradient-to-br from-white via-blue-100 to-blue-300">
             Welcome Back

@@ -21,17 +21,15 @@ export function CreateChannel() {
       </div>
 
       {/* Header Section */}
-      <div className="relative z-20 w-full border-b border-white/5 bg-[#0B0E14]/50 backdrop-blur-xl">
+      <div className="relative z-20 w-full border-b border-white/5">
         <div className="container mx-auto px-4 md:px-8 py-5 md:py-6">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-4 md:space-x-5">
-              <div className="p-2 rounded-2xl bg-white/5 border border-white/5 shadow-lg ring-1 ring-white/10">
-                <img
-                  src="/images/logo.webp"
-                  alt="Logo"
-                  className="w-14 h-14 md:w-16 md:h-16 object-contain"
-                />
-              </div>
+              <img
+                src="/images/logo.webp"
+                alt="Logo"
+                className="w-30 h-30 object-contain drop-shadow-[0_0_20px_rgba(255,255,255,0.3)]"
+              />
               <div className="flex flex-col">
                 <span className="text-sm md:text-base font-medium text-blue-200/50">
                   Welcome back,
