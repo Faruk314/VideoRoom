@@ -4,10 +4,10 @@ import {
   SelectContent,
   SelectGroup,
   SelectItem,
-  SelectLabel,
   SelectTrigger,
   SelectValue,
 } from "../ui/select";
+import { truncateText } from "../../lib/utils";
 
 interface Option {
   label: string;
@@ -34,36 +34,48 @@ export function PrimarySelect({
   disabled = false,
 }: PrimarySelectProps) {
   return (
-    <Select value={value} onValueChange={onChange} disabled={disabled}>
-      <SelectTrigger className="w-full bg-white/5 hover:bg-white/10 ring-0 outline-none border border-white/10 text-white transition-all duration-200 rounded-2xl h-20 px-6 shadow-sm hover:shadow-md hover:border-white/20 focus:ring-2 focus:ring-blue-500/20">
-        <div className="flex items-center space-x-4 truncate w-full">
-          {icon && (
-            <span className="text-blue-400 opacity-80 scale-125">{icon}</span>
-          )}
-          <span className="flex-1 text-left truncate text-lg font-medium text-white/90">
-            <SelectValue placeholder={placeholder} />
-          </span>
-        </div>
-      </SelectTrigger>
+    <div className="flex flex-col gap-1.5 w-full sm:max-w-full">
+      {label && (
+        <label className="text-[11px] font-bold text-white/30 ml-1 uppercase tracking-wider">
+          {label}
+        </label>
+      )}
 
-      <SelectContent className="max-h-[24rem] bg-[#1a1f2e] border-white/10 shadow-2xl rounded-xl">
-        <SelectGroup>
-          {label && (
-            <SelectLabel className="text-sm uppercase tracking-wider text-blue-200/40 py-4 px-5 font-bold">
-              {label}
-            </SelectLabel>
-          )}
-          {options.map((opt) => (
-            <SelectItem
-              key={opt.value}
-              value={opt.value}
-              className="py-2 px-5 text-[1rem] cursor-pointer focus:bg-blue-600 focus:text-white transition-colors rounded-lg mx-1 my-1"
-            >
-              {opt.label}
-            </SelectItem>
-          ))}
-        </SelectGroup>
-      </SelectContent>
-    </Select>
+      <Select value={value} onValueChange={onChange} disabled={disabled}>
+        <SelectTrigger
+          className="
+            flex items-center justify-between
+            w-full px-4 py-5 
+            bg-[#0C0C0C] border border-white/10
+            hover:border-white/20 hover:bg-[#111111]
+            text-white transition-all duration-200
+            rounded-xl outline-none ring-0
+          "
+        >
+          <div className="flex items-center gap-3 truncate">
+            {icon && (
+              <span className="text-white/40 shrink-0 scale-90">{icon}</span>
+            )}
+            <span className="text-sm font-medium truncate">
+              <SelectValue placeholder={placeholder} />
+            </span>
+          </div>
+        </SelectTrigger>
+
+        <SelectContent className="bg-[#0C0C0C] border border-white/10 shadow-2xl rounded-xl">
+          <SelectGroup>
+            {options.map((opt) => (
+              <SelectItem
+                key={opt.value}
+                value={opt.value}
+                className="py-3 px-4 text-sm text-white/60 cursor-pointer rounded-lg focus:bg-white/10 focus:text-white"
+              >
+                {truncateText(opt.label, 35)}
+              </SelectItem>
+            ))}
+          </SelectGroup>
+        </SelectContent>
+      </Select>
+    </div>
   );
 }

@@ -33,7 +33,7 @@ export function Settings() {
           <button
             onClick={() => setActiveTab("Audio")}
             className={classNames(
-              "flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 text-sm md:text-base font-medium whitespace-nowrap md:whitespace-normal flex-1 md:flex-none justify-center md:justify-start",
+              "flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 text-sm md:text-base font-medium whitespace-nowrap md:whitespace-normal md:flex-1 md:flex-none justify-center md:justify-start",
               activeTab === "Audio"
                 ? "bg-blue-600 text-white shadow-lg shadow-blue-900/20"
                 : "text-blue-200/60 hover:text-white hover:bg-white/5"
@@ -46,7 +46,7 @@ export function Settings() {
           <button
             onClick={() => setActiveTab("Video")}
             className={classNames(
-              "flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 text-sm md:text-base font-medium whitespace-nowrap md:whitespace-normal flex-1 md:flex-none justify-center md:justify-start",
+              "flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 text-sm md:text-base font-medium whitespace-nowrap md:whitespace-normal md:flex-1 md:flex-none justify-center md:justify-start",
               activeTab === "Video"
                 ? "bg-blue-600 text-white shadow-lg shadow-blue-900/20"
                 : "text-blue-200/60 hover:text-white hover:bg-white/5"
