@@ -18,4 +18,14 @@ function formatMessageTime(date: Date, short = false): string {
   return format(date, "MMMM d 'at' h:mm a");
 }
 
-export { cn, formatMessageTime };
+function truncateText(str: string, limit = 20) {
+  if (!str) return "";
+
+  if (str.length <= limit) {
+    return str;
+  }
+
+  return str.slice(0, limit).trim() + "...";
+}
+
+export { cn, formatMessageTime, truncateText };
