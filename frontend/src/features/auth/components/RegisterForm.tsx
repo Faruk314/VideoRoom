@@ -104,7 +104,7 @@ export default function RegisterForm() {
       </div>
 
       <div className="text-center pt-2">
-        <p className="text-base text-blue-200/40 font-medium">
+        <p className="text-sm text-blue-200/40 font-medium">
           Already have an account?{" "}
           <span
             className="text-blue-400 hover:text-blue-300 cursor-pointer transition-colors ml-1 font-semibold"
