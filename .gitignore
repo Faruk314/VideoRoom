@@ -18,6 +18,7 @@ dist-ssr/
 **/build/
 
 # Environment variables
+.env.production
 .env
 .env.*.local
 **/.env

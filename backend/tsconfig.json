@@ -1,6 +1,9 @@
 {
   "compilerOptions": {
     "baseUrl": ".",
+    "paths": {
+      "mediasoup/*": ["mediasoup/*"]
+    },
     "target": "esnext",
     "module": "nodenext",
     "lib": ["es2020", "dom"],

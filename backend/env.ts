@@ -1,11 +1,21 @@
 import { createEnv } from "@t3-oss/env-core";
 import { z } from "zod";
 import dotenv from "dotenv";
+import path from "path";
 
-dotenv.config();
+dotenv.config({
+  path:
+    process.env.NODE_ENV === "production"
+      ? path.resolve(process.cwd(), ".env.production")
+      : path.resolve(process.cwd(), ".env"),
+});
 
 export const env = createEnv({
   server: {
+    NODE_ENV: z
+      .enum(["development", "test", "production"])
+      .default("development"),
+
     FRONTEND_URL: z.string().min(1),
     BACKEND_PORT: z.string().min(1).transform(Number),
 
